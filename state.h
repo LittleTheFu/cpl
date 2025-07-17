@@ -14,7 +14,7 @@ public:
     std::shared_ptr<State> run(const std::string &input);
 
 private:
-    std::unordered_map<std::string, std::weak_ptr<State>> states_;
+    std::unordered_map<std::string, std::weak_ptr<State>> transitions_;
 };
 
 
