@@ -5,16 +5,16 @@
 #include <unordered_map>
 #include <string>
 
-class State
+class DFAState
 {
 public:
-    State();
+    DFAState();
 
-    void addTransition(const std::string &input, std::shared_ptr<State> nextState);
-    std::shared_ptr<State> run(const std::string &input);
+    void addTransition(const std::string &input, std::shared_ptr<DFAState> nextState);
+    std::shared_ptr<DFAState> run(const std::string &input);
 
 private:
-    std::unordered_map<std::string, std::weak_ptr<State>> transitions_;
+    std::unordered_map<std::string, std::weak_ptr<DFAState>> transitions_;
 };
 
 

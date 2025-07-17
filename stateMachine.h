@@ -8,12 +8,12 @@
 class StateMachine
 {
 public:
-    StateMachine(std::shared_ptr<State> initialState);
+    StateMachine(std::shared_ptr<DFAState> initialState);
 
-    std::shared_ptr<State> run(const std::string &input);
+    std::shared_ptr<DFAState> run(const std::string &input);
     
 private:
-    std::shared_ptr<State> currentState_;
+    std::shared_ptr<DFAState> currentState_;
 };
 
 #endif // _STATE_MACHINE_H_

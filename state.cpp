@@ -1,15 +1,15 @@
 #include "state.h"
 
-State::State()
+DFAState::DFAState()
 {
 }
 
-void State::addTransition(const std::string &input, std::shared_ptr<State> nextState)
+void DFAState::addTransition(const std::string &input, std::shared_ptr<DFAState> nextState)
 {
     transitions_[input] = nextState;
 }
 
-std::shared_ptr<State> State::run(const std::string &input)
+std::shared_ptr<DFAState> DFAState::run(const std::string &input)
 {
     auto it = transitions_.find(input);
     if (it == transitions_.end())
