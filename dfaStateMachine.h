@@ -3,12 +3,12 @@
 
 #include <memory>
 #include <string>
-#include "state.h"
+#include "dfaState.h"
 
-class StateMachine
+class DFAStateMachine
 {
 public:
-    StateMachine(std::shared_ptr<DFAState> initialState);
+    DFAStateMachine(std::shared_ptr<DFAState> initialState);
 
     std::shared_ptr<DFAState> run(const std::string &input);
     

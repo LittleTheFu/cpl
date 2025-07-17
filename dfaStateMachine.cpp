@@ -1,11 +1,11 @@
-#include "stateMachine.h"
+#include "dfaStateMachine.h"
 
-StateMachine::StateMachine(std::shared_ptr<DFAState> initialState)
+DFAStateMachine::DFAStateMachine(std::shared_ptr<DFAState> initialState)
 {
     currentState_ = initialState;
 }
 
-std::shared_ptr<DFAState> StateMachine::run(const std::string &input)
+std::shared_ptr<DFAState> DFAStateMachine::run(const std::string &input)
 {
     if (!currentState_)
     {

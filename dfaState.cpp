@@ -1,4 +1,4 @@
-#include "state.h"
+#include "dfaState.h"
 
 DFAState::DFAState()
 {
