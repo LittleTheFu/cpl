@@ -44,7 +44,7 @@ target_include_directories(cpl_tests PRIVATE
     ${PROJECT_SOURCE_DIR}
     ${PROJECT_SOURCE_DIR}/regluarExpression
     ${PROJECT_SOURCE_DIR}/state
-    ${PROJECT_SOURCE_DIR}/test # If test.cpp needs headers from its own directory, though usually not.
+    ${PROJECT_SOURCE_DIR}/test
 )
 
 target_link_libraries(cpl_tests
