@@ -111,5 +111,6 @@
     "xlocmes": "cpp",
     "xlocmon": "cpp",
     "cerrno": "cpp"
-  }
+  },
+  "C_Cpp.default.compilerPath": "cl.exe"
 }
