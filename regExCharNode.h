@@ -7,7 +7,7 @@
 class RegExCharNode : public RegExNode
 {
 public:
-    RegExCharNode(char charactor);
+    explicit RegExCharNode(char charactor);
     virtual ~RegExCharNode();
 
 private:

@@ -6,7 +6,7 @@
 class regConcatenationNode : public RegExNode
 {
 public:
-    regConcatenationNode(RegExNode* left, RegExNode* right);
+    explicit regConcatenationNode(RegExNode* left, RegExNode* right);
     virtual ~regConcatenationNode();
 
 private:

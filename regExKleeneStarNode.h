@@ -6,7 +6,7 @@
 class regExKleeneStarNode : public RegExNode
 {
 public:
-    regExKleeneStarNode(RegExNode* node);
+    explicit regExKleeneStarNode(RegExNode* node);
     virtual ~regExKleeneStarNode();
 
 private:

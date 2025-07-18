@@ -6,7 +6,7 @@
 class regExAlternationNode : public RegExNode
 {
 public:
-    regExAlternationNode(RegExNode* left, RegExNode* right);
+    explicit regExAlternationNode(RegExNode* left, RegExNode* right);
     virtual ~regExAlternationNode();
 
 private:

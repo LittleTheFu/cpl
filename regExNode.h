@@ -4,7 +4,7 @@
 class RegExNode
 {
 public:
-    RegExNode();
+    explicit RegExNode();
     virtual ~RegExNode();
 };
 
