@@ -6,21 +6,29 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED TRUE)
 
 set(PROJECT_SOURCES
-    main.cpp
-    dfaState.cpp
-    dfaStateMachine.cpp
-    nfaState.cpp
-    nfaStateFragment.cpp
-    regEx.cpp
-    regExNode.cpp
-    regExAlternationNode.cpp
-    regExConcatenationNode.cpp
-    regExKleeneStarNode.cpp
     alphaBet.cpp
+
+    regluarExpression/regEx.cpp
+    regluarExpression/regExNode.cpp
+    regluarExpression/regExAlternationNode.cpp
+    regluarExpression/regExConcatenationNode.cpp
+    regluarExpression/regExKleeneStarNode.cpp
+
+    state/dfaState.cpp
+    state/dfaStateMachine.cpp
+    state/nfaState.cpp
+    state/nfaStateFragment.cpp
+
+    main.cpp
 )
 
 add_library(cpl_lib STATIC ${PROJECT_SOURCES})
-target_include_directories(cpl_lib PUBLIC ${PROJECT_SOURCE_DIR})
+
+target_include_directories(cpl_lib PUBLIC
+    ${PROJECT_SOURCE_DIR}
+    ${PROJECT_SOURCE_DIR}/regluarExpression
+    ${PROJECT_SOURCE_DIR}/state
+)
 
 add_executable(cpl main.cpp)
 target_link_libraries(cpl PRIVATE cpl_lib)
@@ -32,11 +40,16 @@ add_executable(cpl_tests
     test/test.cpp
 )
 
-target_include_directories(cpl_tests PRIVATE ${PROJECT_SOURCE_DIR})
+target_include_directories(cpl_tests PRIVATE
+    ${PROJECT_SOURCE_DIR}
+    ${PROJECT_SOURCE_DIR}/regluarExpression
+    ${PROJECT_SOURCE_DIR}/state
+    ${PROJECT_SOURCE_DIR}/test # If test.cpp needs headers from its own directory, though usually not.
+)
 
 target_link_libraries(cpl_tests
     GTest::gtest_main
-    cpl_lib
+    cpl_lib          
 )
 
 include(CTest)
