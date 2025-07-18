@@ -11,4 +11,6 @@ add_executable(MySimpleProject
     nfaStateFragment.cpp
     regEx.cpp
     regExNode.cpp
+    regExAlternationNode.cpp
+    regExConcatenationNode.cpp
     regExKleeneStarNode.cpp)

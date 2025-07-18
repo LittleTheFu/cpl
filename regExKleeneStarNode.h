@@ -9,6 +9,8 @@ public:
     explicit regExKleeneStarNode(RegExNode* node);
     virtual ~regExKleeneStarNode();
 
+    std::shared_ptr<NfaStateFragment> buildNfaStateFragment() override;
+
 private:
     RegExNode* node_;
 };

@@ -9,6 +9,8 @@ public:
     explicit regExAlternationNode(RegExNode* left, RegExNode* right);
     virtual ~regExAlternationNode();
 
+    std::shared_ptr<NfaStateFragment> buildNfaStateFragment() override;
+
 private:
     RegExNode* left_;
     RegExNode* right_;

@@ -10,6 +10,11 @@ void NfaState::addTransition(char input, std::shared_ptr<NfaState> nextState)
     transitions_[input].insert(nextState);
 }
 
+void NfaState::addEpsilonTransition(std::shared_ptr<NfaState> nextState)
+{
+    epsilonTransitions_.insert(nextState);
+}
+
 std::vector<std::shared_ptr<NfaState>> NfaState::run(char input)
 {
     auto it = transitions_.find(input);
