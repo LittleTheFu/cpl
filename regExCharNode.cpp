@@ -14,6 +14,7 @@ std::shared_ptr<NfaStateFragment> RegExCharNode::buildNfaStateFragment()
     auto startState = std::make_shared<NfaState>();
     auto endState = std::make_shared<NfaState>();
 
-    // startState->addTransition(charactor_, endState);
+    startState->addTransition(charactor_, endState);
 
+    return std::make_shared<NfaStateFragment>(startState, endState);
 }

@@ -8,6 +8,7 @@ add_executable(MySimpleProject
     dfaState.cpp
     dfaStateMachine.cpp
     nfaState.cpp
+    nfaStateFragment.cpp
     regEx.cpp
     regExNode.cpp
     regExKleeneStarNode.cpp)
