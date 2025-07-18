@@ -16,12 +16,13 @@ set(PROJECT_SOURCES
     regExAlternationNode.cpp
     regExConcatenationNode.cpp
     regExKleeneStarNode.cpp
+    alphaBet.cpp
 )
 
 add_library(cpl_lib STATIC ${PROJECT_SOURCES})
-target_include_directories(cpl_lib PUBLIC ${PROJECT_SOURCE_DIR}) # 假设头文件和源文件在同一目录
+target_include_directories(cpl_lib PUBLIC ${PROJECT_SOURCE_DIR})
 
-add_executable(cpl main.cpp) # 只包含 main.cpp，因为其他代码在库中
+add_executable(cpl main.cpp)
 target_link_libraries(cpl PRIVATE cpl_lib)
 
 # -------------------------------------------------------------------

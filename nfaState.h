@@ -23,7 +23,9 @@ public:
     NfaState();
 
     void addTransition(char input, std::shared_ptr<NfaState> nextState);
+
     void addEpsilonTransition(std::shared_ptr<NfaState> nextState);
+    const std::set<std::weak_ptr<NfaState>, CompareWeakNfaStatePtr>& getEpsilonTransitions() const;
 
     std::vector<std::shared_ptr<NfaState>> run(char input);
 
@@ -31,7 +33,5 @@ private:
     std::unordered_map<char, std::set<std::weak_ptr<NfaState>, CompareWeakNfaStatePtr>> transitions_;
     std::set<std::weak_ptr<NfaState>, CompareWeakNfaStatePtr> epsilonTransitions_;
 };
-
-
 
 #endif // _NFA_STATE_H_

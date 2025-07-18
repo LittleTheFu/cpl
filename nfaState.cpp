@@ -15,6 +15,11 @@ void NfaState::addEpsilonTransition(std::shared_ptr<NfaState> nextState)
     epsilonTransitions_.insert(nextState);
 }
 
+const std::set<std::weak_ptr<NfaState>, CompareWeakNfaStatePtr> &NfaState::getEpsilonTransitions() const
+{
+    return epsilonTransitions_;
+}
+
 std::vector<std::shared_ptr<NfaState>> NfaState::run(char input)
 {
     auto it = transitions_.find(input);

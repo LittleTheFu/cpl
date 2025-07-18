@@ -13,8 +13,12 @@ public:
     ~RegEx();
 
 private:
+    void buildDFA();
+
+private:
     // std::string regex_;
     std::shared_ptr<RegExNode> root_;
+    std::shared_ptr<NfaStateFragment> nfaStateFragment_;
 };
 
 #endif // _REGEX_H_
