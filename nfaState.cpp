@@ -1,26 +1,26 @@
 #include "nfaState.h"
 
-NfaState::NfaState()
+NFAState::NFAState()
 {
 
 }
 
-void NfaState::addTransition(char input, std::shared_ptr<NfaState> nextState)
+void NFAState::addTransition(char input, std::shared_ptr<NFAState> nextState)
 {
     transitions_[input].insert(nextState);
 }
 
-void NfaState::addEpsilonTransition(std::shared_ptr<NfaState> nextState)
+void NFAState::addEpsilonTransition(std::shared_ptr<NFAState> nextState)
 {
     epsilonTransitions_.insert(nextState);
 }
 
-const std::set<std::weak_ptr<NfaState>, CompareWeakNfaStatePtr> &NfaState::getEpsilonTransitions() const
+const std::set<std::weak_ptr<NFAState>, CompareWeakNfaStatePtr> &NFAState::getEpsilonTransitions() const
 {
     return epsilonTransitions_;
 }
 
-std::vector<std::shared_ptr<NfaState>> NfaState::run(char input)
+std::set<std::shared_ptr<NFAState>, CompareNfaStateSharedPtr> NFAState::run(char input) const
 {
     auto it = transitions_.find(input);
     if (it == transitions_.end())
@@ -28,12 +28,12 @@ std::vector<std::shared_ptr<NfaState>> NfaState::run(char input)
         return {};
     }
     
-    std::vector<std::shared_ptr<NfaState>> result;
+    std::set<std::shared_ptr<NFAState>, CompareNfaStateSharedPtr> result;
     for (auto &state : it->second)
     {
         if (auto lockedState = state.lock())
         {
-            result.push_back(lockedState);
+            result.insert(lockedState);
         }
     }
 

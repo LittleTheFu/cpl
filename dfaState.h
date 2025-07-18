@@ -8,13 +8,18 @@
 class DFAState
 {
 public:
-    DFAState();
+    DFAState(bool isEndState = false);
+    ~DFAState() = default;
 
-    void addTransition(const std::string &input, std::shared_ptr<DFAState> nextState);
-    std::shared_ptr<DFAState> run(const std::string &input);
+    void addTransition(char input, std::shared_ptr<DFAState> nextState);
+    std::shared_ptr<DFAState> run(char input);
+
+    void setEndState(bool isEndState);
+    bool isEndState() const;
 
 private:
-    std::unordered_map<std::string, std::weak_ptr<DFAState>> transitions_;
+    std::unordered_map<char, std::weak_ptr<DFAState>> transitions_;
+    bool isEndState_;
 };
 
 

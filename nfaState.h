@@ -6,32 +6,40 @@
 #include <string>
 #include <set>
 
-class NfaState;
+class NFAState;
 
 struct CompareWeakNfaStatePtr
 {
-    bool operator()(const std::weak_ptr<NfaState> &a, const std::weak_ptr<NfaState> &b) const
+    bool operator()(const std::weak_ptr<NFAState> &a, const std::weak_ptr<NFAState> &b) const
+    {
+        return a.owner_before(b);
+    }
+};
+
+struct CompareNfaStateSharedPtr
+{
+    bool operator()(const std::shared_ptr<NFAState> &a, const std::shared_ptr<NFAState> &b) const
     {
         return a.owner_before(b);
     }
 };
 
 
-class NfaState
+class NFAState
 {
 public:
-    NfaState();
+    NFAState();
 
-    void addTransition(char input, std::shared_ptr<NfaState> nextState);
+    void addTransition(char input, std::shared_ptr<NFAState> nextState);
 
-    void addEpsilonTransition(std::shared_ptr<NfaState> nextState);
-    const std::set<std::weak_ptr<NfaState>, CompareWeakNfaStatePtr>& getEpsilonTransitions() const;
+    void addEpsilonTransition(std::shared_ptr<NFAState> nextState);
+    const std::set<std::weak_ptr<NFAState>, CompareWeakNfaStatePtr>& getEpsilonTransitions() const;
 
-    std::vector<std::shared_ptr<NfaState>> run(char input);
+    std::set<std::shared_ptr<NFAState>, CompareNfaStateSharedPtr> run(char input) const;
 
 private:
-    std::unordered_map<char, std::set<std::weak_ptr<NfaState>, CompareWeakNfaStatePtr>> transitions_;
-    std::set<std::weak_ptr<NfaState>, CompareWeakNfaStatePtr> epsilonTransitions_;
+    std::unordered_map<char, std::set<std::weak_ptr<NFAState>, CompareWeakNfaStatePtr>> transitions_;
+    std::set<std::weak_ptr<NFAState>, CompareWeakNfaStatePtr> epsilonTransitions_;
 };
 
 #endif // _NFA_STATE_H_

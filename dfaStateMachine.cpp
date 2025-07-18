@@ -5,7 +5,7 @@ DFAStateMachine::DFAStateMachine(std::shared_ptr<DFAState> initialState)
     currentState_ = initialState;
 }
 
-std::shared_ptr<DFAState> DFAStateMachine::run(const std::string &input)
+std::shared_ptr<DFAState> DFAStateMachine::run(char input)
 {
     if (!currentState_)
     {

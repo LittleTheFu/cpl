@@ -10,7 +10,7 @@ class DFAStateMachine
 public:
     DFAStateMachine(std::shared_ptr<DFAState> initialState);
 
-    std::shared_ptr<DFAState> run(const std::string &input);
+    std::shared_ptr<DFAState> run(char input);
     
 private:
     std::shared_ptr<DFAState> currentState_;

@@ -1,15 +1,16 @@
 #include "dfaState.h"
 
-DFAState::DFAState()
+DFAState::DFAState(bool isEndState)
 {
+    isEndState_ = isEndState;
 }
 
-void DFAState::addTransition(const std::string &input, std::shared_ptr<DFAState> nextState)
+void DFAState::addTransition(char input, std::shared_ptr<DFAState> nextState)
 {
     transitions_[input] = nextState;
 }
 
-std::shared_ptr<DFAState> DFAState::run(const std::string &input)
+std::shared_ptr<DFAState> DFAState::run(char input)
 {
     auto it = transitions_.find(input);
     if (it == transitions_.end())
@@ -23,4 +24,14 @@ std::shared_ptr<DFAState> DFAState::run(const std::string &input)
         return nullptr;
     }
     return nextState;
+}
+
+void DFAState::setEndState(bool isEndState)
+{
+    isEndState_ = isEndState;
+}
+
+bool DFAState::isEndState() const
+{
+    return isEndState_;
 }

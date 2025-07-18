@@ -12,8 +12,8 @@ regExKleeneStarNode::~regExKleeneStarNode()
 std::shared_ptr<NfaStateFragment> regExKleeneStarNode::buildNfaStateFragment()
 {
     auto fragment = node_->buildNfaStateFragment();
-    auto startState = std::make_shared<NfaState>();
-    auto endState = std::make_shared<NfaState>();
+    auto startState = std::make_shared<NFAState>();
+    auto endState = std::make_shared<NFAState>();
 
     startState->addEpsilonTransition(fragment->getStartState());
     startState->addEpsilonTransition(endState);

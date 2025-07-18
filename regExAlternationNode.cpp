@@ -15,12 +15,12 @@ std::shared_ptr<NfaStateFragment> regExAlternationNode::buildNfaStateFragment()
     auto leftFragment = left_->buildNfaStateFragment();
     auto rightFragment = right_->buildNfaStateFragment();
 
-    auto startState = std::make_shared<NfaState>();
-    auto endState = std::make_shared<NfaState>();
+    auto startState = std::make_shared<NFAState>();
+    auto endState = std::make_shared<NFAState>();
 
     startState->addEpsilonTransition(leftFragment->getStartState());
     startState->addEpsilonTransition(rightFragment->getStartState());
-    
+
     leftFragment->getEndState()->addEpsilonTransition(endState);
     rightFragment->getEndState()->addEpsilonTransition(endState);
 
