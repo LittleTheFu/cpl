@@ -10,6 +10,8 @@ public:
     explicit RegExCharNode(char charactor);
     virtual ~RegExCharNode();
 
+    std::shared_ptr<NfaStateFragment> buildNfaStateFragment() override;
+
 private:
     char charactor_;
 };

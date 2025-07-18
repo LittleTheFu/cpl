@@ -15,7 +15,6 @@ public:
 private:
     // std::string regex_;
     std::shared_ptr<RegExNode> root_;
-
 };
 
 #endif // _REGEX_H_

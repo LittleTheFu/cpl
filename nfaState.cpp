@@ -5,12 +5,12 @@ NfaState::NfaState()
 
 }
 
-void NfaState::addTransition(const std::string &input, std::shared_ptr<NfaState> nextState)
+void NfaState::addTransition(char input, std::shared_ptr<NfaState> nextState)
 {
     transitions_[input].insert(nextState);
 }
 
-std::vector<std::shared_ptr<NfaState>> NfaState::run(const std::string &input)
+std::vector<std::shared_ptr<NfaState>> NfaState::run(char input)
 {
     auto it = transitions_.find(input);
     if (it == transitions_.end())

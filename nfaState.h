@@ -6,16 +6,29 @@
 #include <string>
 #include <set>
 
+class NfaState;
+
+struct CompareWeakNfaStatePtr
+{
+    bool operator()(const std::weak_ptr<NfaState> &a, const std::weak_ptr<NfaState> &b) const
+    {
+        return a.owner_before(b);
+    }
+};
+
+
 class NfaState
 {
 public:
     NfaState();
 
-    void addTransition(const std::string &input, std::shared_ptr<NfaState> nextState);
-    std::vector<std::shared_ptr<NfaState>> run(const std::string &input);
+    void addTransition(char input, std::shared_ptr<NfaState> nextState);
+    std::vector<std::shared_ptr<NfaState>> run(char input);
 
 private:
-    std::unordered_map<std::string, std::set<std::weak_ptr<NfaState>>> transitions_;
+    std::unordered_map<char, std::set<std::weak_ptr<NfaState>, CompareWeakNfaStatePtr>> transitions_;
 };
+
+
 
 #endif // _NFA_STATE_H_

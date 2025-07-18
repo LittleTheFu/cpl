@@ -109,6 +109,7 @@
     "xlocbuf": "cpp",
     "xlocinfo": "cpp",
     "xlocmes": "cpp",
-    "xlocmon": "cpp"
+    "xlocmon": "cpp",
+    "cerrno": "cpp"
   }
 }
