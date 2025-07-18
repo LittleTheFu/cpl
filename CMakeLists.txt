@@ -19,6 +19,8 @@ set(PROJECT_SOURCES
     state/nfaState.cpp
     state/nfaStateFragment.cpp
 
+    vm/virtualMachine.cpp
+
     main.cpp
 )
 
@@ -28,6 +30,7 @@ target_include_directories(cpl_lib PUBLIC
     ${PROJECT_SOURCE_DIR}
     ${PROJECT_SOURCE_DIR}/regluarExpression
     ${PROJECT_SOURCE_DIR}/state
+    ${PROJECT_SOURCE_DIR}/vm
 )
 
 add_executable(cpl main.cpp)
