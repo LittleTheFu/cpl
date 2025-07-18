@@ -92,6 +92,23 @@
     "climits": "cpp",
     "set": "cpp",
     "xtree": "cpp",
-    "regex": "cpp"
+    "regex": "cpp",
+    "xlocale": "cpp",
+    "xlocnum": "cpp",
+    "xloctime": "cpp",
+    "algorithm": "cpp",
+    "clocale": "cpp",
+    "iterator": "cpp",
+    "locale": "cpp",
+    "optional": "cpp",
+    "stdexcept": "cpp",
+    "streambuf": "cpp",
+    "system_error": "cpp",
+    "xfacet": "cpp",
+    "xiosbase": "cpp",
+    "xlocbuf": "cpp",
+    "xlocinfo": "cpp",
+    "xlocmes": "cpp",
+    "xlocmon": "cpp"
   }
 }
