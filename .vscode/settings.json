@@ -87,6 +87,10 @@
     "vector": "cpp",
     "xhash": "cpp",
     "xstring": "cpp",
-    "xtr1common": "cpp"
+    "xtr1common": "cpp",
+    "cfloat": "cpp",
+    "climits": "cpp",
+    "set": "cpp",
+    "xtree": "cpp"
   }
 }

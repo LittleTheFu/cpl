@@ -6,4 +6,5 @@ set(CMAKE_CXX_STANDARD_REQUIRED TRUE)
 add_executable(MySimpleProject
     main.cpp
     dfaState.cpp
-    dfaStateMachine.cpp)
+    dfaStateMachine.cpp
+    nfaState.cpp)
