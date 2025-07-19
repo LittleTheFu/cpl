@@ -16,6 +16,9 @@ VirtualMachine::VirtualMachine()
 
     programCounter_ = 0;
 
+    zeroFlag_ = false;
+    signFlag_ = false;
+
     sourceCode_ = "MOV R0 0\n"  // Instruction 0: R0 = 0
                   "MOV R1 10\n" // Instruction 1: R1 = 10
                   "MOV R2 20\n" // Instruction 2: R2 = 20
@@ -93,6 +96,9 @@ void VirtualMachine::executeInstruction(const Instruction &instruction)
     case OpCode::POP:
         executePOP(instruction);
         break;
+    case OpCode::CMP:
+        executeCMP(instruction);
+        break;
     case OpCode::JMP:
         executeJMP(instruction);
         break;
@@ -133,6 +139,8 @@ void VirtualMachine::executeADD(const Instruction &instruction)
     int value2 = getOperandValue(operand2);
     int result = value1 + value2;
     setOperandValue(operand1, result);
+
+    updateFlags(result);
 }
 
 void VirtualMachine::executeSUB(const Instruction &instruction)
@@ -149,6 +157,8 @@ void VirtualMachine::executeSUB(const Instruction &instruction)
     int value2 = getOperandValue(operand2);
     int result = value1 - value2;
     setOperandValue(operand1, result);
+
+    updateFlags(result);
 }
 
 void VirtualMachine::executeMUL(const Instruction &instruction)
@@ -165,6 +175,8 @@ void VirtualMachine::executeMUL(const Instruction &instruction)
     int value2 = getOperandValue(operand2);
     int result = value1 * value2;
     setOperandValue(operand1, result);
+
+    updateFlags(result);
 }
 
 void VirtualMachine::executeDIV(const Instruction &instruction)
@@ -187,6 +199,19 @@ void VirtualMachine::executeDIV(const Instruction &instruction)
 
     int result = value1 / value2;
     setOperandValue(operand1, result);
+
+    updateFlags(result);
+}
+
+void VirtualMachine::executeCMP(const Instruction &instruction)
+{
+    Operand operand1 = instruction.getOperandFirst();
+    Operand operand2 = instruction.getOperandSecond();
+
+    int value1 = getOperandValue(operand1);
+    int value2 = getOperandValue(operand2);
+
+    updateFlags(value1 - value2);
 }
 
 void VirtualMachine::executeJMP(const Instruction &instruction)
@@ -328,6 +353,12 @@ void VirtualMachine::assembleInstructions()
     }
 }
 
+void VirtualMachine::updateFlags(int value)
+{
+    zeroFlag_ = (value == 0);
+    signFlag_ = (value < 0);
+}
+
 void VirtualMachine::printStack() const
 {
     std::cout << "Stack: ";
@@ -345,5 +376,13 @@ void VirtualMachine::printRegister() const
     {
         std::cout << register_[i] << " ";
     }
+    std::cout << std::endl;
+}
+
+void VirtualMachine::printFlags() const
+{
+    std::cout << "Flags: ";
+    std::cout << "Zero: " << zeroFlag_ << " ";
+    std::cout << "Sign: " << signFlag_ << " ";
     std::cout << std::endl;
 }

@@ -17,6 +17,7 @@ enum class OpCode
     MUL,
     DIV,
 
+    CMP,
     JMP,
     JMPZ,
     JMPNZ,

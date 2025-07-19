@@ -28,6 +28,8 @@ private:
     void executeMUL(const Instruction &instruction);
     void executeDIV(const Instruction &instruction);
 
+    void executeCMP(const Instruction &instruction);
+
     void executeJMP(const Instruction &instruction);
 
     int getOperandValue(const Operand &operand);
@@ -36,9 +38,12 @@ private:
     void buildLabelMap();
     void assembleInstructions();
 
+    void updateFlags(int value);
+
 public:
     void printStack() const;
     void printRegister() const;
+    void printFlags() const;
 
 private:
     std::string sourceCode_;
@@ -56,6 +61,9 @@ private:
     size_t stackPointer_;
     size_t stackBaseAddress_;
     size_t stackLimitAddress_;
+
+    bool zeroFlag_;
+    bool signFlag_;
 };
 
 #endif // _VIRTUAL_MACHINE_H_
