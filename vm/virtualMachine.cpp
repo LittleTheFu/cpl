@@ -16,12 +16,12 @@ VirtualMachine::VirtualMachine()
 
     programCounter_ = 0;
 
-    sourceCode_ = "ADD R1 R2\n"
-                  "PUSH 99\n"
-                  "PUSH 88\n"
-                  "PUSH 123\n"
-                  "POP R1\n"
-                  "POP R2\n";
+    sourceCode_ = "MOV R0 1\n"
+                  "MOV R1 10\n"
+                  "MOV R2 20\n"
+                  "ADD R1 R2\n"
+                  "MUL R0 R1\n"
+                  "DIV R0 2\n";
 }
 
 void VirtualMachine::loadProgram()
@@ -54,8 +54,20 @@ void VirtualMachine::executeInstruction(const Instruction &instruction)
     case OpCode::NOP:
         executeNOP(instruction);
         break;
+    case OpCode::MOV:
+        executeMOV(instruction);
+        break;
     case OpCode::ADD:
         executeADD(instruction);
+        break;
+    case OpCode::SUB:
+        executeSUB(instruction);
+        break;
+    case OpCode::MUL:
+        executeMUL(instruction);
+        break;
+    case OpCode::DIV:
+        executeDIV(instruction);
         break;
     case OpCode::PUSH:
         executePUSH(instruction);
@@ -72,6 +84,21 @@ void VirtualMachine::executeNOP(const Instruction &instruction)
 {
 }
 
+void VirtualMachine::executeMOV(const Instruction &instruction)
+{
+    Operand operand1 = instruction.getOperandFirst();
+    Operand operand2 = instruction.getOperandSecond();
+
+    if (operand1.type != OperandType::REGISTER && operand1.type != OperandType::MEMORY)
+    {
+        throw std::runtime_error("Error operand type");
+    }
+
+    int value = getOperandValue(operand2);
+    setOperandValue(operand1, value);
+
+}
+
 void VirtualMachine::executeADD(const Instruction &instruction)
 {
     Operand operand1 = instruction.getOperandFirst();
@@ -85,6 +112,60 @@ void VirtualMachine::executeADD(const Instruction &instruction)
     int value1 = getOperandValue(operand1);
     int value2 = getOperandValue(operand2);
     int result = value1 + value2;
+    setOperandValue(operand1, result);
+}
+
+void VirtualMachine::executeSUB(const Instruction &instruction)
+{
+    Operand operand1 = instruction.getOperandFirst();
+    Operand operand2 = instruction.getOperandSecond();
+
+    if (operand1.type != OperandType::REGISTER && operand1.type != OperandType::MEMORY)
+    {
+        throw std::runtime_error("Error operand type");
+    }
+
+    int value1 = getOperandValue(operand1);
+    int value2 = getOperandValue(operand2);
+    int result = value1 - value2;
+    setOperandValue(operand1, result);
+}
+
+void VirtualMachine::executeMUL(const Instruction &instruction)
+{
+    Operand operand1 = instruction.getOperandFirst();
+    Operand operand2 = instruction.getOperandSecond();
+
+    if (operand1.type != OperandType::REGISTER && operand1.type != OperandType::MEMORY)
+    {
+        throw std::runtime_error("Error operand type");
+    }
+
+    int value1 = getOperandValue(operand1);
+    int value2 = getOperandValue(operand2);
+    int result = value1 * value2;
+    setOperandValue(operand1, result);
+}
+
+void VirtualMachine::executeDIV(const Instruction &instruction)
+{
+    Operand operand1 = instruction.getOperandFirst();
+    Operand operand2 = instruction.getOperandSecond();
+
+    if (operand1.type != OperandType::REGISTER && operand1.type != OperandType::MEMORY)
+    {
+        throw std::runtime_error("Error operand type");
+    }
+
+    int value1 = getOperandValue(operand1);
+    int value2 = getOperandValue(operand2);
+
+    if(value2 == 0)
+    {
+        throw std::runtime_error("Error divide by zero");
+    }
+
+    int result = value1 / value2;
     setOperandValue(operand1, result);
 }
 

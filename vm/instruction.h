@@ -7,12 +7,15 @@
 enum class OpCode
 {
     NOP,
+    MOV,
     PUSH,
     POP,
+
     ADD,
     SUB,
     MUL,
     DIV,
+
     JMP,
     JMPZ,
     JMPNZ,

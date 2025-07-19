@@ -40,6 +40,10 @@ OpCode Instruction::stringToOpCode(const std::string &str)
     {
         return OpCode::NOP;
     }
+    else if (str == "MOV")
+    {
+        return OpCode::MOV;
+    }
     else if (str == "PUSH")
     {
         return OpCode::PUSH;
@@ -122,6 +126,9 @@ std::ostream &operator<<(std::ostream &os, const OpCode &opCode)
     {
     case OpCode::NOP:
         os << "NOP";
+        break;
+    case OpCode::MOV:
+        os << "MOV";
         break;
     case OpCode::PUSH:
         os << "PUSH";

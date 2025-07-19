@@ -18,7 +18,13 @@ private:
     void executeInstruction(const Instruction &instruction);
 
     void executeNOP(const Instruction &instruction);
+    void executeMOV(const Instruction &instruction);
+
     void executeADD(const Instruction &instruction);
+    void executeSUB(const Instruction &instruction);
+    void executeMUL(const Instruction &instruction);
+    void executeDIV(const Instruction &instruction);
+
     void executePUSH(const Instruction &instruction);
     void executePOP(const Instruction &instruction);
 
