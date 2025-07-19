@@ -52,6 +52,10 @@ public:
 
     friend std::ostream &operator<<(std::ostream &os, const Instruction &instruction);
 
+    OpCode getOpCode() const { return opCode_; }
+    Operand getOperandFirst() const { return operandFirst_; }
+    Operand getOperandSecond() const { return operandSecond_; }
+
 private:
     std::string trim(const std::string &str);
     OpCode stringToOpCode(const std::string &str);
