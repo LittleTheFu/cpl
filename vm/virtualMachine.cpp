@@ -18,25 +18,18 @@ VirtualMachine::VirtualMachine()
 
     sourceCode_ = "MOV R0 1\n"
                   "MOV R1 10\n"
+                  "label:\n"
                   "MOV R2 20\n"
                   "ADD R1 R2\n"
                   "MUL R0 R1\n"
+                  "label999:\n"
                   "DIV R0 2\n";
 }
 
 void VirtualMachine::loadProgram()
 {
-    std::stringstream ss(sourceCode_);
-    std::string line;
-    while (std::getline(ss, line))
-    {
-        Instruction instruction;
-        instruction.readInstruction(line);
-
-        instructions_.push_back(instruction);
-
-        std::cout << instruction << std::endl;
-    }
+    buildLabelMap();
+    assembleInstructions();
 }
 
 void VirtualMachine::execute()
@@ -234,6 +227,58 @@ void VirtualMachine::setOperandValue(Operand &operand, int value)
     {
         throw std::runtime_error("Error operand type");
         // operand.value = value;
+    }
+}
+
+void VirtualMachine::buildLabelMap()
+{
+    std::stringstream ss(sourceCode_);
+    std::string line;
+
+    size_t lineNumber = 0;
+
+    while (std::getline(ss, line))
+    {
+        Instruction instruction;
+        std::string labelName;
+        if(instruction.isLabelDefinition(line, labelName))
+        {
+            // if(instruction.isPureLabelLine(line))
+            // {
+            //     throw std::runtime_error("Error pure label line");
+            // }
+
+            if (labelMap_.count(labelName))
+            {
+                throw std::runtime_error("Error label duplicate");
+            }
+
+            labelMap_[labelName] = lineNumber;
+            lineNumber++;
+        }
+    }
+}
+
+void VirtualMachine::assembleInstructions()
+{
+    std::stringstream ss(sourceCode_);
+    std::string line;
+    while (std::getline(ss, line))
+    {
+        Instruction instruction;
+
+        std::string labelName;
+        if (instruction.isLabelDefinition(line, labelName))
+        {
+            instruction.setOpCode(OpCode::NOP);
+        }
+        else
+        {
+            instruction.readInstruction(line);
+        }
+
+        instructions_.push_back(instruction);
+        std::cout << instruction << std::endl;
     }
 }
 

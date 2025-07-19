@@ -226,6 +226,11 @@ std::ostream &operator<<(std::ostream &os, const Instruction &instruction)
 {
     os << instruction.opCode_;
 
+    if(instruction.opCode_ == OpCode::NOP)
+    {
+        return os;
+    }
+
     if (instruction.operandFirst_.type != OperandType::UNKNOWN)
     {
         os << " " << instruction.operandFirst_;
@@ -245,4 +250,35 @@ std::ostream &operator<<(std::ostream &os, const Instruction &instruction)
     }
 
     return os;
+}
+
+bool Instruction::isLabelDefinition(const std::string &line, std::string &outLabelName)
+{
+    if (line.empty())
+    {
+        return false;
+    }
+
+    size_t colonPos = line.find(':');
+    if (colonPos != std::string::npos)
+    {
+        outLabelName = trim(line.substr(0, colonPos));
+        if (outLabelName.empty())
+        {
+            throw std::runtime_error("Assembler Error: Label name cannot be empty for line: '" + line + "'");
+        }
+        return true;
+    }
+    return false;
+}
+
+bool Instruction::isPureLabelLine(const std::string &trimmedLine)
+{
+    size_t colonPos = trimmedLine.find(':');
+    if (colonPos != std::string::npos)
+    {
+        std::string remainingLine = trim(trimmedLine.substr(colonPos + 1));
+        return remainingLine.empty();
+    }
+    return false;
 }

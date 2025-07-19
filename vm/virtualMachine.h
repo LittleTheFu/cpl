@@ -2,6 +2,7 @@
 #define _VIRTUAL_MACHINE_H_
 
 #include <vector>
+#include <map>
 #include <string>
 #include "instruction.h"
 
@@ -31,12 +32,16 @@ private:
     int getOperandValue(const Operand &operand);
     void setOperandValue(Operand &operand, int value);
 
+    void buildLabelMap();
+    void assembleInstructions();
+
 public:
     void printStack() const;
     void printRegister() const;
 
 private:
     std::string sourceCode_;
+    std::map<std::string, size_t> labelMap_;
 
     std::vector<int> memory_;
     size_t memorySize_;

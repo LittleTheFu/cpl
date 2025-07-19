@@ -53,8 +53,12 @@ public:
     ~Instruction() = default;
 
     void readInstruction(const std::string &line);
+    bool isLabelDefinition(const std::string& line, std::string& outLabelName);
+    bool isPureLabelLine(const std::string& trimmedLine);
 
     friend std::ostream &operator<<(std::ostream &os, const Instruction &instruction);
+
+    void setOpCode(OpCode opCode) { opCode_ = opCode; }
 
     OpCode getOpCode() const { return opCode_; }
     Operand getOperandFirst() const { return operandFirst_; }
