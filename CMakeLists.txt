@@ -20,6 +20,7 @@ set(PROJECT_SOURCES
     state/nfaStateFragment.cpp
 
     vm/virtualMachine.cpp
+    vm/instruction.cpp
 
     main.cpp
 )

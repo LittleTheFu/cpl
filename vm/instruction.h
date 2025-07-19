@@ -2,6 +2,7 @@
 #define _INSTRUCTION_H_
 
 #include <string>
+#include <iostream>
 
 enum class OpCode
 {
@@ -18,20 +19,28 @@ enum class OpCode
     CALL,
     RET,
     HLT,
+
+    UNKNOWN,
 };
+
+std::ostream & operator<<(std::ostream & os, const OpCode & opCode);
 
 enum class OperandType
 {
     REGISTER,
     MEMORY,
     IMMEDIATE,
+
+    UNKNOWN,
 };
+std::ostream & operator<<(std::ostream & os, const OperandType & operandType);
 
 struct Operand
 {
     OperandType type;
     int value;
 };
+std::ostream & operator<<(std::ostream & os, const Operand & operand);
 
 class Instruction
 {
@@ -40,6 +49,8 @@ public:
     ~Instruction() = default;
 
     void readInstruction(const std::string &line);
+
+    friend std::ostream &operator<<(std::ostream &os, const Instruction &instruction);
 
 private:
     std::string trim(const std::string &str);
