@@ -15,7 +15,7 @@ VirtualMachine::VirtualMachine()
                    "POP R2\n";
 }
 
-void VirtualMachine::run()
+void VirtualMachine::loadProgram()
 {
     std::stringstream ss(sourceCode_);
     std::string line;
@@ -24,6 +24,16 @@ void VirtualMachine::run()
         Instruction instruction;
         instruction.readInstruction(line);
 
+        instructions_.push_back(instruction);
+
         std::cout << instruction << std::endl;
+    }
+}
+
+void VirtualMachine::execute()
+{
+    for (auto &instruction : instructions_)
+    {
+        // instruction.execute();
     }
 }

@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <string>
+#include "instruction.h"
 
 class VirtualMachine
 {
@@ -10,7 +11,8 @@ public:
     VirtualMachine();
     ~VirtualMachine() = default;
 
-    void run();
+    void loadProgram();
+    void execute();
 
 private:
     std::string sourceCode_;
@@ -20,6 +22,8 @@ private:
 
     std::vector<int> register_;
     size_t registerSize_;
+
+    std::vector<Instruction> instructions_;
 };
 
 #endif // _VIRTUAL_MACHINE_H_

@@ -3,7 +3,7 @@
 int main()
 {
     VirtualMachine vm;
-    vm.run();
+    vm.loadProgram();
 
     return 0;
 }
