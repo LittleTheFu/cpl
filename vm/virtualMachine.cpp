@@ -306,6 +306,7 @@ void VirtualMachine::assembleInstructions()
 {
     std::stringstream ss(sourceCode_);
     std::string line;
+    size_t lineNumber = 0;
     while (std::getline(ss, line))
     {
         Instruction instruction;
@@ -321,7 +322,9 @@ void VirtualMachine::assembleInstructions()
         }
 
         instructions_.push_back(instruction);
-        std::cout << instruction << std::endl;
+        std::cout << lineNumber << " " << instruction << std::endl;
+
+        lineNumber++;
     }
 }
 

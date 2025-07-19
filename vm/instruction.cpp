@@ -252,6 +252,11 @@ std::ostream &operator<<(std::ostream &os, const Instruction &instruction)
         os << " <INVALID_OP1>";
     }
 
+    if(instruction.opCode_ == OpCode::JMP)
+    {
+        return os;
+    }
+
     if (instruction.operandSecond_.type != OperandType::UNKNOWN)
     {
         os << ", " << instruction.operandSecond_;
