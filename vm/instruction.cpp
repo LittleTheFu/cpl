@@ -252,7 +252,7 @@ std::ostream &operator<<(std::ostream &os, const Instruction &instruction)
         os << " <INVALID_OP1>";
     }
 
-    if(instruction.opCode_ == OpCode::JMP)
+    if(instruction.opCode_ == OpCode::JMP || instruction.opCode_ == OpCode::PUSH || instruction.opCode_ == OpCode::POP)
     {
         return os;
     }
