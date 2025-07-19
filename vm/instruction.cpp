@@ -181,16 +181,22 @@ std::ostream &operator<<(std::ostream &os, const OperandType &operandType)
     switch (operandType)
     {
     case OperandType::REGISTER:
-        os << "R" << operandType;
+        os << "REGISTER";
         break;
     case OperandType::MEMORY:
-        os << "[" << operandType << "]";
+        os << "MEMORY";
         break;
     case OperandType::IMMEDIATE:
-        os << "#" << operandType;
+        os << "IMMEDIATE";
+        break;
+    case OperandType::LABEL:
+        os << "LABEL";
+        break;
+    case OperandType::UNKNOWN:
+        os << "UNKNOWN";
         break;
     default:
-        os << "<UNKNOWN_OPERAND>";
+        os << "<UNHANDLED_OPERAND_TYPE>";
         break;
     }
     return os;

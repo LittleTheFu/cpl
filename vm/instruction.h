@@ -33,6 +33,7 @@ enum class OperandType
     REGISTER,
     MEMORY,
     IMMEDIATE,
+    LABEL,
 
     UNKNOWN,
 };
