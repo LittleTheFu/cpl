@@ -16,14 +16,39 @@ VirtualMachine::VirtualMachine()
 
     programCounter_ = 0;
 
-    sourceCode_ = "MOV R0 1\n"
-                  "MOV R1 10\n"
-                  "label:\n"
-                  "MOV R2 20\n"
-                  "ADD R1 R2\n"
-                  "MUL R0 R1\n"
-                  "label999:\n"
-                  "DIV R0 2\n";
+    sourceCode_ = "MOV R0 0\n"  // Instruction 0: R0 = 0
+                  "MOV R1 10\n" // Instruction 1: R1 = 10
+                  "MOV R2 20\n" // Instruction 2: R2 = 20
+                  "MOV R3 5\n"  // Instruction 3: R3 = 5
+
+                  "MOV [0] 100\n" // Instruction 4: Memory[0] = 100
+                  "MOV [1] 200\n" // Instruction 5: Memory[1] = 200
+
+                  "label_arith:\n" // Instruction 6 (pure label)
+                  "ADD R1 R2\n"    // Instruction 7: R1 = R1 + R2 (10 + 20 = 30)
+                  "SUB R2 R3\n"    // Instruction 8: R2 = R2 - R3 (20 - 5 = 15)
+                  "MUL R0 R3\n"    // Instruction 9: R0 = R0 * R3 (0 * 5 = 0)
+
+                  "label_stack:\n" // Instruction 10 (pure label)
+                  "PUSH R1\n"      // Instruction 11: Push R1 (30) to stack
+                  "PUSH R0\n"      // Instruction 12: Push R0 (0) to stack
+
+                  "MOV R4 [0]\n" // Instruction 13: R4 = Memory[0] (100)
+                  "PUSH R4\n"    // Instruction 14: Push R4 (100) to stack
+
+                  "POP R5\n" // Instruction 15: Pop from stack into R5 (R5 = 100)
+                  "POP R6\n" // Instruction 16: Pop from stack into R6 (R6 = 0)
+                  "POP R7\n" // Instruction 17: Pop from stack into R7 (R7 = 30)
+
+                  "JMP end_of_test\n" // Instruction 18: Jump to 'end_of_test'
+
+                  "skipped_section:\n" // Instruction 19 (pure label)
+                  "DIV R0 2\n"         // Instruction 20: This instruction will be skipped
+                  "ADD R8 100\n"       // Instruction 21: This instruction will be skipped
+
+                  "end_of_test:\n" // Instruction 22 (pure label)
+                  "DIV R5 2\n"     // Instruction 23: R5 = R5 / 2 (100 / 2 = 50)
+                  "MOV [0] R5\n";  // Instruction 24: Memory[0] = R5 (Memory[0] = 50)
 }
 
 void VirtualMachine::loadProgram()
@@ -68,6 +93,9 @@ void VirtualMachine::executeInstruction(const Instruction &instruction)
     case OpCode::POP:
         executePOP(instruction);
         break;
+    case OpCode::JMP:
+        executeJMP(instruction);
+        break;
     default:
         break;
     }
@@ -89,7 +117,6 @@ void VirtualMachine::executeMOV(const Instruction &instruction)
 
     int value = getOperandValue(operand2);
     setOperandValue(operand1, value);
-
 }
 
 void VirtualMachine::executeADD(const Instruction &instruction)
@@ -153,13 +180,20 @@ void VirtualMachine::executeDIV(const Instruction &instruction)
     int value1 = getOperandValue(operand1);
     int value2 = getOperandValue(operand2);
 
-    if(value2 == 0)
+    if (value2 == 0)
     {
         throw std::runtime_error("Error divide by zero");
     }
 
     int result = value1 / value2;
     setOperandValue(operand1, result);
+}
+
+void VirtualMachine::executeJMP(const Instruction &instruction)
+{
+    Operand operand = instruction.getOperandFirst();
+    int value = getOperandValue(operand);
+    programCounter_ = value;
 }
 
 void VirtualMachine::executePUSH(const Instruction &instruction)
@@ -241,12 +275,20 @@ void VirtualMachine::buildLabelMap()
     {
         Instruction instruction;
         std::string labelName;
-        if(instruction.isLabelDefinition(line, labelName))
+        if (instruction.isLabelDefinition(line, labelName))
         {
-            // if(instruction.isPureLabelLine(line))
-            // {
-            //     throw std::runtime_error("Error pure label line");
-            // }
+            // ok,i'm lazy...so label name cannot be start with 'R' or '['
+            // which stands for register or memory
+            char firstCharacter = labelName[0];
+            if (firstCharacter == 'R')
+            {
+                throw std::runtime_error("label cannot be start with R which stands for register");
+            }
+
+            if (firstCharacter == '[')
+            {
+                throw std::runtime_error("label cannot be start with [ which stands for memory");
+            }
 
             if (labelMap_.count(labelName))
             {
@@ -254,8 +296,9 @@ void VirtualMachine::buildLabelMap()
             }
 
             labelMap_[labelName] = lineNumber;
-            lineNumber++;
         }
+
+        lineNumber++;
     }
 }
 
@@ -274,7 +317,7 @@ void VirtualMachine::assembleInstructions()
         }
         else
         {
-            instruction.readInstruction(line);
+            instruction.readInstruction(line, labelMap_);
         }
 
         instructions_.push_back(instruction);

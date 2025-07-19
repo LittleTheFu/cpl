@@ -3,6 +3,7 @@
 
 #include <string>
 #include <iostream>
+#include <map>
 
 enum class OpCode
 {
@@ -52,7 +53,7 @@ public:
     Instruction();
     ~Instruction() = default;
 
-    void readInstruction(const std::string &line);
+    void readInstruction(const std::string &line, const std::map<std::string, size_t>& labelMap);
     bool isLabelDefinition(const std::string& line, std::string& outLabelName);
     bool isPureLabelLine(const std::string& trimmedLine);
 
@@ -67,7 +68,7 @@ public:
 private:
     std::string trim(const std::string &str);
     OpCode stringToOpCode(const std::string &str);
-    Operand stringToOperand(const std::string &str);
+    Operand stringToOperand(const std::string &str, const std::map<std::string, size_t>& labelMap);
 
 private:
     OpCode opCode_;

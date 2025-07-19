@@ -5,7 +5,7 @@ Instruction::Instruction()
 {
 }
 
-void Instruction::readInstruction(const std::string &line)
+void Instruction::readInstruction(const std::string &line, const std::map<std::string, size_t> &labelMap)
 {
     std::string lineTrim = trim(line);
 
@@ -16,9 +16,9 @@ void Instruction::readInstruction(const std::string &line)
 
     std::string operandStr;
     ss >> operandStr;
-    operandFirst_ = stringToOperand(operandStr);
+    operandFirst_ = stringToOperand(operandStr, labelMap);
     ss >> operandStr;
-    operandSecond_ = stringToOperand(operandStr);
+    operandSecond_ = stringToOperand(operandStr, labelMap);
 }
 
 std::string Instruction::trim(const std::string &str)
@@ -98,9 +98,21 @@ OpCode Instruction::stringToOpCode(const std::string &str)
     return OpCode::NOP;
 }
 
-Operand Instruction::stringToOperand(const std::string &str)
+Operand Instruction::stringToOperand(const std::string &str, const std::map<std::string, size_t>& labelMap)
 {
     Operand operand;
+
+    //handle JMP label first
+    for(auto& label : labelMap)
+    {
+        if (str == label.first)
+        {
+            operand.type = OperandType::IMMEDIATE;
+            operand.value = static_cast<int>(label.second);
+            return operand;
+        }
+    }
+
     if (str[0] == 'R')
     {
         operand.type = OperandType::REGISTER;
