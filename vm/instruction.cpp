@@ -164,7 +164,7 @@ std::ostream &operator<<(std::ostream &os, const OpCode &opCode)
         break;
     default:
         os << "UNKNOWN_OP";
-        break; // 防止忘记添加新的 OpCode
+        break;
     }
     return os;
 }
