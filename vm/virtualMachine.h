@@ -25,6 +25,10 @@ private:
     int getOperandValue(const Operand &operand);
     void setOperandValue(Operand &operand, int value);
 
+public:
+    void printStack() const;
+    void printRegister() const;
+
 private:
     std::string sourceCode_;
 
@@ -36,6 +40,10 @@ private:
 
     std::vector<Instruction> instructions_;
     size_t programCounter_;
+
+    size_t stackPointer_;
+    size_t stackBaseAddress_;
+    size_t stackLimitAddress_;
 };
 
 #endif // _VIRTUAL_MACHINE_H_

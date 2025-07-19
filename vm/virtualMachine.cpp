@@ -10,10 +10,17 @@ VirtualMachine::VirtualMachine()
     registerSize_ = 8;
     register_.resize(registerSize_);
 
+    stackBaseAddress_ = memorySize_ - 1;
+    stackLimitAddress_ = stackBaseAddress_ - 10;
+    stackPointer_ = stackBaseAddress_;
+
     programCounter_ = 0;
 
     sourceCode_ = "ADD R1 R2\n"
-                  "PUSH R1\n"
+                  "PUSH 99\n"
+                  "PUSH 88\n"
+                  "PUSH 123\n"
+                  "POP R1\n"
                   "POP R2\n";
 }
 
@@ -36,7 +43,7 @@ void VirtualMachine::execute()
 {
     for (programCounter_ = 0; programCounter_ < instructions_.size(); programCounter_++)
     {
-        // instruction.execute();
+        executeInstruction(instructions_[programCounter_]);
     }
 }
 
@@ -83,10 +90,33 @@ void VirtualMachine::executeADD(const Instruction &instruction)
 
 void VirtualMachine::executePUSH(const Instruction &instruction)
 {
+    Operand operand = instruction.getOperandFirst();
+    int value = getOperandValue(operand);
+
+    if (stackPointer_ > stackLimitAddress_)
+    {
+        memory_[stackPointer_] = value;
+        stackPointer_--;
+    }
+    else
+    {
+        throw std::runtime_error("Error stack overflow");
+    }
 }
 
 void VirtualMachine::executePOP(const Instruction &instruction)
 {
+    Operand operand = instruction.getOperandFirst();
+
+    if (stackPointer_ < stackBaseAddress_)
+    {
+        stackPointer_++;
+        setOperandValue(operand, memory_[stackPointer_]);
+    }
+    else
+    {
+        throw std::runtime_error("Error stack underflow");
+    }
 }
 
 int VirtualMachine::getOperandValue(const Operand &operand)
@@ -124,6 +154,24 @@ void VirtualMachine::setOperandValue(Operand &operand, int value)
         throw std::runtime_error("Error operand type");
         // operand.value = value;
     }
+}
 
-    throw std::runtime_error("Error operand type");
+void VirtualMachine::printStack() const
+{
+    std::cout << "Stack: ";
+    for (size_t i = stackPointer_; i < stackBaseAddress_; i++)
+    {
+        std::cout << memory_[i + 1] << " ";
+    }
+    std::cout << std::endl;
+}
+
+void VirtualMachine::printRegister() const
+{
+    std::cout << "Register: ";
+    for (size_t i = 0; i < registerSize_; i++)
+    {
+        std::cout << register_[i] << " ";
+    }
+    std::cout << std::endl;
 }
