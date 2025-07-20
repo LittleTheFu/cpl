@@ -201,9 +201,9 @@ void VirtualMachine::execute()
         if(!isRunning_)
             break;
 
-        executeInstruction(instructions_[programCounter_]);
+        executeInstruction(instructions_.at(programCounter_));
 
-        std::cout << "PC: " << programCounter_ << " | " << instructions_[programCounter_] << std::endl;
+        std::cout << "PC: " << programCounter_ << " | " << instructions_.at(programCounter_) << std::endl;
         printStack();
         printRegister();
         printMemory();
@@ -503,7 +503,7 @@ void VirtualMachine::executePUSH(const Instruction &instruction)
 
     if (stackPointer_ > stackLimitAddress_)
     {
-        memory_[stackPointer_] = value;
+        memory_.at(stackPointer_) = value;
         stackPointer_--;
     }
     else
@@ -519,7 +519,7 @@ void VirtualMachine::executePOP(const Instruction &instruction)
     if (stackPointer_ < stackBaseAddress_)
     {
         stackPointer_++;
-        setOperandValue(operand, memory_[stackPointer_]);
+        setOperandValue(operand, memory_.at(stackPointer_));
     }
     else
     {
@@ -531,11 +531,11 @@ int VirtualMachine::getOperandValue(const Operand &operand)
 {
     if (operand.type == OperandType::REGISTER)
     {
-        return register_[operand.value];
+        return register_.at(operand.value);
     }
     else if (operand.type == OperandType::MEMORY)
     {
-        return memory_[operand.value];
+        return memory_.at(operand.value);
     }
     else if (operand.type == OperandType::IMMEDIATE)
     {
@@ -551,11 +551,11 @@ void VirtualMachine::setOperandValue(Operand &operand, int value)
 {
     if (operand.type == OperandType::REGISTER)
     {
-        register_[operand.value] = value;
+        register_.at(operand.value) = value;
     }
     else if (operand.type == OperandType::MEMORY)
     {
-        memory_[operand.value] = value;
+        memory_.at(operand.value) = value;
     }
     else if (operand.type == OperandType::IMMEDIATE)
     {
@@ -579,7 +579,7 @@ void VirtualMachine::buildLabelMap()
         {
             // ok,i'm lazy...so label name cannot be start with 'R' or '['
             // which stands for register or memory
-            char firstCharacter = labelName[0];
+            char firstCharacter = labelName.at(0);
             if (firstCharacter == 'R')
             {
                 throw std::runtime_error("label cannot be start with R which stands for register");
@@ -595,7 +595,7 @@ void VirtualMachine::buildLabelMap()
                 throw std::runtime_error("Error label duplicate");
             }
 
-            labelMap_[labelName] = lineNumber;
+            labelMap_.at(labelName) = lineNumber;
         }
 
         lineNumber++;
@@ -639,7 +639,7 @@ void VirtualMachine::printStack() const
     std::cout << "Stack: ";
     for (size_t i = stackPointer_; i < stackBaseAddress_; i++)
     {
-        std::cout << memory_[i + 1] << " ";
+        std::cout << memory_.at(i + 1) << " ";
     }
     std::cout << std::endl;
 }
@@ -649,7 +649,7 @@ void VirtualMachine::printRegister() const
     std::cout << "Register: ";
     for (size_t i = 0; i < registerSize_; i++)
     {
-        std::cout << register_[i] << " ";
+        std::cout << register_.at(i) << " ";
     }
     std::cout << std::endl;
 }
@@ -667,7 +667,7 @@ void VirtualMachine::printMemory(size_t start, size_t end) const
     std::cout << "Memory: ";
     for (size_t i = start; i < end; i++)
     {
-        std::cout << memory_[i] << " ";
+        std::cout << memory_.at(i) << " ";
     }
     std::cout << std::endl;
 }
