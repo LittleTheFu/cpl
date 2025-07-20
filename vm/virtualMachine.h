@@ -15,6 +15,8 @@ public:
     void loadProgram();
     void execute();
 
+    void clear();
+
 private:
     void executeInstruction(const Instruction &instruction);
 
@@ -31,6 +33,12 @@ private:
     void executeCMP(const Instruction &instruction);
 
     void executeJMP(const Instruction &instruction);
+    void executeJMPZ(const Instruction &instruction);
+    void executeJMPNZ(const Instruction &instruction);
+    void executeJMPL(const Instruction &instruction);
+    void executeJMPLE(const Instruction &instruction);
+    void executeJMPG(const Instruction &instruction);
+    void executeJMPGE(const Instruction &instruction);
 
     int getOperandValue(const Operand &operand);
     void setOperandValue(Operand &operand, int value);
@@ -44,8 +52,10 @@ public:
     void printStack() const;
     void printRegister() const;
     void printFlags() const;
+    void printMemory(size_t start = 0, size_t end = 6) const;
 
-private:
+// I think it's OK even if they are public
+public:
     std::string sourceCode_;
     std::map<std::string, size_t> labelMap_;
 

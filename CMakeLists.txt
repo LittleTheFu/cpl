@@ -42,6 +42,7 @@ add_subdirectory(${PROJECT_SOURCE_DIR}/third/googletest)
 
 add_executable(cpl_tests
     test/test.cpp
+    test/testVM.cpp
 )
 
 target_include_directories(cpl_tests PRIVATE

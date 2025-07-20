@@ -18,9 +18,15 @@ enum class OpCode
     DIV,
 
     CMP,
+
     JMP,
     JMPZ,
     JMPNZ,
+    JMPL,
+    JMPLE,
+    JMPG,
+    JMPGE,
+
     CALL,
     RET,
     HLT,
@@ -29,6 +35,7 @@ enum class OpCode
 };
 
 std::ostream & operator<<(std::ostream & os, const OpCode & opCode);
+size_t getOpCodeParameterCount(OpCode opCode);
 
 enum class OperandType
 {

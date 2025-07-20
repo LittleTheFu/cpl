@@ -15,10 +15,17 @@ void Instruction::readInstruction(const std::string &line, const std::map<std::s
     opCode_ = stringToOpCode(opCodeStr);
 
     std::string operandStr;
-    ss >> operandStr;
-    operandFirst_ = stringToOperand(operandStr, labelMap);
-    ss >> operandStr;
-    operandSecond_ = stringToOperand(operandStr, labelMap);
+    if(getOpCodeParameterCount(opCode_) >= 1)
+    {
+        ss >> operandStr;
+        operandFirst_ = stringToOperand(operandStr, labelMap);
+    }
+
+    if(getOpCodeParameterCount(opCode_) >= 2)
+    {
+        ss >> operandStr;
+        operandSecond_ = stringToOperand(operandStr, labelMap);
+    }
 }
 
 std::string Instruction::trim(const std::string &str)
@@ -68,6 +75,10 @@ OpCode Instruction::stringToOpCode(const std::string &str)
     {
         return OpCode::DIV;
     }
+    else if (str == "CMP")
+    {
+        return OpCode::CMP;
+    }
     else if (str == "JMP")
     {
         return OpCode::JMP;
@@ -79,6 +90,22 @@ OpCode Instruction::stringToOpCode(const std::string &str)
     else if (str == "JMPNZ")
     {
         return OpCode::JMPNZ;
+    }
+    else if (str == "JMPL")
+    {
+        return OpCode::JMPL;
+    }
+    else if (str == "JMPLE")
+    {
+        return OpCode::JMPLE;
+    }
+    else if (str == "JMPG")
+    {
+        return OpCode::JMPG;
+    }
+    else if (str == "JMPGE")
+    {
+        return OpCode::JMPGE;
     }
     else if (str == "CALL")
     {
@@ -160,6 +187,9 @@ std::ostream &operator<<(std::ostream &os, const OpCode &opCode)
     case OpCode::DIV:
         os << "DIV";
         break;
+    case OpCode::CMP:
+        os << "CMP";
+        break;
     case OpCode::JMP:
         os << "JMP";
         break;
@@ -168,6 +198,18 @@ std::ostream &operator<<(std::ostream &os, const OpCode &opCode)
         break;
     case OpCode::JMPNZ:
         os << "JMPNZ";
+        break;
+    case OpCode::JMPL:
+        os << "JMPL";
+        break;
+    case OpCode::JMPLE:
+        os << "JMPLE";
+        break;
+    case OpCode::JMPG:
+        os << "JMPG";
+        break;
+    case OpCode::JMPGE:
+        os << "JMPGE";
         break;
     case OpCode::CALL:
         os << "CALL";
@@ -186,6 +228,57 @@ std::ostream &operator<<(std::ostream &os, const OpCode &opCode)
         break;
     }
     return os;
+}
+
+size_t getOpCodeParameterCount(OpCode opCode)
+{
+    switch (opCode)
+    {
+    case OpCode::NOP:
+        return 0;
+    case OpCode::MOV:
+        return 2;
+    case OpCode::PUSH:
+        return 1;
+    case OpCode::POP:
+        return 1;
+    case OpCode::ADD:
+        return 2;
+    case OpCode::SUB:
+        return 2;
+    case OpCode::MUL:
+        return 2;
+    case OpCode::DIV:
+        return 2;
+    case OpCode::CMP:
+        return 2;
+    case OpCode::JMP:
+        return 1;
+    case OpCode::JMPZ:
+        return 1;
+    case OpCode::JMPNZ:
+        return 1;
+    case OpCode::JMPL:
+        return 1;
+    case OpCode::JMPLE:
+        return 1;
+    case OpCode::JMPG:
+        return 1;
+    case OpCode::JMPGE:
+        return 1;
+    case OpCode::CALL:
+        return 1;
+    case OpCode::RET:
+        return 0;
+    case OpCode::HLT:
+        return 0;
+    case OpCode::UNKNOWN:
+        return 0;
+    default:
+        return 0;
+    }
+
+    return 0;
 }
 
 std::ostream &operator<<(std::ostream &os, const OperandType &operandType)
@@ -252,7 +345,7 @@ std::ostream &operator<<(std::ostream &os, const Instruction &instruction)
         os << " <INVALID_OP1>";
     }
 
-    if(instruction.opCode_ == OpCode::JMP || instruction.opCode_ == OpCode::PUSH || instruction.opCode_ == OpCode::POP)
+    if (instruction.opCode_ == OpCode::JMP || instruction.opCode_ == OpCode::JMPZ || instruction.opCode_ == OpCode::JMPNZ || instruction.opCode_ == OpCode::JMPL || instruction.opCode_ == OpCode::JMPLE || instruction.opCode_ == OpCode::JMPG || instruction.opCode_ == OpCode::JMPGE || instruction.opCode_ == OpCode::PUSH || instruction.opCode_ == OpCode::POP)
     {
         return os;
     }
