@@ -210,6 +210,8 @@ void VirtualMachine::execute()
         printFlags();
         std::cout << "------------------------" << std::endl;
     }
+
+    isRunning_ = false;
 }
 
 void VirtualMachine::clear()
