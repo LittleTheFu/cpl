@@ -446,7 +446,9 @@ void VirtualMachine::executeJMP(const Instruction &instruction)
 {
     Operand operand = instruction.getOperandFirst();
     int value = getOperandValue(operand);
-    programCounter_ = value;
+
+    //Adjust programCounter_ to compensate for the loop's automatic increment
+    programCounter_ = value - 1;
 }
 
 void VirtualMachine::executeJMPZ(const Instruction &instruction)
@@ -506,7 +508,9 @@ void VirtualMachine::executeCALL(const Instruction &instruction)
 
         Operand operand = instruction.getOperandFirst();
         int value = getOperandValue(operand);
-        programCounter_ = value;
+
+        //Adjust programCounter_ to compensate for the loop's automatic increment
+        programCounter_ = value - 1;
     }
     else
     {
