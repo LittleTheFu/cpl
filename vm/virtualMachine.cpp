@@ -194,7 +194,7 @@ void VirtualMachine::execute()
     for (programCounter_ = 0; programCounter_ < instructions_.size(); programCounter_++)
     {
         executeInstruction(instructions_[programCounter_]);
-        
+
         std::cout << "PC: " << programCounter_ << " | " << instructions_[programCounter_] << std::endl;
         printStack();
         printRegister();
@@ -222,6 +222,41 @@ void VirtualMachine::clear()
     stackPointer_ = stackBaseAddress_;
 
     programCounter_ = 0;
+}
+
+void VirtualMachine::setRegister(size_t index, int value)
+{
+    register_.at(index) = value;
+}
+
+int VirtualMachine::getRegister(size_t index) const
+{
+    return register_.at(index);
+}
+
+void VirtualMachine::setMemory(size_t index, int value)
+{
+    memory_.at(index) = value;
+}
+
+int VirtualMachine::getMemory(size_t index) const
+{
+    return memory_.at(index);
+}
+
+bool VirtualMachine::getZeroFlag() const
+{
+    return zeroFlag_;
+}
+
+bool VirtualMachine::getSignFlag() const
+{
+    return signFlag_;
+}
+
+void VirtualMachine::setSourceCode(const std::string &sourceCode)
+{
+    sourceCode_ = sourceCode;
 }
 
 void VirtualMachine::executeInstruction(const Instruction &instruction)

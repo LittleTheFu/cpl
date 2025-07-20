@@ -10,7 +10,7 @@ protected:
     void SetUp() override
     {
         vm = new VirtualMachine();
-        vm->sourceCode_ = "";
+        vm->setSourceCode("");
     }
 
     void TearDown() override
@@ -21,53 +21,40 @@ protected:
 
     void RunCode(const std::string &code)
     {
-        vm->sourceCode_ = code;
+        vm->setSourceCode(code);
         vm->loadProgram();
         vm->execute();
     }
 
     void SetRegister(size_t reg_index, int value)
     {
-        if (reg_index < vm->register_.size())
-        {
-            vm->register_[reg_index] = value;
-        }
+        vm->setRegister(reg_index, value);
     }
 
     int GetRegister(size_t reg_index)
     {
-        if (reg_index < vm->register_.size())
-        {
-            return vm->register_[reg_index];
-        }
-        return -1;
+        return vm->getRegister(reg_index);
     }
 
     void SetMemory(size_t addr, int value)
     {
-        if (addr < vm->memory_.size())
-        {
-            vm->memory_[addr] = value;
-        }
+        vm->setMemory(addr, value);
     }
 
     int GetMemory(size_t addr)
     {
-        if (addr < vm->memory_.size())
-        {
-            return vm->memory_[addr];
-        }
-        return -1;
+        return vm->getMemory(addr);
     }
 
     bool GetZeroFlag() const
     {
-        return vm->zeroFlag_;
+        return vm->getZeroFlag();
+
     }
 
     bool GetSignFlag() const
     {
-        return vm->signFlag_;
+        return vm->getSignFlag();
     }
 
     VirtualMachine *vm;
@@ -407,14 +394,14 @@ TEST_F(VirtualMachineTest, MemoryAccess)
 TEST_F(VirtualMachineTest, Label_InvalidName_R)
 {
     std::string invalid_code = "R_invalid_label:\nMOV R0 0\n";
-    vm->sourceCode_ = invalid_code;
+    vm->setSourceCode(invalid_code);
     EXPECT_THROW(vm->loadProgram(), std::runtime_error);
 }
 
 TEST_F(VirtualMachineTest, Label_InvalidName_Memory)
 {
     std::string invalid_code = "[invalid_label]:\nMOV R0 0\n";
-    vm->sourceCode_ = invalid_code;
+    vm->setSourceCode(invalid_code);
     EXPECT_THROW(vm->loadProgram(), std::runtime_error);
 }
 

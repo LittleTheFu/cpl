@@ -17,6 +17,17 @@ public:
 
     void clear();
 
+    void setRegister(size_t index, int value);
+    int getRegister(size_t index) const;
+
+    void setMemory(size_t index, int value);
+    int getMemory(size_t index) const;
+
+    bool getZeroFlag() const;
+    bool getSignFlag() const;
+
+    void setSourceCode(const std::string &sourceCode);
+
 private:
     void executeInstruction(const Instruction &instruction);
 
@@ -54,8 +65,7 @@ public:
     void printFlags() const;
     void printMemory(size_t start = 0, size_t end = 6) const;
 
-// I think it's OK even if they are public
-public:
+private:
     std::string sourceCode_;
     std::map<std::string, size_t> labelMap_;
 
