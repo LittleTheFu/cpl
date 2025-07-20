@@ -53,7 +53,7 @@ struct Operand
     OperandType type;
     int value;
 };
-std::ostream & operator<<(std::ostream & os, const Operand & operand);
+std::ostream &operator<<(std::ostream &os, const Operand &operand);
 
 class Instruction
 {
