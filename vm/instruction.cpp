@@ -331,7 +331,7 @@ std::ostream &operator<<(std::ostream &os, const Instruction &instruction)
 {
     os << instruction.opCode_;
 
-    if(instruction.opCode_ == OpCode::NOP)
+    if( getOpCodeParameterCount(instruction.opCode_) == 0 )
     {
         return os;
     }
@@ -345,7 +345,7 @@ std::ostream &operator<<(std::ostream &os, const Instruction &instruction)
         os << " <INVALID_OP1>";
     }
 
-    if (instruction.opCode_ == OpCode::JMP || instruction.opCode_ == OpCode::JMPZ || instruction.opCode_ == OpCode::JMPNZ || instruction.opCode_ == OpCode::JMPL || instruction.opCode_ == OpCode::JMPLE || instruction.opCode_ == OpCode::JMPG || instruction.opCode_ == OpCode::JMPGE || instruction.opCode_ == OpCode::PUSH || instruction.opCode_ == OpCode::POP)
+    if( getOpCodeParameterCount(instruction.opCode_) == 1 )
     {
         return os;
     }
