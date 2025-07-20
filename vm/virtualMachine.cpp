@@ -1,4 +1,4 @@
-#include "virtualMachine.h"
+﻿#include "virtualMachine.h"
 #include "instruction.h"
 #include <sstream>
 
@@ -19,6 +19,8 @@ VirtualMachine::VirtualMachine()
     zeroFlag_ = false;
     signFlag_ = false;
 
+    isRunning_ = false;
+
     sourceCode_ = "MOV R0 0\n"  // R0 = 0 (用于循环累加)
                   "MOV R1 10\n" // R1 = 10 (循环次数，从10递减到0)
                   "MOV R2 2\n"  // R2 = 2 (循环每次递增值)
@@ -33,6 +35,7 @@ VirtualMachine::VirtualMachine()
                   // --- Part 1: Basic Arithmetic and Flags Update ---
                   "ADD R0 R2\n" // R0 = R0 + R2 (0 + 2 = 2). ZF=F, SF=F
                   "SUB R1 R2\n" // R1 = R1 - R2 (10 - 2 = 8). ZF=F, SF=F
+                  "HLT\n"
                   "MUL R0 R2\n" // R0 = R0 * R2 (2 * 2 = 4). ZF=F, SF=F
                   "DIV R0 2\n"  // R0 = R0 / 2 (4 / 2 = 2). ZF=F, SF=F
 
@@ -191,8 +194,13 @@ void VirtualMachine::loadProgram()
 
 void VirtualMachine::execute()
 {
+    isRunning_ = true;
+
     for (programCounter_ = 0; programCounter_ < instructions_.size(); programCounter_++)
     {
+        if(!isRunning_)
+            break;
+
         executeInstruction(instructions_[programCounter_]);
 
         std::cout << "PC: " << programCounter_ << " | " << instructions_[programCounter_] << std::endl;
@@ -310,6 +318,9 @@ void VirtualMachine::executeInstruction(const Instruction &instruction)
         break;
     case OpCode::JMPLE:
         executeJMPLE(instruction);
+        break;
+    case OpCode::HLT:
+        executeHLT(instruction);
         break;
     default:
         break;
@@ -476,6 +487,11 @@ void VirtualMachine::executeJMPGE(const Instruction &instruction)
     {
         executeJMP(instruction);
     }
+}
+
+void VirtualMachine::executeHLT(const Instruction &instruction)
+{
+    isRunning_ = false;
 }
 
 void VirtualMachine::executePUSH(const Instruction &instruction)

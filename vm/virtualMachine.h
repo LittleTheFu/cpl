@@ -51,6 +51,8 @@ private:
     void executeJMPG(const Instruction &instruction);
     void executeJMPGE(const Instruction &instruction);
 
+    void executeHLT(const Instruction &instruction);
+
     int getOperandValue(const Operand &operand);
     void setOperandValue(Operand &operand, int value);
 
@@ -84,6 +86,8 @@ private:
 
     bool zeroFlag_;
     bool signFlag_;
+
+    bool isRunning_;
 };
 
 #endif // _VIRTUAL_MACHINE_H_
