@@ -194,7 +194,9 @@ void VirtualMachine::execute()
     for (programCounter_ = 0; programCounter_ < instructions_.size(); programCounter_++)
     {
         executeInstruction(instructions_[programCounter_]);
+        
         std::cout << "PC: " << programCounter_ << " | " << instructions_[programCounter_] << std::endl;
+        printStack();
         printRegister();
         printMemory();
         printFlags();
