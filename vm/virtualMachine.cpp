@@ -595,7 +595,7 @@ void VirtualMachine::buildLabelMap()
                 throw std::runtime_error("Error label duplicate");
             }
 
-            labelMap_.at(labelName) = lineNumber;
+            labelMap_[labelName] = lineNumber;
         }
 
         lineNumber++;
