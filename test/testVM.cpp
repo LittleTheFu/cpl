@@ -370,25 +370,20 @@ TEST_F(VirtualMachineTest, JMPGE)
 TEST_F(VirtualMachineTest, CALL_RET_SimpleSubroutine)
 {
     std::string test_code =
-        // 主程序开始
-        "MOV R0 100\n"       // 初始化 R0
-        "MOV R1 0\n"         // R1 用作子程序是否被执行的标志
-        "CALL MySubroutine\n" // 调用子程序
-        "ADD R0 10\n"        // 子程序返回后，应该执行这条指令
-        "HLT\n"              // 停止虚拟机
+        "MOV R0 100\n"
+        "MOV R1 0\n"
+        "CALL MySubroutine\n"
+        "ADD R0 10\n"
+        "HLT\n" 
 
-        // --- 子程序定义 ---
         "MySubroutine:\n"
-        "ADD R0 50\n"        // 子程序内部修改 R0
-        "MOV R1 1\n"         // 设置 R1 标志，表示子程序被执行了
-        "RET\n";             // 从子程序返回
+        "ADD R0 50\n" 
+        "MOV R1 1\n"  
+        "RET\n"; 
 
     RunCode(test_code);
 
-    // 验证 R0 的最终值：初始值 100 + 子程序中加的 50 + 返回后主程序加的 10 = 160
     EXPECT_EQ(GetRegister(0), 160) << "R0 should be 160 after subroutine call and return.";
-
-    // 验证 R1 是否被子程序修改，表明子程序确实被执行了
     EXPECT_EQ(GetRegister(1), 1) << "R1 should be 1, indicating MySubroutine was executed.";
 }
 
