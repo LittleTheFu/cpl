@@ -321,6 +321,12 @@ void VirtualMachine::executeInstruction(const Instruction &instruction)
     case OpCode::JMPLE:
         executeJMPLE(instruction);
         break;
+    case OpCode::CALL:
+        executeCALL(instruction);
+        break;
+    case OpCode::RET:
+        executeRET(instruction);
+        break;
     case OpCode::HLT:
         executeHLT(instruction);
         break;
@@ -488,6 +494,36 @@ void VirtualMachine::executeJMPGE(const Instruction &instruction)
     if (!signFlag_)
     {
         executeJMP(instruction);
+    }
+}
+
+void VirtualMachine::executeCALL(const Instruction &instruction)
+{
+    if (stackPointer_ > stackLimitAddress_)
+    {
+        memory_.at(stackPointer_) = programCounter_;
+        stackPointer_--;
+
+        Operand operand = instruction.getOperandFirst();
+        int value = getOperandValue(operand);
+        programCounter_ = value;
+    }
+    else
+    {
+        throw std::runtime_error("Error stack overflow");
+    }
+}
+
+void VirtualMachine::executeRET(const Instruction &instruction)
+{
+    if (stackPointer_ < stackBaseAddress_)
+    {
+        stackPointer_++;
+        programCounter_ = memory_.at(stackPointer_);
+    }
+    else
+    {
+        throw std::runtime_error("Error stack underflow");
     }
 }
 

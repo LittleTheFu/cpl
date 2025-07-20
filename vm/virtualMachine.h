@@ -51,6 +51,9 @@ private:
     void executeJMPG(const Instruction &instruction);
     void executeJMPGE(const Instruction &instruction);
 
+    void executeCALL(const Instruction &instruction);
+    void executeRET(const Instruction &instruction);
+
     void executeHLT(const Instruction &instruction);
 
     int getOperandValue(const Operand &operand);
