@@ -13,6 +13,11 @@ RegExParser::RegExParser(const std::string &regExStr)
     index_ = 0;
 
     root_ = parseRegEx();
+
+    if (!isEnd())
+    {
+        throw std::runtime_error("invalid regex");
+    }
 }
 
 std::shared_ptr<RegExNode> RegExParser::parseRegEx()
