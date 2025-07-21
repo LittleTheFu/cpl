@@ -4,6 +4,8 @@
 #include "regExKleeneStarNode.h"
 #include "regExConcatenationNode.h"
 #include "regExAlternationNode.h"
+#include "regExPlusNode.h"
+#include "regExOptionalNode.h"
 
 RegExParser::RegExParser(const std::string &regExStr)
 {
@@ -84,10 +86,20 @@ std::shared_ptr<RegExNode> RegExParser::parseFactor()
     auto node = parseAtom();
 
     char c = peekChar();
-    if (c == '*' || c == '+' || c == '?')
+    if (c == '*')
     {
         consumeChar();
         node = std::make_shared<regExKleeneStarNode>(node);
+    }
+    else if(c == '+')
+    {
+        consumeChar();
+        node = std::make_shared<regExPlusNode>(node);
+    }
+    else if(c == '?')
+    {
+        consumeChar();
+        node = std::make_shared<regExOptionalNode>(node);
     }
 
     return node;
