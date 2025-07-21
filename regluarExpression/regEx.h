@@ -16,6 +16,8 @@ public:
     explicit RegEx(std::shared_ptr<RegExNode> root);
     ~RegEx();
 
+    bool match(const std::string& str);
+
 private:
     void buildDFA();
     std::set<std::shared_ptr<NFAState>, CompareNfaStateSharedPtr> epsilonClosure(const std::set<std::shared_ptr<NFAState>, CompareNfaStateSharedPtr>& states);
@@ -27,8 +29,8 @@ private:
     std::shared_ptr<NfaStateFragment> nfaStateFragment_;
     std::map<std::set<std::shared_ptr<NFAState>, CompareNfaStateSharedPtr>, std::shared_ptr<DFAState>> dfaStateMap_;
 
-    std::shared_ptr<DFAState> startState_;
-    std::shared_ptr<DFAState> endState_;
+    std::shared_ptr<DFAState> startDFAState_;
+    std::shared_ptr<DFAState> endDFAState_;
 };
 
 #endif // _REGEX_H_

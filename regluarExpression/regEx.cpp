@@ -12,10 +12,16 @@ RegEx::RegEx(std::shared_ptr<RegExNode> root)
     root_ = root;
 
     nfaStateFragment_ = root_->buildNfaStateFragment();
+    buildDFA();
 }
 
 RegEx::~RegEx()
 {
+}
+
+bool RegEx::match(const std::string &str)
+{
+
 }
 
 void RegEx::buildDFA()
@@ -26,7 +32,7 @@ void RegEx::buildDFA()
     queue.push(startStates);
 
     dfaStateMap_[startStates] = std::make_shared<DFAState>(isContainEndState(startStates));
-    startState_ = dfaStateMap_[startStates];
+    startDFAState_ = dfaStateMap_[startStates];
 
     while(!queue.empty())
     {
