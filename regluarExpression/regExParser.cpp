@@ -1,4 +1,5 @@
 #include "regExParser.h"
+#include <stdexcept>
 
 RegExParser::RegExParser(const std::string &regExStr)
 {
@@ -8,61 +9,151 @@ RegExParser::RegExParser(const std::string &regExStr)
 
 void RegExParser::parseRegEx()
 {
+    if (isEnd())
+    {
+        throw std::runtime_error("invalid regex");
+    }
+
     parseTerm();
 
-    std::pair<bool, char> c = nextChar();
-
-    if(c.first && c.second == '|')
+    while (true)
     {
-        parseChar();
+        char c = peekChar();
+
+        if (c == '|')
+        {
+            consumeChar();
+
+            if(isEnd())
+            {
+                throw std::runtime_error("invalid regex");
+            }
+
+            parseTerm();
+        }
+        else
+        {
+            break;
+        }
     }
 }
 
 void RegExParser::parseTerm()
 {
+    if (isEnd())
+    {
+        throw std::runtime_error("invalid regex");
+    }
+
     parseFactor();
 
-    std::pair<bool, char> c = nextChar();
-
-    if(c.first && isInFactorFirstSet(c.second))
+    while (true)
     {
-        parseFactor();
+        char c = peekChar();
+
+        if (isInFactorFirstSet(c))
+        {
+            parseFactor();
+        }
+        else if(isInFactorFollowSet(c))
+        {
+            break;
+        }
+        else
+        {
+            throw std::runtime_error("invalid regex");
+        }
     }
 }
 
 void RegExParser::parseFactor()
 {
+    if (isEnd())
+    {
+        throw std::runtime_error("invalid regex");
+    }
+
     parseAtom();
 
-    std::pair<bool, char> c = nextChar();
+    char c = peekChar();
 
-    if(c.first && (c.second == '*' || c.second == '+' || c.second == '?'))
+    if (c == '*' || c == '+' || c == '?')
     {
-        //TODO : 
+        // TODO :
+        consumeChar();
     }
 }
 
 void RegExParser::parseAtom()
 {
-    parseChar();
+    if (isEnd())
+    {
+        throw std::runtime_error("invalid regex");
+    }
+
+    char c = peekChar();
+
+    if (c == '(')
+    {
+        consumeChar();
+        parseRegEx();
+
+        if (isEnd())
+        {
+            throw std::runtime_error("invalid regex");
+        }
+
+        char cc = peekChar();
+        if (cc != ')')
+        {
+            throw std::runtime_error("invalid regex");
+        }
+
+        consumeChar();
+    }
+    else
+    {
+        parseChar();
+    }
 }
 
 void RegExParser::parseChar()
 {
-    if (index_ >= regExStr_.size())
+    if (isEnd())
     {
         return;
     }
+
+    char c = peekChar();
+
+    if(isLetter(c) || isDigit(c) || isUnderscore(c))
+    {
+        consumeChar();
+    }
+    else
+    {
+        throw std::runtime_error("invalid regex");
+    }
 }
 
-std::pair<bool, char> RegExParser::nextChar()
+char RegExParser::peekChar()
 {
-    if (index_ >= regExStr_.size())
+    if (isEnd())
     {
-        return {false, '\0'};
+        return '\0';
     }
-    
-    return {true, regExStr_.at(index_)};
+
+    return regExStr_.at(index_);
+}
+
+void RegExParser::consumeChar()
+{
+    index_++;
+}
+
+bool RegExParser::isEnd()
+{
+    return index_ >= regExStr_.size();
 }
 
 bool RegExParser::isLetter(char c)
@@ -83,4 +174,9 @@ bool RegExParser::isUnderscore(char c)
 bool RegExParser::isInFactorFirstSet(char c)
 {
     return isLetter(c) || isDigit(c) || isUnderscore(c) || (c == '(');
+}
+
+bool RegExParser::isInFactorFollowSet(char c)
+{
+    return c == ')' || c == '|' || c == '\0';
 }

@@ -22,19 +22,21 @@ private:
     void parseAtom();
     void parseChar();
 
-    std::pair<bool, char> nextChar();
+    //should be a peek function
+    char peekChar();
+    void consumeChar();
+    bool isEnd();
 
     bool isLetter(char c);
     bool isDigit(char c);
     bool isUnderscore(char c);
 
     bool isInFactorFirstSet(char c);
+    bool isInFactorFollowSet(char c);
 
 private:
     std::string regExStr_;
     std::size_t index_;
-
-}
-
+};
 
 #endif // _REG_EX_PARSER_H_
