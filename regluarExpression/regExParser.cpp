@@ -11,6 +11,8 @@ RegExParser::RegExParser(const std::string &regExStr)
 {
     regExStr_ = regExStr;
     index_ = 0;
+
+    root_ = parseRegEx();
 }
 
 std::shared_ptr<RegExNode> RegExParser::parseRegEx()
