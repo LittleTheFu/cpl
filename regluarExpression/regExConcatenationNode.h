@@ -5,11 +5,11 @@
 #include <memory>
 
 
-class regExConcatenationNode : public RegExNode
+class RegExConcatenationNode : public RegExNode
 {
 public:
-    explicit regExConcatenationNode(std::shared_ptr<RegExNode> left, std::shared_ptr<RegExNode> right);
-    virtual ~regExConcatenationNode();
+    explicit RegExConcatenationNode(std::shared_ptr<RegExNode> left, std::shared_ptr<RegExNode> right);
+    virtual ~RegExConcatenationNode();
 
     std::shared_ptr<NfaStateFragment> buildNfaStateFragment() override;
 

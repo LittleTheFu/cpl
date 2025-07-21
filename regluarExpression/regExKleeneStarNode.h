@@ -4,11 +4,11 @@
 #include "regExNode.h"
 #include <memory>
 
-class regExKleeneStarNode : public RegExNode
+class RegExKleeneStarNode : public RegExNode
 {
 public:
-    explicit regExKleeneStarNode(std::shared_ptr<RegExNode> node);
-    virtual ~regExKleeneStarNode();
+    explicit RegExKleeneStarNode(std::shared_ptr<RegExNode> node);
+    virtual ~RegExKleeneStarNode();
 
     std::shared_ptr<NfaStateFragment> buildNfaStateFragment() override;
 

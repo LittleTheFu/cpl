@@ -1,15 +1,15 @@
 #include "regExPlusNode.h"
 
-regExPlusNode::regExPlusNode(std::shared_ptr<RegExNode> node)
+RegExPlusNode::RegExPlusNode(std::shared_ptr<RegExNode> node)
 {
     node_ = node;
 }
 
-regExPlusNode::~regExPlusNode()
+RegExPlusNode::~RegExPlusNode()
 {
 }
 
-std::shared_ptr<NfaStateFragment> regExPlusNode::buildNfaStateFragment()
+std::shared_ptr<NfaStateFragment> RegExPlusNode::buildNfaStateFragment()
 {
     auto fragment = node_->buildNfaStateFragment();
     auto startState = std::make_shared<NFAState>();

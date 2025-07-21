@@ -1,15 +1,15 @@
 #include "regExKleeneStarNode.h"
 
-regExKleeneStarNode::regExKleeneStarNode(std::shared_ptr<RegExNode> node)
+RegExKleeneStarNode::RegExKleeneStarNode(std::shared_ptr<RegExNode> node)
 {
     node_ = node;
 }
 
-regExKleeneStarNode::~regExKleeneStarNode()
+RegExKleeneStarNode::~RegExKleeneStarNode()
 {
 }
 
-std::shared_ptr<NfaStateFragment> regExKleeneStarNode::buildNfaStateFragment()
+std::shared_ptr<NfaStateFragment> RegExKleeneStarNode::buildNfaStateFragment()
 {
     auto fragment = node_->buildNfaStateFragment();
     auto startState = std::make_shared<NFAState>();

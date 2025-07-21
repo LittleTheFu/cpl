@@ -1,16 +1,16 @@
 #include "regExConcatenationNode.h"
 
-regExConcatenationNode::regExConcatenationNode(std::shared_ptr<RegExNode> left, std::shared_ptr<RegExNode> right)
+RegExConcatenationNode::RegExConcatenationNode(std::shared_ptr<RegExNode> left, std::shared_ptr<RegExNode> right)
 {
     left_ = left;
     right_ = right;
 }
 
-regExConcatenationNode::~regExConcatenationNode()
+RegExConcatenationNode::~RegExConcatenationNode()
 {
 }
 
-std::shared_ptr<NfaStateFragment> regExConcatenationNode::buildNfaStateFragment()
+std::shared_ptr<NfaStateFragment> RegExConcatenationNode::buildNfaStateFragment()
 {
     auto leftFragment = left_->buildNfaStateFragment();
     auto rightFragment = right_->buildNfaStateFragment();

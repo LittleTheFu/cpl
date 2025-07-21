@@ -1,16 +1,16 @@
 #include "regExAlternationNode.h"
 
-regExAlternationNode::regExAlternationNode(std::shared_ptr<RegExNode> left, std::shared_ptr<RegExNode> right)
+RegExAlternationNode::RegExAlternationNode(std::shared_ptr<RegExNode> left, std::shared_ptr<RegExNode> right)
 {
     left_ = left;
     right_ = right;
 }
 
-regExAlternationNode::~regExAlternationNode()
+RegExAlternationNode::~RegExAlternationNode()
 {
 }
 
-std::shared_ptr<NfaStateFragment> regExAlternationNode::buildNfaStateFragment()
+std::shared_ptr<NfaStateFragment> RegExAlternationNode::buildNfaStateFragment()
 {
     auto leftFragment = left_->buildNfaStateFragment();
     auto rightFragment = right_->buildNfaStateFragment();

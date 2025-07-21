@@ -35,7 +35,7 @@ std::shared_ptr<RegExNode> RegExParser::parseRegEx()
                 throw std::runtime_error("invalid regex");
             }
 
-            node = std::make_shared<regExAlternationNode>(node, parseTerm());
+            node = std::make_shared<RegExAlternationNode>(node, parseTerm());
         }
         else
         {
@@ -61,7 +61,7 @@ std::shared_ptr<RegExNode> RegExParser::parseTerm()
 
         if (isInFactorFirstSet(c))
         {
-            node = std::make_shared<regExConcatenationNode>(node, parseFactor());
+            node = std::make_shared<RegExConcatenationNode>(node, parseFactor());
         }
         else if(isInFactorFollowSet(c))
         {
@@ -89,17 +89,17 @@ std::shared_ptr<RegExNode> RegExParser::parseFactor()
     if (c == '*')
     {
         consumeChar();
-        node = std::make_shared<regExKleeneStarNode>(node);
+        node = std::make_shared<RegExKleeneStarNode>(node);
     }
     else if(c == '+')
     {
         consumeChar();
-        node = std::make_shared<regExPlusNode>(node);
+        node = std::make_shared<RegExPlusNode>(node);
     }
     else if(c == '?')
     {
         consumeChar();
-        node = std::make_shared<regExOptionalNode>(node);
+        node = std::make_shared<RegExOptionalNode>(node);
     }
 
     return node;

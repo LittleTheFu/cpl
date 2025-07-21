@@ -4,11 +4,11 @@
 #include "regExNode.h"
 #include <memory>
 
-class regExOptionalNode : public RegExNode
+class RegExOptionalNode : public RegExNode
 {
 public:
-    explicit regExOptionalNode(std::shared_ptr<RegExNode> node);
-    virtual ~regExOptionalNode();
+    explicit RegExOptionalNode(std::shared_ptr<RegExNode> node);
+    virtual ~RegExOptionalNode();
 
     std::shared_ptr<NfaStateFragment> buildNfaStateFragment() override;
 

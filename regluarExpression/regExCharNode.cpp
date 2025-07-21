@@ -9,6 +9,11 @@ RegExCharNode::~RegExCharNode()
 {
 }
 
+char RegExCharNode::getCharactar() const
+{
+    return charactar_;
+}
+
 std::shared_ptr<NfaStateFragment> RegExCharNode::buildNfaStateFragment()
 {
     auto startState = std::make_shared<NFAState>();
