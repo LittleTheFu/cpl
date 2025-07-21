@@ -2,6 +2,7 @@
 #define _REG_EX_PARSER_H_
 
 #include <string>
+#include <memory>
 
 // regex       ::= term { '|' term }
 // term        ::= factor { factor }
@@ -9,18 +10,22 @@
 // atom        ::= char | '(' regex ')'
 // char        ::= letter | digit | '_' | ...
 
+class RegExNode;
+
 class RegExParser
 {
 public:
     RegExParser(const std::string &regExStr);
     ~RegExParser() = default;
 
+    std::shared_ptr<RegExNode> getRoot() { return root_; }
+
 private:
-    void parseRegEx();
-    void parseTerm();
-    void parseFactor();
-    void parseAtom();
-    void parseChar();
+    std::shared_ptr<RegExNode> parseRegEx();
+    std::shared_ptr<RegExNode> parseTerm();
+    std::shared_ptr<RegExNode> parseFactor();
+    std::shared_ptr<RegExNode> parseAtom();
+    std::shared_ptr<RegExNode> parseChar();
 
     //should be a peek function
     char peekChar();
@@ -37,6 +42,8 @@ private:
 private:
     std::string regExStr_;
     std::size_t index_;
+
+    std::shared_ptr<RegExNode> root_;
 };
 
 #endif // _REG_EX_PARSER_H_

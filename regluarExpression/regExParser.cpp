@@ -1,5 +1,9 @@
 #include "regExParser.h"
 #include <stdexcept>
+#include "regExCharNode.h"
+#include "regExKleeneStarNode.h"
+#include "regExConcatenationNode.h"
+#include "regExAlternationNode.h"
 
 RegExParser::RegExParser(const std::string &regExStr)
 {
@@ -7,14 +11,14 @@ RegExParser::RegExParser(const std::string &regExStr)
     index_ = 0;
 }
 
-void RegExParser::parseRegEx()
+std::shared_ptr<RegExNode> RegExParser::parseRegEx()
 {
     if (isEnd())
     {
         throw std::runtime_error("invalid regex");
     }
 
-    parseTerm();
+    auto node = parseTerm();
 
     while (true)
     {
@@ -29,23 +33,25 @@ void RegExParser::parseRegEx()
                 throw std::runtime_error("invalid regex");
             }
 
-            parseTerm();
+            node = std::make_shared<regExAlternationNode>(node, parseTerm());
         }
         else
         {
             break;
         }
     }
+
+    return node;
 }
 
-void RegExParser::parseTerm()
+std::shared_ptr<RegExNode> RegExParser::parseTerm()
 {
     if (isEnd())
     {
         throw std::runtime_error("invalid regex");
     }
 
-    parseFactor();
+    auto node = parseFactor();
 
     while (true)
     {
@@ -53,7 +59,7 @@ void RegExParser::parseTerm()
 
         if (isInFactorFirstSet(c))
         {
-            parseFactor();
+            node = std::make_shared<regExConcatenationNode>(node, parseFactor());
         }
         else if(isInFactorFollowSet(c))
         {
@@ -64,27 +70,30 @@ void RegExParser::parseTerm()
             throw std::runtime_error("invalid regex");
         }
     }
+
+    return node;
 }
 
-void RegExParser::parseFactor()
+std::shared_ptr<RegExNode> RegExParser::parseFactor()
 {
     if (isEnd())
     {
         throw std::runtime_error("invalid regex");
     }
 
-    parseAtom();
+    auto node = parseAtom();
 
     char c = peekChar();
-
     if (c == '*' || c == '+' || c == '?')
     {
-        // TODO :
         consumeChar();
+        node = std::make_shared<regExKleeneStarNode>(node);
     }
+
+    return node;
 }
 
-void RegExParser::parseAtom()
+std::shared_ptr<RegExNode> RegExParser::parseAtom()
 {
     if (isEnd())
     {
@@ -96,7 +105,7 @@ void RegExParser::parseAtom()
     if (c == '(')
     {
         consumeChar();
-        parseRegEx();
+        auto node = parseRegEx();
 
         if (isEnd())
         {
@@ -110,18 +119,21 @@ void RegExParser::parseAtom()
         }
 
         consumeChar();
+        return node;
     }
     else
     {
-        parseChar();
+        return parseChar();
     }
+
+    return nullptr;
 }
 
-void RegExParser::parseChar()
+std::shared_ptr<RegExNode> RegExParser::parseChar()
 {
     if (isEnd())
     {
-        return;
+        throw std::runtime_error("invalid regex");
     }
 
     char c = peekChar();
@@ -129,11 +141,14 @@ void RegExParser::parseChar()
     if(isLetter(c) || isDigit(c) || isUnderscore(c))
     {
         consumeChar();
+        return std::make_shared<RegExCharNode>(c);
     }
     else
     {
         throw std::runtime_error("invalid regex");
     }
+
+    return nullptr;
 }
 
 char RegExParser::peekChar()
