@@ -63,17 +63,17 @@ std::shared_ptr<RegExNode> Char(char c) {
 
 // 构建连接节点
 std::shared_ptr<RegExNode> Concat(std::shared_ptr<RegExNode> left, std::shared_ptr<RegExNode> right) {
-    return std::make_shared<regExConcatenationNode>(left, right);
+    return std::make_shared<RegExConcatenationNode>(left, right);
 }
 
 // 构建或操作节点
 std::shared_ptr<RegExNode> Alternation(std::shared_ptr<RegExNode> left, std::shared_ptr<RegExNode> right) {
-    return std::make_shared<regExAlternationNode>(left, right);
+    return std::make_shared<RegExAlternationNode>(left, right);
 }
 
 // 构建闭包节点
 std::shared_ptr<RegExNode> KleeneStar(std::shared_ptr<RegExNode> node) {
-    return std::make_shared<regExKleeneStarNode>(node);
+    return std::make_shared<RegExKleeneStarNode>(node);
 }
 
 // --- 单元测试用例 ---
