@@ -24,6 +24,12 @@ private:
 
     std::pair<bool, char> nextChar();
 
+    bool isLetter(char c);
+    bool isDigit(char c);
+    bool isUnderscore(char c);
+
+    bool isInFactorFirstSet(char c);
+
 private:
     std::string regExStr_;
     std::size_t index_;

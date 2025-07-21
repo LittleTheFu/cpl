@@ -8,7 +8,6 @@ RegExParser::RegExParser(const std::string &regExStr)
 
 void RegExParser::parseRegEx()
 {
-    // std::pair<bool, char> ch = nextChar();
     parseTerm();
 
     std::pair<bool, char> c = nextChar();
@@ -22,11 +21,25 @@ void RegExParser::parseRegEx()
 void RegExParser::parseTerm()
 {
     parseFactor();
+
+    std::pair<bool, char> c = nextChar();
+
+    if(c.first && isInFactorFirstSet(c.second))
+    {
+        parseFactor();
+    }
 }
 
 void RegExParser::parseFactor()
 {
     parseAtom();
+
+    std::pair<bool, char> c = nextChar();
+
+    if(c.first && (c.second == '*' || c.second == '+' || c.second == '?'))
+    {
+        //TODO : 
+    }
 }
 
 void RegExParser::parseAtom()
@@ -49,7 +62,25 @@ std::pair<bool, char> RegExParser::nextChar()
         return {false, '\0'};
     }
     
-    index_++;
+    return {true, regExStr_.at(index_)};
+}
 
-    return {true, regExStr_[index_ - 1]};
+bool RegExParser::isLetter(char c)
+{
+    return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z');
+}
+
+bool RegExParser::isDigit(char c)
+{
+    return c >= '0' && c <= '9';
+}
+
+bool RegExParser::isUnderscore(char c)
+{
+    return c == '_';
+}
+
+bool RegExParser::isInFactorFirstSet(char c)
+{
+    return isLetter(c) || isDigit(c) || isUnderscore(c) || (c == '(');
 }
