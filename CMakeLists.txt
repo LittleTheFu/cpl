@@ -9,6 +9,8 @@ set(PROJECT_SOURCES
     alphaBet.cpp
 
     regluarExpression/regEx.cpp
+    regluarExpression/regExParser.cpp
+    
     regluarExpression/regExNode.cpp
     regluarExpression/regExCharNode.cpp
     regluarExpression/regExAlternationNode.cpp
