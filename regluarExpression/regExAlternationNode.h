@@ -12,6 +12,9 @@ public:
 
     std::shared_ptr<NfaStateFragment> buildNfaStateFragment() override;
 
+    std::shared_ptr<RegExNode> getLeft() const { return left_; };
+    std::shared_ptr<RegExNode> getRight() const { return right_; };
+
 private:
     std::shared_ptr<RegExNode> left_;
     std::shared_ptr<RegExNode> right_;
