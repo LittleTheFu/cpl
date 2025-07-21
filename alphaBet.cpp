@@ -43,7 +43,7 @@ AlphaBet::AlphaBet()
 {
     for (int i = 32; i <= 126; ++i)
     {
-        charactors_.insert(static_cast<char>(i));
+        charactars_.insert(static_cast<char>(i));
     }
 }
 
@@ -53,7 +53,7 @@ AlphaBet &AlphaBet::instance()
     return instance;
 }
 
-const std::set<char> &AlphaBet::getCharactors() const
+const std::set<char> &AlphaBet::getcharactars() const
 {
-    return charactors_;
+    return charactars_;
 }

@@ -14,10 +14,10 @@ public:
 
     static AlphaBet& instance();
 
-    const std::set<char>& getCharactors() const;
+    const std::set<char>& getcharactars() const;
 
 private:
-    std::set<char> charactors_;
+    std::set<char> charactars_;
 };
 
 #endif
