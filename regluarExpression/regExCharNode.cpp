@@ -1,8 +1,8 @@
 #include "regExCharNode.h"
 
-RegExCharNode::RegExCharNode(char charactor)
+RegExCharNode::RegExCharNode(char charactar)
 {
-    charactor_ = charactor;
+    charactar_ = charactar;
 }
 
 RegExCharNode::~RegExCharNode()
@@ -14,7 +14,12 @@ std::shared_ptr<NfaStateFragment> RegExCharNode::buildNfaStateFragment()
     auto startState = std::make_shared<NFAState>();
     auto endState = std::make_shared<NFAState>();
 
-    startState->addTransition(charactor_, endState);
+    startState->addTransition(charactar_, endState);
 
-    return std::make_shared<NfaStateFragment>(startState, endState);
+    std::shared_ptr<NfaStateFragment> fragment = std::make_shared<NfaStateFragment>(startState, endState);
+    
+    fragment->addState(startState);
+    fragment->addState(endState);
+
+    return fragment;
 }

@@ -38,8 +38,13 @@ public:
     std::set<std::shared_ptr<NFAState>, CompareNfaStateSharedPtr> run(char input) const;
 
 private:
+    static int genId();
+
+private:
     std::unordered_map<char, std::set<std::weak_ptr<NFAState>, CompareWeakNfaStatePtr>> transitions_;
     std::set<std::weak_ptr<NFAState>, CompareWeakNfaStatePtr> epsilonTransitions_;
+
+    int id_;
 };
 
 #endif // _NFA_STATE_H_

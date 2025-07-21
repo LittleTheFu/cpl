@@ -3,6 +3,8 @@
 DFAState::DFAState(bool isEndState)
 {
     isEndState_ = isEndState;
+
+    id_ = genId();
 }
 
 void DFAState::addTransition(char input, std::shared_ptr<DFAState> nextState)
@@ -34,4 +36,11 @@ void DFAState::setEndState(bool isEndState)
 bool DFAState::isEndState() const
 {
     return isEndState_;
+}
+
+int DFAState::genId()
+{
+    static int id = 0;
+
+    return id++;
 }

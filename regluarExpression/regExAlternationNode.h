@@ -2,18 +2,19 @@
 #define _REGEX_ALTERNATION_NODE_H_
 
 #include "regExNode.h"
+#include <memory>
 
 class regExAlternationNode : public RegExNode
 {
 public:
-    explicit regExAlternationNode(RegExNode* left, RegExNode* right);
+    explicit regExAlternationNode(std::shared_ptr<RegExNode> left, std::shared_ptr<RegExNode> right);
     virtual ~regExAlternationNode();
 
     std::shared_ptr<NfaStateFragment> buildNfaStateFragment() override;
 
 private:
-    RegExNode* left_;
-    RegExNode* right_;
+    std::shared_ptr<RegExNode> left_;
+    std::shared_ptr<RegExNode> right_;
 };
 
 

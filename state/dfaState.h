@@ -18,8 +18,13 @@ public:
     bool isEndState() const;
 
 private:
+    static int genId();
+
+private:
     std::unordered_map<char, std::weak_ptr<DFAState>> transitions_;
     bool isEndState_;
+
+    int id_;
 };
 
 

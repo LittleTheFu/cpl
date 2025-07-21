@@ -2,7 +2,7 @@
 
 NFAState::NFAState()
 {
-
+    id_ = genId();
 }
 
 void NFAState::addTransition(char input, std::shared_ptr<NFAState> nextState)
@@ -38,4 +38,11 @@ std::set<std::shared_ptr<NFAState>, CompareNfaStateSharedPtr> NFAState::run(char
     }
 
     return result;
+}
+
+int NFAState::genId()
+{
+    static int id = 1000;
+
+    return id++;
 }

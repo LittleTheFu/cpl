@@ -21,7 +21,19 @@ RegEx::~RegEx()
 
 bool RegEx::match(const std::string &str)
 {
+    std::shared_ptr<DFAState> currentDFAState = startDFAState_;
+    
+    for(char character : str)
+    {
+        currentDFAState = currentDFAState->run(character);
 
+        if(!currentDFAState)
+        {
+            return false;
+        }
+    }
+
+    return currentDFAState->isEndState();
 }
 
 void RegEx::buildDFA()
@@ -41,12 +53,12 @@ void RegEx::buildDFA()
 
         std::shared_ptr<DFAState> currentDfaState = dfaStateMap_[currentStates];
 
-        for(const auto &charactor : AlphaBet::instance().getCharactors())
+        for(const auto &charactar : AlphaBet::instance().getcharactars())
         {
             std::set<std::shared_ptr<NFAState>, CompareNfaStateSharedPtr> nextAllStates;
             for(const auto &state : currentStates)
             {
-                std::set<std::shared_ptr<NFAState>, CompareNfaStateSharedPtr> nextStates = state->run(charactor);
+                std::set<std::shared_ptr<NFAState>, CompareNfaStateSharedPtr> nextStates = state->run(charactar);
                 nextAllStates.insert(nextStates.begin(), nextStates.end());
             }
 
@@ -63,7 +75,7 @@ void RegEx::buildDFA()
                 dfaStateMap_[nextAllStates] = std::make_shared<DFAState>(isContainEndState(nextAllStates));
             }
 
-            currentDfaState->addTransition(charactor, dfaStateMap_[nextAllStates]);
+            currentDfaState->addTransition(charactar, dfaStateMap_[nextAllStates]);
         }
     }
 }

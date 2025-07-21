@@ -7,13 +7,13 @@
 class RegExCharNode : public RegExNode
 {
 public:
-    explicit RegExCharNode(char charactor);
+    explicit RegExCharNode(char charactar);
     virtual ~RegExCharNode();
 
     std::shared_ptr<NfaStateFragment> buildNfaStateFragment() override;
 
 private:
-    char charactor_;
+    char charactar_;
 };
 
 

@@ -1,6 +1,6 @@
 #include "regExKleeneStarNode.h"
 
-regExKleeneStarNode::regExKleeneStarNode(RegExNode *node)
+regExKleeneStarNode::regExKleeneStarNode(std::shared_ptr<RegExNode> node)
 {
     node_ = node;
 }
@@ -21,5 +21,11 @@ std::shared_ptr<NfaStateFragment> regExKleeneStarNode::buildNfaStateFragment()
     fragment->getEndState()->addEpsilonTransition(endState);
     fragment->getEndState()->addEpsilonTransition(fragment->getStartState());
 
-    return std::make_shared<NfaStateFragment>(startState, endState);
+    std::shared_ptr<NfaStateFragment> kleeneFragment = std::make_shared<NfaStateFragment>(startState, endState);
+    kleeneFragment->addState(startState);
+    kleeneFragment->addState(endState);
+
+    kleeneFragment->merge(fragment);
+
+    return kleeneFragment;
 }

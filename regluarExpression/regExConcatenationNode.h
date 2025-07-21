@@ -2,18 +2,20 @@
 #define _REGEX_CONCATENATION_NODE_H_
 
 #include "regExNode.h"
+#include <memory>
+
 
 class regExConcatenationNode : public RegExNode
 {
 public:
-    explicit regExConcatenationNode(RegExNode* left, RegExNode* right);
+    explicit regExConcatenationNode(std::shared_ptr<RegExNode> left, std::shared_ptr<RegExNode> right);
     virtual ~regExConcatenationNode();
 
     std::shared_ptr<NfaStateFragment> buildNfaStateFragment() override;
 
 private:
-    RegExNode* left_;
-    RegExNode* right_;
+    std::shared_ptr<RegExNode> left_;
+    std::shared_ptr<RegExNode> right_;
 };
 
 #endif // _REGEX_CONCATENATION_NODE_H_

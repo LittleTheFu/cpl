@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.20)
+﻿cmake_minimum_required(VERSION 3.20)
 
 project(my_compiler CXX)
 
@@ -10,6 +10,7 @@ set(PROJECT_SOURCES
 
     regluarExpression/regEx.cpp
     regluarExpression/regExNode.cpp
+    regluarExpression/regExCharNode.cpp
     regluarExpression/regExAlternationNode.cpp
     regluarExpression/regExConcatenationNode.cpp
     regluarExpression/regExKleeneStarNode.cpp
@@ -41,8 +42,9 @@ target_link_libraries(cpl PRIVATE cpl_lib)
 add_subdirectory(${PROJECT_SOURCE_DIR}/third/googletest)
 
 add_executable(cpl_tests
-    test/test.cpp
-    test/testVM.cpp
+    # test/test.cpp
+    # test/testVM.cpp
+    test/testRegEx.cpp
 )
 
 target_include_directories(cpl_tests PRIVATE

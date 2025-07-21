@@ -1,6 +1,6 @@
 #include "regExConcatenationNode.h"
 
-regExConcatenationNode::regExConcatenationNode(RegExNode *left, RegExNode *right)
+regExConcatenationNode::regExConcatenationNode(std::shared_ptr<RegExNode> left, std::shared_ptr<RegExNode> right)
 {
     left_ = left;
     right_ = right;
@@ -16,5 +16,10 @@ std::shared_ptr<NfaStateFragment> regExConcatenationNode::buildNfaStateFragment(
     auto rightFragment = right_->buildNfaStateFragment();
 
     leftFragment->getEndState()->addEpsilonTransition(rightFragment->getStartState());
-    return std::make_shared<NfaStateFragment>(leftFragment->getStartState(), rightFragment->getEndState());
+
+    std::shared_ptr<NfaStateFragment> concatenationFragment = std::make_shared<NfaStateFragment>(leftFragment->getStartState(), rightFragment->getEndState());
+    concatenationFragment->merge(leftFragment);
+    concatenationFragment->merge(rightFragment);
+    
+    return concatenationFragment;
 }
