@@ -16,6 +16,8 @@ set(PROJECT_SOURCES
     regluarExpression/regExAlternationNode.cpp
     regluarExpression/regExConcatenationNode.cpp
     regluarExpression/regExKleeneStarNode.cpp
+    regluarExpression/regExPlusNode.cpp
+    regluarExpression/regExOptionalNode.cpp
 
     state/dfaState.cpp
     state/dfaStateMachine.cpp
