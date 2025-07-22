@@ -45,6 +45,10 @@ AlphaBet::AlphaBet()
     {
         charactars_.insert(static_cast<char>(i));
     }
+
+    charactars_.insert('\t'); // Tab
+    charactars_.insert('\n'); // Line Feed / Newline
+    charactars_.insert('\r'); // Carriage Return
 }
 
 AlphaBet &AlphaBet::instance()

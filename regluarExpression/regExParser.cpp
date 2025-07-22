@@ -157,7 +157,7 @@ std::shared_ptr<RegExNode> RegExParser::parseChar()
 
     char c = peekChar();
 
-    if(isLetter(c) || isDigit(c) || isUnderscore(c))
+    if(isLetter(c) || isDigit(c) || isUnderscore(c) || isBlank(c) || isTab(c) || isNewline(c) || isCarriageReturn(c))
     {
         consumeChar();
         return std::make_shared<RegExCharNode>(c);
@@ -203,6 +203,26 @@ bool RegExParser::isDigit(char c)
 bool RegExParser::isUnderscore(char c)
 {
     return c == '_';
+}
+
+bool RegExParser::isBlank(char c)
+{
+    return c == ' ';
+}
+
+bool RegExParser::isTab(char c)
+{
+    return c == '\t';
+}
+
+bool RegExParser::isNewline(char c)
+{
+    return c == '\n';
+}
+
+bool RegExParser::isCarriageReturn(char c)
+{
+    return c == '\r';
 }
 
 bool RegExParser::isInFactorFirstSet(char c)

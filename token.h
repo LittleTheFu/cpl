@@ -50,6 +50,14 @@ struct Token
         column = 0;
     }
 
+    Token(TokenType type, std::string lexeme)
+    {
+        this->type = type;
+        this->lexeme = lexeme;
+        this->line = 0;
+        this->column = 0;
+    }
+
     std::string toString()
     {
         return tokenTypeToString(type) + " " + lexeme + " " + std::to_string(line) + " " + std::to_string(column);

@@ -1,11 +1,16 @@
 #include "regEx.h"
 #include "alphaBet.h"
 #include <queue>
+#include "regExParser.h"
 
-// RegEx::RegEx(const std::string &regex)
-// {
-//     regex_ = regex;
-// }
+RegEx::RegEx(const std::string &regex)
+{
+    RegExParser regExParser(regex);
+    root_ = regExParser.getRoot();
+
+    nfaStateFragment_ = root_->buildNfaStateFragment();
+    buildDFA();
+}
 
 RegEx::RegEx(std::shared_ptr<RegExNode> root)
 {

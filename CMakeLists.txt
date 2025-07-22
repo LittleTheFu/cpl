@@ -7,6 +7,8 @@ set(CMAKE_CXX_STANDARD_REQUIRED TRUE)
 
 set(PROJECT_SOURCES
     alphaBet.cpp
+    lexer.cpp
+    token.cpp
 
     regluarExpression/regEx.cpp
     regluarExpression/regExParser.cpp

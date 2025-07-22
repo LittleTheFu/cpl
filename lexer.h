@@ -14,10 +14,8 @@ public:
     std::shared_ptr<Token> getNextToken();
 
 private:
-
-private:
     std::string input_;
-    std::size_t index_;
+    size_t currentPos_;
 };
 
 #endif // _LEXER_H_

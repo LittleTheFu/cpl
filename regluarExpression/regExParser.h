@@ -35,6 +35,11 @@ private:
     bool isLetter(char c);
     bool isDigit(char c);
     bool isUnderscore(char c);
+    bool isBlank(char c);
+    bool isTab(char c);
+    bool isNewline(char c);
+    bool isCarriageReturn(char c);
+
 
     bool isInFactorFirstSet(char c);
     bool isInFactorFollowSet(char c);
