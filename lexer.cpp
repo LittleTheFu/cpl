@@ -8,6 +8,13 @@ Lexer::Lexer(const std::string &input)
     regExWhite_ = std::make_unique<RegEx>("( |\t|\n|\r)+");
     regExNumber_ = std::make_unique<RegEx>("(0|1|2|3|4|5|6|7|8|9)+");
     regExIdentifier_ = std::make_unique<RegEx>("(a|b|c|d|e|f|g|h|i|j|k|l|m|n|o|p|q|r|s|t|u|v|w|x|y|z|A|B|C|D|E|F|G|H|I|J|K|L|M|N|O|P|Q|R|S|T|U|V|W|X|Y|Z|0|1|2|3|4|5|6|7|8|9|_)+");
+
+    // regExGreater_ = std::make_unique<RegEx>("(>)");
+    // regExLess_ = std::make_unique<RegEx>("(<)");
+    // regExGreaterEqual_ = std::make_unique<RegEx>("(>=)");
+    // regExLessEqual_ = std::make_unique<RegEx>("(<=)");
+    // regExEqual_ = std::make_unique<RegEx>("(=)");
+    // regExNotEqual_ = std::make_unique<RegEx>("(!=)");
 }
 
 std::shared_ptr<Token> Lexer::getNextToken()
@@ -35,24 +42,33 @@ std::shared_ptr<Token> Lexer::getNextToken()
             return std::make_shared<Token>(TokenType::EOF_TOKEN, "");
         }
 
-        // number
-        std::optional<size_t> numberLen = regExNumber_->match(input_.substr(currentPos_));
-        if (numberLen.has_value())
-        {
-            std::string numberStr = input_.substr(currentPos_, numberLen.value());
-            currentPos_ += numberLen.value();
-            return std::make_shared<Token>(TokenType::INTEGER, numberStr);
-        }
+        std::pair<std::optional<size_t>, std::shared_ptr<Token>> longestResult;
 
-        // identifier
-        std::optional<size_t> identifierLen = regExIdentifier_->match(input_.substr(currentPos_));
-        if (identifierLen.has_value())
+        matchRE(regExNumber_, TokenType::INTEGER, longestResult);
+        matchRE(regExIdentifier_, TokenType::IDENTIFIER, longestResult);
+
+        if(longestResult.first.has_value())
         {
-            std::string identifierStr = input_.substr(currentPos_, identifierLen.value());
-            currentPos_ += identifierLen.value();
-            return std::make_shared<Token>(TokenType::IDENTIFIER, identifierStr);
+            currentPos_ += longestResult.first.value();
+            return longestResult.second;
         }
     }
 
     return std::make_shared<Token>(TokenType::EOF_TOKEN, "");
+}
+
+void Lexer::matchRE(const std::unique_ptr<RegEx> &regEx,
+                    TokenType tokenType,
+                    std::pair<std::optional<size_t>, std::shared_ptr<Token>> &result)
+{
+    std::optional<size_t> matchedNum = regEx->match(input_.substr(currentPos_));
+    if (matchedNum.has_value())
+    {
+        if (!result.first.has_value() || matchedNum.value() > result.first.value())
+        {
+            std::string matchedStr = input_.substr(currentPos_, matchedNum.value());
+            // currentPos_ += matchedNum.value();
+            result = std::make_pair(matchedNum, std::make_shared<Token>(tokenType, matchedStr));
+        }
+    }
 }
