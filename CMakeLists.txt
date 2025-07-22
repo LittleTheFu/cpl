@@ -15,6 +15,7 @@ set(PROJECT_SOURCES
     
     regluarExpression/regExNode.cpp
     regluarExpression/regExCharNode.cpp
+    regluarExpression/regExCharSetNode.cpp
     regluarExpression/regExAlternationNode.cpp
     regluarExpression/regExConcatenationNode.cpp
     regluarExpression/regExKleeneStarNode.cpp
