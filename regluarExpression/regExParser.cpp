@@ -215,6 +215,11 @@ bool RegExParser::isWhiteSpace(char c)
            c == '\v';
 }
 
+bool RegExParser::isOperator(char c)
+{
+    return c == '<' || c == '>' || c == '=' || c == '!';
+}
+
 bool RegExParser::isInFactorFirstSet(char c)
 {
     return isLetter(c) || isDigit(c) || isUnderscore(c) || (c == '(');

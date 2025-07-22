@@ -37,6 +37,7 @@ private:
     bool isUnderscore(char c);
 
     bool isWhiteSpace(char c);
+    bool isOperator(char c);
 
 
     bool isInFactorFirstSet(char c);
