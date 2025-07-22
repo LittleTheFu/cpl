@@ -8,6 +8,7 @@
 #include "regExNode.h"
 #include "dfaState.h"
 #include "nfaState.h"
+#include <optional>
 
 class RegEx
 {
@@ -16,7 +17,8 @@ public:
     explicit RegEx(std::shared_ptr<RegExNode> root);
     ~RegEx();
 
-    bool match(const std::string& str);
+    //NOTICE: Longest Prefix Match
+    std::optional<size_t> match(const std::string& str);
 
 private:
     void buildDFA();

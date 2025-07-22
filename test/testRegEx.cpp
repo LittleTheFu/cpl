@@ -7,71 +7,37 @@
 #include "nfaState.h"                // NFAState, 假设其中定义了 CompareNfaStateSharedPtr
 #include "alphaBet.h"                // 字母表单例
 
-// 假设 NFAState 中有 operator== 或一个 unique ID 机制用于 CompareNfaStateSharedPtr
-// 如果没有，你需要实现 CompareNfaStateSharedPtr，可能通过 NFAState 的 ID 或地址比较
-// 例如：
-/*
-struct CompareNfaStateSharedPtr {
-    bool operator()(const std::shared_ptr<NFAState>& a, const std::shared_ptr<NFAState>& b) const {
-        return a.get() < b.get(); // 简单的指针地址比较，确保唯一性
-        // 更健壮的可能是比较 NFAState 内部的唯一 ID
-    }
-};
-*/
+// 假设 CompareNfaStateSharedPtr 已经正确实现，用于 std::set<std::shared_ptr<NFAState>>
 
 // --- Test Fixture ---
 // 使用测试夹具来在每个测试前初始化 Alphabet
 class RegExTest : public ::testing::Test {
 protected:
-    // 在每个测试用例运行前初始化 AlphaBet
     void SetUp() override {
-        // 清理旧的字符集（如果 AlphaBet 是持久的）
-        // 这里假设 AlphaBet::instance() 每次调用都会返回同一个单例，
-        // 并且它的字符集可能会累积。如果它没有 clear() 方法，
-        // 并且只在首次使用时初始化，那么可以省略这部分。
-        // 但为了测试的独立性，最好确保字符集是干净的。
-        // 由于你的 AlphaBet::instance().getcharactars() 可能是构建时确定的，
-        // 你可能需要在测试运行前手动确保它包含所有必要的字符。
-
-        // 示例：确保 Alphabet 包含测试中会用到的字符
-        // 如果你的 Alphabet 是预定义的，这些调用可能是多余的
-        // AlphaBet::instance().addChar('a');
-        // AlphaBet::instance().addChar('b');
-        // AlphaBet::instance().addChar('c');
-        // AlphaBet::instance().addChar('0');
-        // AlphaBet::instance().addChar('1');
-        // AlphaBet::instance().addChar(' ');
-        // 确保你的 Regex 可以处理的字符都在这里
-        // 例如，如果正则表达式支持元字符，也需要考虑它们
+        // 这里的 Alphabet 初始化逻辑保持不变。
+        // 确保你的 Alphabet 包含了所有测试中会用到的字符。
     }
 
     void TearDown() override {
-        // 可选：在每个测试用例运行后清理 AlphaBet，如果它有 clear 方法
-        // AlphaBet::instance().clearcharactars();
+        // 可选：在每个测试用例运行后清理 Alphabet
     }
 };
 
 // --- 辅助函数：构建 RegExNode 树 ---
 // 这些辅助函数是为了方便构建 RegExNode 树，模仿解析器生成 AST 的过程。
-// **重要：这里我假设你的 RegExNode 派生类的构造函数已经改为接受 shared_ptr。**
-// 如果不是，你需要自行调整这些辅助函数的实现，或者直接在测试中用裸指针构造。
 
-// 构建字面量节点
 std::shared_ptr<RegExNode> Char(char c) {
     return std::make_shared<RegExCharNode>(c);
 }
 
-// 构建连接节点
 std::shared_ptr<RegExNode> Concat(std::shared_ptr<RegExNode> left, std::shared_ptr<RegExNode> right) {
     return std::make_shared<RegExConcatenationNode>(left, right);
 }
 
-// 构建或操作节点
 std::shared_ptr<RegExNode> Alternation(std::shared_ptr<RegExNode> left, std::shared_ptr<RegExNode> right) {
     return std::make_shared<RegExAlternationNode>(left, right);
 }
 
-// 构建闭包节点
 std::shared_ptr<RegExNode> KleeneStar(std::shared_ptr<RegExNode> node) {
     return std::make_shared<RegExKleeneStarNode>(node);
 }
@@ -82,48 +48,137 @@ std::shared_ptr<RegExNode> KleeneStar(std::shared_ptr<RegExNode> node) {
 TEST_F(RegExTest, SingleCharMatch) {
     auto root = Char('a'); // 匹配 'a'
     RegEx regex(root);
-    EXPECT_TRUE(regex.match("a"));
-    EXPECT_FALSE(regex.match("b"));
-    EXPECT_FALSE(regex.match("aa"));
-    EXPECT_FALSE(regex.match(""));
+
+    // 匹配 "a"，期望成功，长度为 1
+    auto result = regex.match("a");
+    EXPECT_TRUE(result.has_value());
+    EXPECT_EQ(result.value(), 1);
+
+    // 匹配 "b"，期望失败 (因为开头就不是 'a')
+    result = regex.match("b");
+    EXPECT_FALSE(result.has_value());
+
+    // 匹配 "aa"，期望成功，但只匹配前缀 "a"，长度为 1
+    result = regex.match("aa");
+    EXPECT_TRUE(result.has_value()); // 能匹配到前缀 "a"
+    EXPECT_EQ(result.value(), 1);    // 匹配长度是 1
+
+    // 匹配空字符串 ""，期望失败 (因为 "a" 不能匹配空)
+    result = regex.match("");
+    EXPECT_FALSE(result.has_value());
 }
 
 // 测试连接操作 (ab)
 TEST_F(RegExTest, ConcatenationBasic) {
     auto root = Concat(Char('a'), Char('b')); // 匹配 "ab"
     RegEx regex(root);
-    EXPECT_TRUE(regex.match("ab"));
-    EXPECT_FALSE(regex.match("a"));
-    EXPECT_FALSE(regex.match("b"));
-    EXPECT_FALSE(regex.match("ac"));
-    EXPECT_FALSE(regex.match("ba"));
-    EXPECT_FALSE(regex.match("abc"));
-    EXPECT_FALSE(regex.match(""));
+
+    // 匹配 "ab"，期望成功，长度为 2
+    auto result = regex.match("ab");
+    EXPECT_TRUE(result.has_value());
+    EXPECT_EQ(result.value(), 2);
+
+    // 匹配 "a"，期望失败 (不完整的匹配，"ab" 无法匹配 "a")
+    result = regex.match("a");
+    EXPECT_FALSE(result.has_value());
+
+    // 匹配 "b"，期望失败
+    result = regex.match("b");
+    EXPECT_FALSE(result.has_value());
+
+    // 匹配 "ac"，期望失败 (第二个字符不匹配)
+    result = regex.match("ac");
+    EXPECT_FALSE(result.has_value());
+
+    // 匹配 "ba"，期望失败 (开头就不匹配)
+    result = regex.match("ba");
+    EXPECT_FALSE(result.has_value());
+
+    // 匹配 "abc"，期望成功，匹配前缀 "ab"，长度为 2
+    result = regex.match("abc");
+    EXPECT_TRUE(result.has_value()); // 能匹配到前缀 "ab"
+    EXPECT_EQ(result.value(), 2);    // 匹配长度是 2
+
+    // 匹配空字符串 ""，期望失败
+    result = regex.match("");
+    EXPECT_FALSE(result.has_value());
 }
 
 // 测试或操作 (a|b)
 TEST_F(RegExTest, AlternationBasic) {
     auto root = Alternation(Char('a'), Char('b')); // 匹配 "a" 或 "b"
     RegEx regex(root);
-    EXPECT_TRUE(regex.match("a"));
-    EXPECT_TRUE(regex.match("b"));
-    EXPECT_FALSE(regex.match("c"));
-    EXPECT_FALSE(regex.match("ab"));
-    EXPECT_FALSE(regex.match("ba"));
-    EXPECT_FALSE(regex.match(""));
+
+    // 匹配 "a"，期望成功，长度为 1
+    auto result = regex.match("a");
+    EXPECT_TRUE(result.has_value());
+    EXPECT_EQ(result.value(), 1);
+
+    // 匹配 "b"，期望成功，长度为 1
+    result = regex.match("b");
+    EXPECT_TRUE(result.has_value());
+    EXPECT_EQ(result.value(), 1);
+
+    // 匹配 "c"，期望失败
+    result = regex.match("c");
+    EXPECT_FALSE(result.has_value());
+
+    // 匹配 "ab"，期望成功，匹配前缀 "a"，长度为 1 (优先匹配到 'a')
+    // 如果实现是“最长匹配”，这里会匹配到 'a'
+    result = regex.match("ab");
+    EXPECT_TRUE(result.has_value());
+    EXPECT_EQ(result.value(), 1);
+
+    // 匹配 "ba"，期望成功，匹配前缀 "b"，长度为 1
+    result = regex.match("ba");
+    EXPECT_TRUE(result.has_value());
+    EXPECT_EQ(result.value(), 1);
+
+    // 匹配空字符串 ""，期望失败
+    result = regex.match("");
+    EXPECT_FALSE(result.has_value());
 }
 
 // 测试闭包操作 (a*)
 TEST_F(RegExTest, KleeneStarBasic) {
     auto root = KleeneStar(Char('a')); // 匹配 "a*"
     RegEx regex(root);
-    EXPECT_TRUE(regex.match(""));   // 零次匹配
-    EXPECT_TRUE(regex.match("a"));  // 一次匹配
-    EXPECT_TRUE(regex.match("aa")); // 多次匹配
-    EXPECT_TRUE(regex.match("aaaaa"));
-    EXPECT_FALSE(regex.match("b")); // 非'a'字符
-    EXPECT_FALSE(regex.match("aab")); // 严格匹配，尾部有多余字符
-    EXPECT_FALSE(regex.match("ba"));
+
+    // 匹配空字符串 ""，期望成功，长度为 0
+    auto result = regex.match("");
+    EXPECT_TRUE(result.has_value());
+    EXPECT_EQ(result.value(), 0);
+
+    // 匹配 "a"，期望成功，长度为 1
+    result = regex.match("a");
+    EXPECT_TRUE(result.has_value());
+    EXPECT_EQ(result.value(), 1);
+
+    // 匹配 "aa"，期望成功，长度为 2
+    result = regex.match("aa");
+    EXPECT_TRUE(result.has_value());
+    EXPECT_EQ(result.value(), 2);
+
+    // 匹配 "aaaaa"，期望成功，长度为 5
+    result = regex.match("aaaaa");
+    EXPECT_TRUE(result.has_value());
+    EXPECT_EQ(result.value(), 5);
+
+    // 匹配 "b"，期望成功，匹配长度为 0 (因为 'a*' 可以匹配空字符串)
+    result = regex.match("b");
+    EXPECT_TRUE(result.has_value()); // 期望有值 (匹配了空字符串)
+    EXPECT_EQ(result.value(), 0);    // 期望匹配长度是 0
+
+    // 匹配 "aab"，期望成功，匹配前缀 "aa"，长度为 2
+    result = regex.match("aab");
+    EXPECT_TRUE(result.has_value()); // 能匹配到前缀 "aa"
+    EXPECT_EQ(result.value(), 2);    // 匹配长度是 2
+
+    // --- 最终修正点 ---
+    // 匹配 "ba"，期望成功，匹配长度为 0 (因为 'a*' 可以匹配空字符串)
+    result = regex.match("ba");
+    EXPECT_TRUE(result.has_value()); // 期望有值 (匹配了空字符串)
+    EXPECT_EQ(result.value(), 0);    // 期望匹配长度是 0
 }
 
 // 组合测试：(ab)*
@@ -131,14 +186,48 @@ TEST_F(RegExTest, KleeneStarOfConcatenation) {
     auto ab = Concat(Char('a'), Char('b'));
     auto root = KleeneStar(ab); // 匹配 "(ab)*"
     RegEx regex(root);
-    EXPECT_TRUE(regex.match(""));
-    EXPECT_TRUE(regex.match("ab"));
-    EXPECT_TRUE(regex.match("abab"));
-    EXPECT_TRUE(regex.match("ababab"));
-    EXPECT_FALSE(regex.match("a"));
-    EXPECT_FALSE(regex.match("b"));
-    EXPECT_FALSE(regex.match("aba")); // 不完全匹配
-    EXPECT_FALSE(regex.match("abb")); // 不完全匹配
+
+    // 匹配空字符串 ""，期望成功，长度为 0
+    auto result = regex.match("");
+    EXPECT_TRUE(result.has_value());
+    EXPECT_EQ(result.value(), 0);
+
+    // 匹配 "ab"，期望成功，长度为 2
+    result = regex.match("ab");
+    EXPECT_TRUE(result.has_value());
+    EXPECT_EQ(result.value(), 2);
+
+    // 匹配 "abab"，期望成功，长度为 4
+    result = regex.match("abab");
+    EXPECT_TRUE(result.has_value());
+    EXPECT_EQ(result.value(), 4);
+
+    // 匹配 "ababab"，期望成功，长度为 6
+    result = regex.match("ababab");
+    EXPECT_TRUE(result.has_value());
+    EXPECT_EQ(result.value(), 6);
+
+    // --- 修正点 ---
+    // 匹配 "a"，期望成功，匹配长度为 0 (因为 '(ab)*' 可以匹配空字符串)
+    result = regex.match("a");
+    EXPECT_TRUE(result.has_value()); // 期望有值 (匹配了空字符串)
+    EXPECT_EQ(result.value(), 0);    // 期望匹配长度是 0
+
+    // --- 修正点 ---
+    // 匹配 "b"，期望成功，匹配长度为 0 (因为 '(ab)*' 可以匹配空字符串)
+    result = regex.match("b");
+    EXPECT_TRUE(result.has_value()); // 期望有值 (匹配了空字符串)
+    EXPECT_EQ(result.value(), 0);    // 期望匹配长度是 0
+
+    // 匹配 "aba"，期望成功，匹配前缀 "ab"，长度为 2
+    result = regex.match("aba");
+    EXPECT_TRUE(result.has_value()); // 能匹配到前缀 "ab"
+    EXPECT_EQ(result.value(), 2);    // 匹配长度是 2
+
+    // 匹配 "abb"，期望成功，匹配前缀 "ab"，长度为 2
+    result = regex.match("abb");
+    EXPECT_TRUE(result.has_value()); // 能匹配到前缀 "ab"
+    EXPECT_EQ(result.value(), 2);    // 匹配长度是 2
 }
 
 // 组合测试：a(b|c)d
@@ -146,13 +235,36 @@ TEST_F(RegExTest, ComplexCombination1) {
     auto bc = Alternation(Char('b'), Char('c'));
     auto abd = Concat(Char('a'), Concat(bc, Char('d'))); // 匹配 "a(b|c)d"
     RegEx regex(abd);
-    EXPECT_TRUE(regex.match("abd"));
-    EXPECT_TRUE(regex.match("acd"));
-    EXPECT_FALSE(regex.match("ad"));
-    EXPECT_FALSE(regex.match("abcd"));
-    EXPECT_FALSE(regex.match("axd"));
-    EXPECT_FALSE(regex.match("ab"));
-    EXPECT_FALSE(regex.match(""));
+
+    // 匹配 "abd"，期望成功，长度为 3
+    auto result = regex.match("abd");
+    EXPECT_TRUE(result.has_value());
+    EXPECT_EQ(result.value(), 3);
+
+    // 匹配 "acd"，期望成功，长度为 3
+    result = regex.match("acd");
+    EXPECT_TRUE(result.has_value());
+    EXPECT_EQ(result.value(), 3);
+
+    // 匹配 "ad"，期望失败 (缺少中间字符)
+    result = regex.match("ad");
+    EXPECT_FALSE(result.has_value());
+
+    // 匹配 "abcd"，期望失败 (因为 'c' 不是 'd'，模式不匹配)
+    result = regex.match("abcd");
+    EXPECT_FALSE(result.has_value()); // 期望没有值，因为 "abcd" 不能作为 "a(b|c)d" 的前缀被接受
+
+    // 匹配 "axd"，期望失败 (中间字符不匹配)
+    result = regex.match("axd");
+    EXPECT_FALSE(result.has_value());
+
+    // 匹配 "ab"，期望失败 (不完整匹配)
+    result = regex.match("ab");
+    EXPECT_FALSE(result.has_value());
+
+    // 匹配空字符串 ""，期望失败
+    result = regex.match("");
+    EXPECT_FALSE(result.has_value());
 }
 
 // 组合测试：(a|b)*abb
@@ -168,43 +280,88 @@ TEST_F(RegExTest, ComplexCombination2) {
     auto root = Concat(ab_union_star, abb); // (a|b)*abb
     RegEx regex(root);
 
-    EXPECT_TRUE(regex.match("abb"));
-    EXPECT_TRUE(regex.match("aabb"));
-    EXPECT_TRUE(regex.match("babb"));
-    EXPECT_TRUE(regex.match("aaabb"));
-    EXPECT_TRUE(regex.match("abababb"));
-    EXPECT_FALSE(regex.match("ab"));   // 不完全匹配
-    EXPECT_FALSE(regex.match("abbb")); // 多余字符
-    EXPECT_FALSE(regex.match("abx"));  // 错误字符
-    EXPECT_FALSE(regex.match(""));     // 不匹配空
-    EXPECT_FALSE(regex.match("a"));
-    EXPECT_FALSE(regex.match("b"));
-    EXPECT_FALSE(regex.match("xabb")); // 开头不匹配
+    // 匹配 "abb"，期望成功，长度为 3
+    auto result = regex.match("abb");
+    EXPECT_TRUE(result.has_value());
+    EXPECT_EQ(result.value(), 3);
+
+    // 匹配 "aabb"，期望成功，长度为 4
+    result = regex.match("aabb");
+    EXPECT_TRUE(result.has_value());
+    EXPECT_EQ(result.value(), 4);
+
+    // 匹配 "babb"，期望成功，长度为 4
+    result = regex.match("babb");
+    EXPECT_TRUE(result.has_value());
+    EXPECT_EQ(result.value(), 4);
+
+    // 匹配 "aaabb"，期望成功，长度为 5
+    result = regex.match("aaabb");
+    EXPECT_TRUE(result.has_value());
+    EXPECT_EQ(result.value(), 5);
+
+    // 匹配 "abababb"，期望成功，长度为 7
+    result = regex.match("abababb");
+    EXPECT_TRUE(result.has_value());
+    EXPECT_EQ(result.value(), 7);
+
+    // 匹配 "ab"，期望失败 (不完全匹配，不是 (a|b)*abb 的前缀)
+    result = regex.match("ab");
+    EXPECT_FALSE(result.has_value());
+
+    // 匹配 "abbb"，期望成功，匹配前缀 "abb"，长度为 3
+    result = regex.match("abbb");
+    EXPECT_TRUE(result.has_value()); // 能匹配到前缀 "abb"
+    EXPECT_EQ(result.value(), 3);    // 匹配长度是 3
+
+    // 匹配 "abx"，期望失败 (因为 'x' 破坏了 abb 结构)
+    result = regex.match("abx");
+    EXPECT_FALSE(result.has_value());
+
+    // 匹配空字符串 ""，期望失败 (因为必须匹配至少 "abb")
+    result = regex.match("");
+    EXPECT_FALSE(result.has_value());
+
+    // 匹配 "a"，期望失败
+    result = regex.match("a");
+    EXPECT_FALSE(result.has_value());
+
+    // 匹配 "b"，期望失败
+    result = regex.match("b");
+    EXPECT_FALSE(result.has_value());
+
+    // 匹配 "xabb"，期望失败 (开头不匹配)
+    result = regex.match("xabb");
+    EXPECT_FALSE(result.has_value());
 }
 
 // 匹配空字符串的正则表达式 (例如，当正则表达式本身是空字符串时，或通过 KleeneStar 实现)
-// 假设 RegExNode 层次结构支持生成匹配空字符串的 NFA (例如，root 为一个接受空字符串的 NFA 片段)
 TEST_F(RegExTest, EmptyStringRegex) {
-    // 匹配空字符串的正则表达式通常可以通过 `epsilon` 或 `()` 来表示。
-    // 在你的构建方式中，最简单的是 `a*` 能够匹配空字符串。
-    // 如果你有一个表示“空字符串”的专用 RegExNode，你可以这样测试：
-    // auto root = std::make_shared<RegExEmptyStringNode>();
-    // RegEx regex(root);
-    // EXPECT_TRUE(regex.match(""));
-    // EXPECT_FALSE(regex.match("a"));
-
-    // 假设 `KleeneStar(Char('a'))` 的行为已经包含了空字符串匹配
     auto root = KleeneStar(Char('a')); // a*
     RegEx regex(root);
-    EXPECT_TRUE(regex.match(""));
+
+    // 匹配空字符串 ""，期望成功，长度为 0
+    auto result = regex.match("");
+    EXPECT_TRUE(result.has_value());
+    EXPECT_EQ(result.value(), 0);
+
+    // 匹配 "a"，期望成功，长度为 1
+    result = regex.match("a");
+    EXPECT_TRUE(result.has_value());
+    EXPECT_EQ(result.value(), 1);
+    
+    // 匹配 "b"，期望成功，长度为 0
+    result = regex.match("b");
+    EXPECT_TRUE(result.has_value());
+    EXPECT_EQ(result.value(), 0);
 }
 
-// 不匹配任何字符串的正则表达式 (例如，一个只包含死状态的 DFA)
-// 这通常是通过无法到达接受状态的模式来实现。例如 'a|b' 匹配 'c'
+// 不匹配任何字符串的正则表达式
 TEST_F(RegExTest, NeverMatch) {
-    auto root = Char('a');
+    auto root = Char('a'); // 匹配 'a'
     RegEx regex(root);
-    // 这里 Alphabet 应该包含 'x'
-    // AlphaBet::instance().addChar('x');
-    EXPECT_FALSE(regex.match("x")); // "a" 永远不会匹配 "x"
+
+    // 匹配 "x"，期望失败 ("a" 永远不会匹配 "x")
+    auto result = regex.match("x");
+    EXPECT_FALSE(result.has_value());
 }

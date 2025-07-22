@@ -19,9 +19,16 @@ RegEx::~RegEx()
 {
 }
 
-bool RegEx::match(const std::string &str)
+std::optional<size_t> RegEx::match(const std::string &str)
 {
     std::shared_ptr<DFAState> currentDFAState = startDFAState_;
+    size_t index = 0;
+    std::optional<size_t> matchedIndex = std::nullopt;
+
+    if(currentDFAState->isEndState())
+    {
+        matchedIndex = 0;
+    }
     
     for(char character : str)
     {
@@ -29,11 +36,17 @@ bool RegEx::match(const std::string &str)
 
         if(!currentDFAState)
         {
-            return false;
+            return matchedIndex;
+        }
+
+        index++;
+        if(currentDFAState->isEndState())
+        {
+            matchedIndex = index;
         }
     }
 
-    return currentDFAState->isEndState();
+    return matchedIndex;
 }
 
 void RegEx::buildDFA()
