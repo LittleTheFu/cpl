@@ -11,23 +11,48 @@
 // char        ::= letter | digit | '_' | ...
 
 //-----------------------------------------------------------------------
+// # 核心结构 - 优先级从低到高：或 -> 连接 -> 量词 -> 原子
+
 // regex       ::=  term { '|' term }
+//               # 一个正则表达式是一个或多个 'term' 通过 '|' (或) 连接
+
 // term        ::=  factor { factor }
+//               # 一个 'term' 是一个或多个 'factor' 的连接 (隐式连接，例如 'ab' 表示 'a' 连接 'b')
+
 // factor      ::=  atom [ '*' | '+' | '?' ]
+//               # 一个 'factor' 是一个 'atom' 后面可选跟着一个量词 ('*', '+', '?')
+
 // atom        ::=  char_or_char_set | '(' regex ')'
+//               # 一个 'atom' 是一个单个字符/字符集，或者是一个用括号括起来的子正则表达式
 
-// // char_or_char_set can be a single escaped or unescaped character, or a character set like [a-z0-9]
+// # 字符和字符集定义 - 这是核心变化所在
+
 // char_or_char_set ::=  escaped_char | literal_char | char_set
+//                      # 一个字符或字符集可以是转义字符、字面字符，或者一个字符集定义
 
-// // literal_char is any character that is NOT a regex meta-character and NOT a backslash
-// literal_char ::=  <any character except '\', '(', ')', '*', '+', '?', '|', '[', ']'>
+// literal_char ::=  <任何字符，除了 '\', '(', ')', '*', '+', '?', '|', '[', ']', '.'>
+//                 # 字面字符是除了正则表达式元字符（本身有特殊含义）以外的任何字符。
+//                 # 例如：'a', 'B', '0', '_', '=', '<', '!', '/', ';', ':', ',', '-' 等。
 
-// // escaped_char handles backslash sequences
-// escaped_char ::=  '\' ( 's' | 'd' | 'w' | '.' | '+' | '*' | '?' | '(' | ')' | '[' | ']' | '|' | '\' | <other specific escapes like 't', 'n', 'r'> )
+// escaped_char ::=  '\' ( 's' | 'd' | 'w' |          # 字符类：空白、数字、单词字符
+//                        't' | 'n' | 'r' | 'f' | 'v' | # 控制字符：制表、换行、回车、换页、垂直制表
+//                        '.' | '+' | '*' | '?' |      # 转义元字符：点、加、星、问
+//                        '(' | ')' | '[' | ']' |      # 转义括号：左右圆括号、左右方括号
+//                        '|' | '\' )                  # 转义管道、转义反斜杠
+//                 # 转义字符是反斜杠 '\' 后面跟着一个特定的字符，
+//                 # 用于表示字符类、控制字符或元字符的字面含义。
 
-// // char_set allows defining custom character ranges/lists, e.g., [a-zA-Z0-9_]
-// char_set    ::=  '[' (literal_char | escaped_char | range) { (literal_char | escaped_char | range) } ']'
-// range       ::=  (literal_char | escaped_char) '-' (literal_char | escaped_char) // e.g., 'a-z', '0-9'
+// char_set    ::=  '[' [ '^' ] (char_set_item { char_set_item }) ']'
+//                 # 字符集以 '[' 开头，以 ']' 结尾。
+//                 # 可选的 '^' 在 '[' 后面表示否定字符集 (匹配除了集合中所有字符以外的任何字符)。
+//                 # 内部包含一个或多个 char_set_item。
+
+// char_set_item ::=  literal_char | escaped_char | range
+//                    # 字符集中的项可以是一个字面字符、一个转义字符，或者一个范围。
+
+// range       ::=  (literal_char | escaped_char) '-' (literal_char | escaped_char)
+//                 # 范围由两个字符通过 '-' 连接定义，例如 'a-z', '0-9', 'A-F'。
+//                 # 范围中的字符必须是字面字符或转义字符。
 
 class RegExNode;
 
