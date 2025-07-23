@@ -503,7 +503,7 @@ void VirtualMachine::executeCALL(const Instruction &instruction)
 {
     if (stackPointer_ > stackLimitAddress_)
     {
-        memory_.at(stackPointer_) = programCounter_;
+        memory_.at(stackPointer_) = static_cast<int>(programCounter_);
         stackPointer_--;
 
         Operand operand = instruction.getOperandFirst();
