@@ -70,7 +70,7 @@ private:
     std::shared_ptr<RegExNode> parseLiteralChar();
     std::shared_ptr<RegExNode> parseEscapedChar();
     std::shared_ptr<RegExNode> parseCharSet();
-    std::shared_ptr<RegExNode> parseCharSetItem(std::set<char> &charSet);
+    void parseCharSetItem(std::set<char> &charSet);
     void parseRange(std::set<char> &charSet);
 
     std::shared_ptr<RegExNode> parseChar();

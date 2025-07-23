@@ -281,7 +281,7 @@ std::shared_ptr<RegExNode> RegExParser::parseCharSet()
     return nullptr;
 }
 
-std::shared_ptr<RegExNode> RegExParser::parseCharSetItem(std::set<char> &charSet)
+void RegExParser::parseCharSetItem(std::set<char> &charSet)
 {
 }
 
