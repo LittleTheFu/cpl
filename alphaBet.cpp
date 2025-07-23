@@ -49,6 +49,27 @@ AlphaBet::AlphaBet()
     charactars_.insert('\t'); // Tab
     charactars_.insert('\n'); // Line Feed / Newline
     charactars_.insert('\r'); // Carriage Return
+
+    whiteSpaceChar_.insert(' ');
+    whiteSpaceChar_.insert('\t');
+    whiteSpaceChar_.insert('\n');
+    whiteSpaceChar_.insert('\r');
+
+    for (int i = '0'; i <= '9'; ++i)
+    {
+        digitChar_.insert(i);
+    }
+
+    for (int i = 'a'; i <= 'z'; ++i)
+    {
+        alphaChar_.insert(i);
+    }
+
+    for (int i = 'A'; i <= 'Z'; ++i)
+    {
+        alphaChar_.insert(i);
+    }
+
 }
 
 AlphaBet &AlphaBet::instance()
@@ -60,4 +81,24 @@ AlphaBet &AlphaBet::instance()
 const std::set<char> &AlphaBet::getcharactars() const
 {
     return charactars_;
+}
+
+bool AlphaBet::isInAlphaBet(char c) const
+{
+    return charactars_.find(c) != charactars_.end();
+}
+
+const std::set<char> &AlphaBet::getWhiteSpaceChar() const
+{
+    return whiteSpaceChar_;
+}
+
+const std::set<char> &AlphaBet::getDigitChar() const
+{
+    return digitChar_;
+}
+
+const std::set<char> &AlphaBet::getAlphaChar() const
+{
+    return alphaChar_;
 }

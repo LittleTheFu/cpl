@@ -15,9 +15,18 @@ public:
     static AlphaBet& instance();
 
     const std::set<char>& getcharactars() const;
+    bool isInAlphaBet(char c) const;
+
+    const std::set<char>& getWhiteSpaceChar() const;
+    const std::set<char>& getDigitChar() const;
+    const std::set<char>& getAlphaChar() const;
 
 private:
     std::set<char> charactars_;
+
+    std::set<char> whiteSpaceChar_;
+    std::set<char> digitChar_;
+    std::set<char> alphaChar_;
 };
 
 #endif

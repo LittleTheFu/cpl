@@ -8,7 +8,7 @@
 class RegExCharSetNode : public RegExNode
 {
 public:
-    explicit RegExCharSetNode(const std::set<char> &charSet, bool isNegated);
+    explicit RegExCharSetNode(const std::set<char> &charSet, bool isNegated = false);
     virtual ~RegExCharSetNode();
 
     std::shared_ptr<NfaStateFragment> buildNfaStateFragment() override;

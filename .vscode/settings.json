@@ -138,7 +138,8 @@
     "iostream": "cpp",
     "queue": "cpp",
     "ranges": "cpp",
-    "span": "cpp"
+    "span": "cpp",
+    "string_view": "cpp"
   },
   "C_Cpp.default.compilerPath": "cl.exe"
 }

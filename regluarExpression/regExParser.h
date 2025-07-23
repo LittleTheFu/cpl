@@ -3,12 +3,8 @@
 
 #include <string>
 #include <memory>
+#include <set>
 
-// regex       ::= term { '|' term }
-// term        ::= factor { factor }
-// factor      ::= atom [ '*' | '+' | '?' ]
-// atom        ::= char | '(' regex ')'
-// char        ::= letter | digit | '_' | ...
 
 //-----------------------------------------------------------------------
 // # 核心结构 - 优先级从低到高：或 -> 连接 -> 量词 -> 原子
@@ -50,9 +46,7 @@
 // char_set_item ::=  literal_char | escaped_char | range
 //                    # 字符集中的项可以是一个字面字符、一个转义字符，或者一个范围。
 
-// range       ::=  (literal_char | escaped_char) '-' (literal_char | escaped_char)
-//                 # 范围由两个字符通过 '-' 连接定义，例如 'a-z', '0-9', 'A-F'。
-//                 # 范围中的字符必须是字面字符或转义字符。
+// range ::= (digit_char | lowercase_letter | uppercase_letter) '-' (digit_char | lowercase_letter | uppercase_letter)
 
 class RegExNode;
 
@@ -65,10 +59,20 @@ public:
     std::shared_ptr<RegExNode> getRoot() { return root_; }
 
 private:
+    static const std::set<char> REGEX_META_CHARS;
+
+private:
     std::shared_ptr<RegExNode> parseRegEx();
     std::shared_ptr<RegExNode> parseTerm();
     std::shared_ptr<RegExNode> parseFactor();
     std::shared_ptr<RegExNode> parseAtom();
+    std::shared_ptr<RegExNode> parseCharOrCharSet();
+    std::shared_ptr<RegExNode> parseLiteralChar();
+    std::shared_ptr<RegExNode> parseEscapedChar();
+    std::shared_ptr<RegExNode> parseCharSet();
+    std::shared_ptr<RegExNode> parseCharSetItem(std::set<char> &charSet);
+    void parseRange(std::set<char> &charSet);
+
     std::shared_ptr<RegExNode> parseChar();
 
     //should be a peek function
@@ -83,9 +87,15 @@ private:
     bool isWhiteSpace(char c);
     bool isOperator(char c);
 
+    bool isMetaChar(char c);
+    bool isLiteralChar(char c);
+    bool isEscapedLiteralChar(char c);
+    bool isAlphaNumber(char c);
 
     bool isInFactorFirstSet(char c);
-    bool isInFactorFollowSet(char c);
+    bool isInTermFollowSet(char c);
+    bool isInCharSetItemFirstSet(char c);
+    bool isInCharSetItemFollowSet(char c);
 
 private:
     std::string regExStr_;
