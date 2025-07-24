@@ -2,6 +2,12 @@
 
 Lexer::Lexer(const std::string &input)
 {
+    keywords_["if"] = TokenType::IF;
+    keywords_["else"] = TokenType::ELSE;
+    keywords_["while"] = TokenType::WHILE;
+    keywords_["int"] = TokenType::INT;
+    keywords_["return"] = TokenType::RETURN;
+
     input_ = input;
     currentPos_ = 0;
 
@@ -74,6 +80,12 @@ std::shared_ptr<Token> Lexer::getNextToken()
         if(longestResult.first.has_value())
         {
             currentPos_ += longestResult.first.value();
+
+            if(keywords_.find(longestResult.second->lexeme) != keywords_.end())
+            {
+                longestResult.second->type = keywords_[longestResult.second->lexeme];
+            }
+            
             return longestResult.second;
         }
     }

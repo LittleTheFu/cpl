@@ -8,11 +8,11 @@ int main()
     // vm.loadProgram();
     // vm.execute();
 
-    Lexer lexer("+123<456=789<==!=111\tHELLO*/-\nworld");
+    Lexer lexer("ifs+if=123<456=789<==!=111\tHELLO*/-\nworld");
 
     while(auto token = lexer.getNextToken())
     {
-        std::cout << tokenTypeToString(token->type) << std::endl;
+        std::cout << tokenTypeToString(token->type) << " : " << token->lexeme << std::endl;
 
         if(token->type == TokenType::EOF_TOKEN)
         {

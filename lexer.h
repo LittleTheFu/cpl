@@ -3,6 +3,7 @@
 
 #include <string>
 #include <memory>
+#include <map>
 #include "token.h"
 #include "regEx.h"
 
@@ -41,6 +42,9 @@ private:
     
     std::unique_ptr<RegEx> regExEqual_;
     std::unique_ptr<RegEx> regExNotEqual_;
+
+private:
+    std::map<std::string, TokenType> keywords_;
 };
 
 #endif // _LEXER_H_
