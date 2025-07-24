@@ -8,7 +8,7 @@ int main()
     // vm.loadProgram();
     // vm.execute();
 
-    Lexer lexer("123 \tHELLO\nworld");
+    Lexer lexer("+123<456=789<=111\tHELLO*/-\nworld");
 
     while(auto token = lexer.getNextToken())
     {
