@@ -13,7 +13,7 @@ public:
 
     std::shared_ptr<NfaStateFragment> buildNfaStateFragment() override;
 
-    std::set<char> getCharSet() const { return charSet_; }
+    const std::set<char> &getCharSet() const { return charSet_; }
     bool isNegated() const { return isNegated_; }
 
 private:

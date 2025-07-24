@@ -219,7 +219,7 @@ std::shared_ptr<RegExNode> RegExParser::parseEscapedChar()
     }
     else if( cc == 'w')
     {
-        return std::make_shared<RegExCharSetNode>(AlphaBet::instance().getAlphaChar());
+        return std::make_shared<RegExCharSetNode>(AlphaBet::instance().getWordChar());
     }
     else
     {
