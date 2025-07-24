@@ -62,14 +62,20 @@ AlphaBet::AlphaBet()
 
     for (int i = 'a'; i <= 'z'; ++i)
     {
-        alphaChar_.insert(i);
+        wordChar_.insert(i);
     }
 
     for (int i = 'A'; i <= 'Z'; ++i)
     {
-        alphaChar_.insert(i);
+        wordChar_.insert(i);
     }
 
+    for(int i = '0'; i <= '9'; ++i)
+    {
+        wordChar_.insert(i);
+    }
+
+    wordChar_.insert('_');
 }
 
 AlphaBet &AlphaBet::instance()
@@ -98,7 +104,7 @@ const std::set<char> &AlphaBet::getDigitChar() const
     return digitChar_;
 }
 
-const std::set<char> &AlphaBet::getAlphaChar() const
+const std::set<char> &AlphaBet::getWordChar() const
 {
-    return alphaChar_;
+    return wordChar_;
 }
