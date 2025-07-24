@@ -24,6 +24,9 @@ Lexer::Lexer(const std::string &input)
     regExMinus_ = std::make_unique<RegEx>("(\\-)");
     regExMultiply_ = std::make_unique<RegEx>("(\\*)");
     regExDivide_ = std::make_unique<RegEx>("(/)");
+
+    regExEqual_ = std::make_unique<RegEx>("(=)");
+    regExNotEqual_ = std::make_unique<RegEx>("(!=)");
 }
 
 std::shared_ptr<Token> Lexer::getNextToken()
@@ -65,6 +68,8 @@ std::shared_ptr<Token> Lexer::getNextToken()
         matchRE(regExMinus_, TokenType::MINUS, longestResult);
         matchRE(regExMultiply_, TokenType::MULTIPLY, longestResult);
         matchRE(regExDivide_, TokenType::DIVIDE, longestResult);
+        matchRE(regExEqual_, TokenType::EQUAL, longestResult);
+        matchRE(regExNotEqual_, TokenType::NOT_EQUAL, longestResult);
 
         if(longestResult.first.has_value())
         {

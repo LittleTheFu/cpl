@@ -33,14 +33,14 @@ private:
     std::unique_ptr<RegEx> regExLess_;
     std::unique_ptr<RegEx> regExGreaterEqual_;
     std::unique_ptr<RegEx> regExLessEqual_;
-    std::unique_ptr<RegEx> regExEqual_;
-    std::unique_ptr<RegEx> regExNotEqual_;
 
     std::unique_ptr<RegEx> regExPlus_;
     std::unique_ptr<RegEx> regExMinus_;
     std::unique_ptr<RegEx> regExMultiply_;
     std::unique_ptr<RegEx> regExDivide_;
-
+    
+    std::unique_ptr<RegEx> regExEqual_;
+    std::unique_ptr<RegEx> regExNotEqual_;
 };
 
 #endif // _LEXER_H_
