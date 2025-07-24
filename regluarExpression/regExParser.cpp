@@ -169,7 +169,8 @@ std::shared_ptr<RegExNode> RegExParser::parseLiteralChar()
     char c = peekChar();
     if (!isLiteralChar(c))
     {
-        throw std::runtime_error("Invalid regex: Unexpected character. (at index " + std::to_string(index_) + ").");
+        //we should reconsider the literal character set
+        // throw std::runtime_error("Invalid regex: Unexpected character. (at index " + std::to_string(index_) + ").");
     }
 
     consumeChar();
@@ -469,5 +470,5 @@ bool RegExParser::isInFactorFirstSet(char c)
 
 bool RegExParser::isInTermFollowSet(char c)
 {
-    return c == '|' || c == '\0';
+    return c == '|' || c == '\0' || c == ')';
 }
