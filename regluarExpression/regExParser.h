@@ -26,15 +26,15 @@
 // char_or_char_set ::=  escaped_char | literal_char | char_set
 //                      # 一个字符或字符集可以是转义字符、字面字符，或者一个字符集定义
 
-// literal_char ::=  <任何字符，除了 '\', '(', ')', '*', '+', '?', '|', '[', ']', '.'>
+// literal_char ::=  <任何字符，除了 '\', '(', ')', '*', '+', '?', '|', '[', ']'>
 //                 # 字面字符是除了正则表达式元字符（本身有特殊含义）以外的任何字符。
 //                 # 例如：'a', 'B', '0', '_', '=', '<', '!', '/', ';', ':', ',', '-' 等。
 
-// escaped_char ::=  '\' ( 's' | 'd' | 'w' |          # 字符类：空白、数字、单词字符
-//                        't' | 'n' | 'r' | 'f' | 'v' | # 控制字符：制表、换行、回车、换页、垂直制表
-//                        '.' | '+' | '*' | '?' |      # 转义元字符：点、加、星、问
-//                        '(' | ')' | '[' | ']' |      # 转义括号：左右圆括号、左右方括号
-//                        '|' | '\' )                  # 转义管道、转义反斜杠
+// escaped_char ::=  '\' ( 's' | 'd' | 'w' |            # 字符类：空白、数字、单词字符
+//                        't' | 'n' | 'r' |             # 控制字符：制表、换行、回车
+//                        '+' | '*' | '?' |             # 转义元字符：加、星、问
+//                        '(' | ')' | '[' | ']' |       # 转义括号：左右圆括号、左右方括号
+//                        '|' | '\' )                   # 转义管道、转义反斜杠
 //                 # 转义字符是反斜杠 '\' 后面跟着一个特定的字符，
 //                 # 用于表示字符类、控制字符或元字符的字面含义。
 
@@ -73,12 +73,9 @@ private:
     void parseCharSetItem(std::set<char> &charSet);
     void parseRange(std::set<char> &charSet);
 
-    std::shared_ptr<RegExNode> parseChar();
-
-    //should be a peek function
-    char peekChar();
+    char peekChar(size_t offset = 0);
     void consumeChar();
-    bool isEnd();
+    bool isEnd(size_t offset = 0);
 
     bool isLetter(char c);
     bool isDigit(char c);
@@ -94,8 +91,6 @@ private:
 
     bool isInFactorFirstSet(char c);
     bool isInTermFollowSet(char c);
-    bool isInCharSetItemFirstSet(char c);
-    bool isInCharSetItemFollowSet(char c);
 
 private:
     std::string regExStr_;

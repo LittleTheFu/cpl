@@ -9,7 +9,7 @@
 #include <alphaBet.h>
 #include "regExCharSetNode.h"
 
-const std::set<char> RegExParser::REGEX_META_CHARS = {'*', '+', '?', '|', '(', ')', '[', ']', '\\', '-'};
+const std::set<char> RegExParser::REGEX_META_CHARS = {'*', '+', '?', '|', '(', ')', '[', ']', '\\', '-', '^'};
 
 RegExParser::RegExParser(const std::string &regExStr)
 {
@@ -20,7 +20,7 @@ RegExParser::RegExParser(const std::string &regExStr)
 
     if (!isEnd())
     {
-        throw std::runtime_error("invalid regex");
+        throw std::runtime_error("Invalid regex: Unexpected characters found after the end of the expression at index " + std::to_string(index_) + ".");
     }
 }
 
@@ -28,7 +28,7 @@ std::shared_ptr<RegExNode> RegExParser::parseRegEx()
 {
     if (isEnd())
     {
-        throw std::runtime_error("invalid regex");
+        throw std::runtime_error("Invalid regex: Empty or incomplete expression. (at index " + std::to_string(index_) + ").");
     }
 
     auto node = parseTerm();
@@ -43,7 +43,7 @@ std::shared_ptr<RegExNode> RegExParser::parseRegEx()
 
             if (isEnd())
             {
-                throw std::runtime_error("invalid regex");
+                throw std::runtime_error("Invalid regex: Unexpected end of expression after '|' at index " + std::to_string(index_) + ".");
             }
 
             node = std::make_shared<RegExAlternationNode>(node, parseTerm());
@@ -61,7 +61,7 @@ std::shared_ptr<RegExNode> RegExParser::parseTerm()
 {
     if (isEnd())
     {
-        throw std::runtime_error("invalid regex");
+        throw std::runtime_error("Invalid regex: Unexpected end of expression. (at index " + std::to_string(index_) + ").");
     }
 
     auto node = parseFactor();
@@ -73,7 +73,7 @@ std::shared_ptr<RegExNode> RegExParser::parseTerm()
 
     if (!isEnd() && !isInTermFollowSet(peekChar()))
     {
-        throw std::runtime_error("invalid regex");
+        throw std::runtime_error("Invalid regex: Unexpected character after term. (at index " + std::to_string(index_) + ").");
     }
 
     return node;
@@ -83,7 +83,7 @@ std::shared_ptr<RegExNode> RegExParser::parseFactor()
 {
     if (isEnd())
     {
-        throw std::runtime_error("invalid regex");
+        throw std::runtime_error("Invalid regex: Unexpected end of expression. (at index " + std::to_string(index_) + ").");
     }
 
     auto node = parseAtom();
@@ -112,7 +112,7 @@ std::shared_ptr<RegExNode> RegExParser::parseAtom()
 {
     if (isEnd())
     {
-        throw std::runtime_error("invalid regex");
+        throw std::runtime_error("Invalid regex: Unexpected end of expression. (at index " + std::to_string(index_) + ").");
     }
 
     char c = peekChar();
@@ -124,13 +124,13 @@ std::shared_ptr<RegExNode> RegExParser::parseAtom()
 
         if (isEnd())
         {
-            throw std::runtime_error("invalid regex");
+            throw std::runtime_error("Invalid regex: Unexpected end of expression after '(' at index " + std::to_string(index_) + ".");
         }
 
         char cc = peekChar();
         if (cc != ')')
         {
-            throw std::runtime_error("invalid regex");
+            throw std::runtime_error("Invalid regex: Missing ')' after '(' at index " + std::to_string(index_) + ".");
         }
 
         consumeChar();
@@ -140,8 +140,6 @@ std::shared_ptr<RegExNode> RegExParser::parseAtom()
     {
         return parseCharOrCharSet();
     }
-
-    return nullptr;
 }
 
 std::shared_ptr<RegExNode> RegExParser::parseCharOrCharSet()
@@ -152,18 +150,18 @@ std::shared_ptr<RegExNode> RegExParser::parseCharOrCharSet()
     {
         return parseEscapedChar();
     }
-    else if (isLiteralChar(c))
+    else if (c == '[')
+    {
+        return parseCharSet();
+    }
+    else if(isLiteralChar(c))
     {
         return parseLiteralChar();
     }
     else
     {
-        return parseCharSet();
+        throw std::runtime_error("Invalid regex: Unexpected character. (at index " + std::to_string(index_) + ").");
     }
-
-    throw std::runtime_error("invalid regex");
-
-    return nullptr;
 }
 
 std::shared_ptr<RegExNode> RegExParser::parseLiteralChar()
@@ -171,7 +169,7 @@ std::shared_ptr<RegExNode> RegExParser::parseLiteralChar()
     char c = peekChar();
     if (!isLiteralChar(c))
     {
-        throw std::runtime_error("invalid regex");
+        throw std::runtime_error("Invalid regex: Unexpected character. (at index " + std::to_string(index_) + ").");
     }
 
     consumeChar();
@@ -181,22 +179,19 @@ std::shared_ptr<RegExNode> RegExParser::parseLiteralChar()
 std::shared_ptr<RegExNode> RegExParser::parseEscapedChar()
 {
     char c = peekChar();
-    if (c == '\\')
-    {
-        throw std::runtime_error("invalid regex");
-    }
 
     consumeChar();
     if(isEnd())
     {
-        throw std::runtime_error("invalid regex");
+        throw std::runtime_error("Invalid regex: Unexpected end of expression after '\\' at index " + std::to_string(index_) + ".");
     }
 
     char cc = peekChar();
     if (!isEscapedLiteralChar(cc))
     {
-        throw std::runtime_error("invalid regex");
+        throw std::runtime_error("Invalid regex: Unexpected character after '\\' at index " + std::to_string(index_) + ".");
     }
+    consumeChar();
 
     if(isMetaChar(cc))
     {
@@ -228,11 +223,8 @@ std::shared_ptr<RegExNode> RegExParser::parseEscapedChar()
     }
     else
     {
-        throw std::runtime_error("invalid regex");
+        throw std::runtime_error("Invalid regex: Unexpected character after '\\' at index " + std::to_string(index_) + ".");
     }
-
-    consumeChar();
-    return std::make_shared<RegExCharNode>(c);
 }
 
 std::shared_ptr<RegExNode> RegExParser::parseCharSet()
@@ -249,40 +241,78 @@ std::shared_ptr<RegExNode> RegExParser::parseCharSet()
             consumeChar();
         }
 
-        std::shared_ptr<RegExNode> charSetItemNode = parseCharSetItem();
-
-        while(!isEnd() && !isInCharSetItemFirstSet(peekChar()))
+        if (isEnd() || peekChar() == ']')
         {
-            charSetItemNode = std::make_shared<RegExConcatenationNode>(charSetItemNode, parseCharSetItem());
+            throw std::runtime_error("Invalid regex: Empty or malformed character set (missing items before ']') at index " + std::to_string(index_) + ".");
         }
 
-        if(!isInCharSetItemFollowSet(peekChar()))
+        do
         {
-            throw std::runtime_error("invalid regex");
+            parseCharSetItem(charSet);
+        } while (!isEnd() && (peekChar() != ']'));
+
+        if (isEnd())
+        {
+            throw std::runtime_error("Invalid regex: Unclosed character set. Expected ']' before end of expression. (at index " + std::to_string(index_) + ").");
+        }
+        if (peekChar() != ']')
+        {
+            throw std::runtime_error("Invalid regex: Expected ']' to close character set, but found '" + std::string(1, peekChar()) + "'. (at index " + std::to_string(index_) + ").");
         }
         consumeChar();
 
-        if(isEnd())
-        {
-            throw std::runtime_error("invalid regex");
-        }
-
-        char cc = peekChar();
-        if(cc != ']')
-        {
-            throw std::runtime_error("invalid regex");
-        }
-
-        //?????
         return std::make_shared<RegExCharSetNode>(charSet, isNegated);
     }
    
-    throw std::runtime_error("invalid regex");
-    return nullptr;
+    throw std::runtime_error("Internal error: parseCharSet called when current character is not '['. (at index " + std::to_string(index_) + ").");
 }
 
 void RegExParser::parseCharSetItem(std::set<char> &charSet)
 {
+    if(isEnd())
+    {
+        throw std::runtime_error("Invalid regex: Unexpected end of expression. (at index " + std::to_string(index_) + ").");
+    }
+
+    char c = peekChar();
+    char cc = peekChar(1);
+    if(isAlphaNumber(c) && cc == '-' && !isEnd(2) && isAlphaNumber(peekChar(2)))
+    {
+        parseRange(charSet);
+    }
+    else if(c == '\\')
+    {
+        std::shared_ptr<RegExNode> node = parseEscapedChar();
+
+        std::shared_ptr<RegExCharNode> charNode = std::dynamic_pointer_cast<RegExCharNode>(node);
+        std::shared_ptr<RegExCharSetNode> charSetNode = std::dynamic_pointer_cast<RegExCharSetNode>(node);
+
+        if(charNode)
+        {
+            charSet.insert(charNode->getCharactar());
+        }
+        else if(charSetNode)
+        {
+            charSet.insert(charSetNode->getCharSet().begin(), charSetNode->getCharSet().end());
+        }
+        else
+        {
+            throw std::runtime_error("Invalid regex: Unexpected character after '\\' at index " + std::to_string(index_) + ".");
+        }
+    }
+    else
+    {
+        std::shared_ptr<RegExNode> node = parseLiteralChar();
+        std::shared_ptr<RegExCharNode> charNode = std::dynamic_pointer_cast<RegExCharNode>(node);
+        if(charNode)
+        {
+            charSet.insert(charNode->getCharactar());
+        }
+        else
+        {
+            throw std::runtime_error("Invalid regex: Unexpected character. (at index " + std::to_string(index_) + ").");
+        }
+    }
 }
 
 // range ::= (digit_char | lowercase_letter | uppercase_letter) '-' (digit_char | lowercase_letter | uppercase_letter)
@@ -291,25 +321,25 @@ void RegExParser::parseRange(std::set<char> &charSet)
     char start = peekChar();
     if(!isAlphaNumber(start))
     {
-        throw std::runtime_error("invalid regex");
+        throw std::runtime_error("Invalid regex: Unexpected character. (at index " + std::to_string(index_) + ").");
     }
 
     consumeChar();
     if(peekChar() != '-')
     {
-        throw std::runtime_error("invalid regex");
+        throw std::runtime_error("Invalid regex: Expected '-' to define range, but found '" + std::string(1, peekChar()) + "'. (at index " + std::to_string(index_) + ").");
     }
 
     consumeChar();
     char end = peekChar();
     if(!isAlphaNumber(end))
     {
-        throw std::runtime_error("invalid regex");
+        throw std::runtime_error("Invalid regex: Unexpected character. (at index " + std::to_string(index_) + ").");
     }
 
     if( start > end )
     {
-        throw std::runtime_error("invalid regex");
+        throw std::runtime_error("Invalid regex: Invalid range. Start character '" + std::string(1, start) + "' is greater than end character '" + std::string(1, end) + "'. (at index " + std::to_string(index_) + ").");
     }
 
     if( isdigit(start) && isdigit(end) )
@@ -325,46 +355,26 @@ void RegExParser::parseRange(std::set<char> &charSet)
     {
         for(char c = start; c <= end; c++)
         {
-            charSet.insert(c);
+            if(isLetter(c))
+            {
+                charSet.insert(c);
+            }
         }
         return ;
     }
 
-    throw std::runtime_error("invalid regex");
-
-    return ;
+    throw std::runtime_error("Invalid regex: Invalid range. Start character '" + std::string(1, start) + "' is not a letter, and end character '" + std::string(1, end) + "' is not a letter. (at index " + std::to_string(index_) + ").");
 }
 
-std::shared_ptr<RegExNode> RegExParser::parseChar()
+
+char RegExParser::peekChar(size_t offset)
 {
-    if (isEnd())
-    {
-        throw std::runtime_error("invalid regex");
-    }
-
-    char c = peekChar();
-
-    if (isLetter(c) || isDigit(c) || isUnderscore(c) || isWhiteSpace(c))
-    {
-        consumeChar();
-        return std::make_shared<RegExCharNode>(c);
-    }
-    else
-    {
-        throw std::runtime_error("invalid regex");
-    }
-
-    return nullptr;
-}
-
-char RegExParser::peekChar()
-{
-    if (isEnd())
+    if (index_ + offset >= regExStr_.size())
     {
         return '\0';
     }
 
-    return regExStr_.at(index_);
+    return regExStr_.at(index_ + offset);
 }
 
 void RegExParser::consumeChar()
@@ -372,9 +382,9 @@ void RegExParser::consumeChar()
     index_++;
 }
 
-bool RegExParser::isEnd()
+bool RegExParser::isEnd(size_t offset)
 {
-    return index_ >= regExStr_.size();
+    return index_ + offset >= regExStr_.size();
 }
 
 bool RegExParser::isLetter(char c)
@@ -394,12 +404,7 @@ bool RegExParser::isUnderscore(char c)
 
 bool RegExParser::isWhiteSpace(char c)
 {
-    return c == ' ' ||
-           c == '\t' ||
-           c == '\n' ||
-           c == '\r' ||
-           c == '\f' ||
-           c == '\v';
+    return c == ' ' || c == '\t' || c == '\n' || c == '\r';
 }
 
 bool RegExParser::isOperator(char c)
@@ -414,11 +419,6 @@ bool RegExParser::isMetaChar(char c)
 
 bool RegExParser::isLiteralChar(char c)
 {
-    if (isMetaChar(c))
-    {
-        return false;
-    }
-
     return !isMetaChar(c);
 }
 
@@ -470,14 +470,4 @@ bool RegExParser::isInFactorFirstSet(char c)
 bool RegExParser::isInTermFollowSet(char c)
 {
     return c == '|' || c == '\0';
-}
-
-bool RegExParser::isInCharSetItemFirstSet(char c)
-{
-    return isLiteralChar(c) || c == '\\';
-}
-
-bool RegExParser::isInCharSetItemFollowSet(char c)
-{
-    return c == ']';
 }
