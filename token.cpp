@@ -42,6 +42,18 @@ std::string tokenTypeToString(TokenType type)
         return "INTEGER";
     case TokenType::EOF_TOKEN:
         return "EOF_TOKEN";
+    case TokenType::L_PAREN:
+        return "L_PAREN";
+    case TokenType::R_PAREN:
+        return "R_PAREN";
+    case TokenType::L_BRACE:
+        return "L_BRACE";
+    case TokenType::R_BRACE:
+        return "R_BRACE";
+    case TokenType::SEMICOLON:
+        return "SEMICOLON";
+    case TokenType::COMMA:
+        return "COMMA";
     case TokenType::UNKNOWN:
         return "UNKNOWN";
     default:

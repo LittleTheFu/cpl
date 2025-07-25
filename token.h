@@ -25,6 +25,13 @@ enum class TokenType
     GREATER,
     GREATER_EQUAL,
 
+    L_PAREN,
+    R_PAREN,
+    L_BRACE,
+    R_BRACE,
+    SEMICOLON,
+    COMMA,
+
     IDENTIFIER,
     INTEGER,
 

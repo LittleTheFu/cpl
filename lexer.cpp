@@ -34,6 +34,13 @@ Lexer::Lexer(const std::string &input)
 
     regExEqual_ = std::make_unique<RegEx>("(=)");
     regExNotEqual_ = std::make_unique<RegEx>("(!=)");
+
+    regExLParen_ = std::make_unique<RegEx>("(\\()");
+    regExRParen_ = std::make_unique<RegEx>("(\\))");
+    regExLBrace_ = std::make_unique<RegEx>("({)");
+    regExRBrace_ = std::make_unique<RegEx>("(})");
+    regExSemicolon_ = std::make_unique<RegEx>("(;)");
+    regExComma_ = std::make_unique<RegEx>("(,)");
 }
 
 std::shared_ptr<Token> Lexer::getNextToken()
@@ -77,6 +84,12 @@ std::shared_ptr<Token> Lexer::getNextToken()
         matchRE(regExDivide_, TokenType::DIVIDE, longestResult);
         matchRE(regExEqual_, TokenType::EQUAL, longestResult);
         matchRE(regExNotEqual_, TokenType::NOT_EQUAL, longestResult);
+        matchRE(regExLParen_, TokenType::L_PAREN, longestResult);
+        matchRE(regExRParen_, TokenType::R_PAREN, longestResult);
+        matchRE(regExLBrace_, TokenType::L_BRACE, longestResult);
+        matchRE(regExRBrace_, TokenType::R_BRACE, longestResult);
+        matchRE(regExSemicolon_, TokenType::SEMICOLON, longestResult);
+        matchRE(regExComma_, TokenType::COMMA, longestResult);
 
         if(longestResult.first.has_value())
         {

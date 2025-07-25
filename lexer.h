@@ -43,6 +43,13 @@ private:
     std::unique_ptr<RegEx> regExEqual_;
     std::unique_ptr<RegEx> regExNotEqual_;
 
+    std::unique_ptr<RegEx> regExLParen_;
+    std::unique_ptr<RegEx> regExRParen_;
+    std::unique_ptr<RegEx> regExLBrace_;
+    std::unique_ptr<RegEx> regExRBrace_;
+    std::unique_ptr<RegEx> regExSemicolon_;
+    std::unique_ptr<RegEx> regExComma_;
+
 private:
     std::map<std::string, TokenType> keywords_;
 };
