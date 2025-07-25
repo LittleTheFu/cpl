@@ -1,4 +1,5 @@
 #include "lexer.h"
+#include <stdexcept>
 
 Lexer::Lexer(const std::string &input)
 {
@@ -87,6 +88,10 @@ std::shared_ptr<Token> Lexer::getNextToken()
             }
             
             return longestResult.second;
+        }
+        else
+        {
+            throw std::runtime_error("Unknown token");
         }
     }
 
