@@ -28,6 +28,16 @@ bool GrammarSymbol::operator!=(const GrammarSymbol &other) const
     return !(*this == other);
 }
 
+bool GrammarSymbol::operator<(const GrammarSymbol &other) const
+{
+    if (name_ != other.name_)
+    {
+        return name_ < other.name_;
+    }
+
+    return type_ < other.type_;
+}
+
 std::string GrammarSymbol::getName() const
 {
     return name_;

@@ -54,7 +54,8 @@ add_executable(cpl_tests
     # test/test.cpp
     # test/testVM.cpp
     # test/testRegEx.cpp
-    test/testRegExParser.cpp
+    # test/testRegExParser.cpp
+    test/testFirstSet.cpp
 )
 
 target_include_directories(cpl_tests PRIVATE

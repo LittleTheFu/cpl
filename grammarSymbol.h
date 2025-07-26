@@ -22,6 +22,7 @@ public:
 
     bool operator==(const GrammarSymbol& other) const;
     bool operator!=(const GrammarSymbol& other) const;
+    bool operator<(const GrammarSymbol& other) const;
 
     std::string getName() const;
     SymbolType getType() const;

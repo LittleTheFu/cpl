@@ -58,6 +58,16 @@ std::string Grammar::toString() const
     return result;
 }
 
+const std::map<GrammarSymbol, Grammar::FirstSet> &Grammar::getCalculatedFirstSets() const
+{
+    return firstSets_;
+}
+
+const std::map<GrammarSymbol, Grammar::FollowSet> &Grammar::getCalculatedFollowSets() const
+{
+    return followSets_;
+}
+
 void Grammar::calculateFirstSets()
 {
     for (const auto &symbol : terminalSymbols_)

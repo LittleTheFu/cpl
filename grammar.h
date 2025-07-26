@@ -26,15 +26,20 @@ public:
     using FirstSet = std::set<GrammarSymbol>;
     using FollowSet = std::set<GrammarSymbol>;
 
+    const std::map<GrammarSymbol, FirstSet>& getCalculatedFirstSets() const;
+    const std::map<GrammarSymbol, FollowSet>& getCalculatedFollowSets() const; 
+
+
+
     void calculateFirstSets();
     void calculateFollowSets();
 
     bool updateFollowSetFromRule(const ProductionRule& rule);
 
-
     bool canDeriveEmpty(const GrammarSymbol& symbol) const;
     bool canDeriveEmpty(const std::vector<GrammarSymbol>& symbols) const;
 
+private:
     std::set<GrammarSymbol> getFirstSet(const std::vector<GrammarSymbol> &symbols, bool &allCanDeriveEmpty) const;
 
 private:
