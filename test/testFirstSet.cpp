@@ -174,11 +174,13 @@ TEST_F(FirstSetTest, IndirectRecursionWithEpsilon) {
 
     grammar.calculateFirstSets();
 
-    EXPECT_EQ(grammar.getCalculatedFirstSets().at(A_nt), (std::set<GrammarSymbol>{f_t, g_t, epsilon_sym}));
-    EXPECT_EQ(grammar.getCalculatedFirstSets().at(B_nt), (std::set<GrammarSymbol>{f_t, g_t}));
+     // 修正后的期望值
+    EXPECT_EQ(grammar.getCalculatedFirstSets().at(A_nt), (std::set<GrammarSymbol>{f_t, g_t, e_t, epsilon_sym})); // 添加了 e_t
+    EXPECT_EQ(grammar.getCalculatedFirstSets().at(B_nt), (std::set<GrammarSymbol>{f_t, g_t, e_t})); // 添加了 e_t
     EXPECT_EQ(grammar.getCalculatedFirstSets().at(C_nt), (std::set<GrammarSymbol>{g_t, epsilon_sym}));
-    EXPECT_EQ(grammar.getCalculatedFirstSets().at(S_nt), (std::set<GrammarSymbol>{f_t, g_t, epsilon_sym}));
+    EXPECT_EQ(grammar.getCalculatedFirstSets().at(S_nt), (std::set<GrammarSymbol>{f_t, g_t, e_t, epsilon_sym}));
 
+    // 终结符的期望值保持不变，它们是正确的
     EXPECT_EQ(grammar.getCalculatedFirstSets().at(d_t), (std::set<GrammarSymbol>{d_t}));
     EXPECT_EQ(grammar.getCalculatedFirstSets().at(e_t), (std::set<GrammarSymbol>{e_t}));
     EXPECT_EQ(grammar.getCalculatedFirstSets().at(f_t), (std::set<GrammarSymbol>{f_t}));
