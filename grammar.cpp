@@ -126,6 +126,58 @@ void Grammar::calculateFirstSets()
     }
 }
 
+bool Grammar::updateFollowSetFromRule(const ProductionRule& rule)
+{
+    bool ruleChanged = false; // 记录当前规则是否引起了变化
+
+    const auto &left = rule.getLeft();
+    const auto &right = rule.getRight();
+
+    if (right.empty()) {
+        return false;
+    }
+
+    for (size_t i = 0; i < right.size(); i++)
+    {
+        const auto &currentSymbolInRight = right[i];
+
+        if (currentSymbolInRight.getType() == SymbolType::NonTerminal)
+        {
+            std::vector<GrammarSymbol> betaSymbols;
+            for (size_t j = i + 1; j < right.size(); j++)
+            {
+                betaSymbols.push_back(right[j]);
+            }
+
+            bool betaCanDeriveEmpty = false;
+            std::set<GrammarSymbol> firstOfBeta = getFirstSet(betaSymbols, betaCanDeriveEmpty);
+
+            for (const auto &firstSymbol : firstOfBeta)
+            {
+                if (firstSymbol != GrammarSymbol::getEpsilonSymbol())
+                {
+                    if (followSets_[currentSymbolInRight].insert(firstSymbol).second)
+                    {
+                        ruleChanged = true;
+                    }
+                }
+            }
+
+            if (betaCanDeriveEmpty)
+            {
+                for (const auto &followSymbolFromLeft : followSets_[left])
+                {
+                    if (followSets_[currentSymbolInRight].insert(followSymbolFromLeft).second)
+                    {
+                        ruleChanged = true;
+                    }
+                }
+            }
+        }
+    }
+    return ruleChanged;
+}
+
 void Grammar::calculateFollowSets()
 {
     for (const auto &symbol : nonTerminalSymbols_)
@@ -133,51 +185,17 @@ void Grammar::calculateFollowSets()
         followSets_[symbol] = {};
     }
     followSets_[startSymbol_].insert(GrammarSymbol::getEndSymbol());
-    bool changed = true;
 
+    bool changed = true;
     while (changed)
     {
+        changed = false;
+
         for (const auto &rule : rules_)
         {
-            const auto &left = rule.getLeft();
-            const auto &right = rule.getRight();
-
-            for (size_t i = 0; i < right.size(); i++)
+            if (updateFollowSetFromRule(rule))
             {
-                const auto &symbol = right[i];
-                if (symbol.getType() == SymbolType::NonTerminal)
-                {
-                    bool allCanDeriveEmpty = true;
-                    std::vector<GrammarSymbol> symbols;
-
-                    for (size_t j = i + 1; j < right.size(); j++)
-                    {
-                        symbols.push_back(right[j]);
-                    }
-
-                    std::set<GrammarSymbol> first = getFirstSet(symbols, allCanDeriveEmpty);
-                    for (const auto &firstSymbol : first)
-                    {
-                        if (firstSymbol != GrammarSymbol::getEpsilonSymbol())
-                        {
-                            if (followSets_[symbol].insert(firstSymbol).second)
-                            {
-                                changed = true;
-                            }
-                        }
-                    }
-
-                    if (allCanDeriveEmpty)
-                    {
-                        for (const auto &followSymbol : followSets_[left])
-                        {
-                            if (followSets_[symbol].insert(followSymbol).second)
-                            {
-                                changed = true;
-                            }
-                        }
-                    }
-                }
+                changed = true;
             }
         }
     }

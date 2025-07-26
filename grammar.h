@@ -29,6 +29,9 @@ public:
     void calculateFirstSets();
     void calculateFollowSets();
 
+    bool updateFollowSetFromRule(const ProductionRule& rule);
+
+
     bool canDeriveEmpty(const GrammarSymbol& symbol) const;
     bool canDeriveEmpty(const std::vector<GrammarSymbol>& symbols) const;
 
