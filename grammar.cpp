@@ -94,6 +94,8 @@ void Grammar::calculateFirstSets()
     bool changed = true;
     while (changed)
     {
+        std::map<GrammarSymbol, FirstSet> prevFirstSets = firstSets_;
+        
         changed = false;
         for (const auto &rule : rules_)
         {
@@ -108,7 +110,7 @@ void Grammar::calculateFirstSets()
             bool allCanDeriveEmpty = true;
             for (size_t i = 0; i < right.size(); i++)
             {
-                const auto &first = firstSets_[right[i]];
+                const auto &first = prevFirstSets[right[i]];
 
                 for (const auto &symbol : first)
                 {
