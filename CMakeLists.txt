@@ -9,6 +9,8 @@ set(PROJECT_SOURCES
     alphaBet.cpp
     lexer.cpp
     token.cpp
+    productionRule.cpp
+    grammarSymbol.cpp
 
     regluarExpression/regEx.cpp
     regluarExpression/regExParser.cpp
