@@ -14,6 +14,7 @@ enum class SymbolType
 class GrammarSymbol
 {
 public:
+    explicit GrammarSymbol();
     explicit GrammarSymbol(const std::string& name, SymbolType type);
     ~GrammarSymbol() = default;
 

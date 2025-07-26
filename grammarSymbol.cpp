@@ -1,5 +1,11 @@
 #include "grammarSymbol.h"
 
+GrammarSymbol::GrammarSymbol()
+{
+    name_ = "";
+    type_ = SymbolType::Epsilon;
+}
+
 GrammarSymbol::GrammarSymbol(const std::string &name, SymbolType type)
 {
     name_ = name;
