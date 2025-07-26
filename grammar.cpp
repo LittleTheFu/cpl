@@ -213,7 +213,7 @@ void Grammar::calculateFollowSets()
 
 bool Grammar::canDeriveEmpty(const GrammarSymbol &symbol) const
 {
-    const auto &first = firstSets_[symbol];
+    auto &first = firstSets_.at(symbol);
     return first.count(GrammarSymbol::getEpsilonSymbol()) > 0;
 }
 
