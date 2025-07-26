@@ -15,7 +15,7 @@ Grammar::Grammar(const std::vector<ProductionRule> &rules, const GrammarSymbol &
             {
                 terminalSymbols_.insert(symbol);
             }
-            else if(symbol.getType() == SymbolType::NonTerminal)
+            else if (symbol.getType() == SymbolType::NonTerminal)
             {
                 nonTerminalSymbols_.insert(symbol);
             }
@@ -70,12 +70,12 @@ void Grammar::calculateFirstSets()
         firstSets_[symbol] = {};
     }
 
-    for(const auto &rule : rules_)
+    for (const auto &rule : rules_)
     {
         const auto &left = rule.getLeft();
         const auto &right = rule.getRight();
 
-        if(right.empty())
+        if (right.empty())
         {
             firstSets_[left].insert(GrammarSymbol::getEpsilonSymbol());
         }
@@ -90,7 +90,7 @@ void Grammar::calculateFirstSets()
             const auto &left = rule.getLeft();
             const auto &right = rule.getRight();
 
-            if(right.empty())
+            if (right.empty())
             {
                 continue;
             }
@@ -111,7 +111,7 @@ void Grammar::calculateFirstSets()
                     }
                 }
 
-                if(first.count(GrammarSymbol::getEpsilonSymbol()) == 0)
+                if (first.count(GrammarSymbol::getEpsilonSymbol()) == 0)
                 {
                     allCanDeriveEmpty = false;
                     break;
@@ -128,6 +128,59 @@ void Grammar::calculateFirstSets()
 
 void Grammar::calculateFollowSets()
 {
+    for (const auto &symbol : nonTerminalSymbols_)
+    {
+        followSets_[symbol] = {};
+    }
+    followSets_[startSymbol_].insert(GrammarSymbol::getEndSymbol());
+    bool changed = true;
+
+    while (changed)
+    {
+        for (const auto &rule : rules_)
+        {
+            const auto &left = rule.getLeft();
+            const auto &right = rule.getRight();
+
+            for (size_t i = 0; i < right.size(); i++)
+            {
+                const auto &symbol = right[i];
+                if (symbol.getType() == SymbolType::NonTerminal)
+                {
+                    bool allCanDeriveEmpty = true;
+                    std::vector<GrammarSymbol> symbols;
+
+                    for (size_t j = i + 1; j < right.size(); j++)
+                    {
+                        symbols.push_back(right[j]);
+                    }
+
+                    std::set<GrammarSymbol> first = getFirstSet(symbols, allCanDeriveEmpty);
+                    for (const auto &firstSymbol : first)
+                    {
+                        if (firstSymbol != GrammarSymbol::getEpsilonSymbol())
+                        {
+                            if (followSets_[symbol].insert(firstSymbol).second)
+                            {
+                                changed = true;
+                            }
+                        }
+                    }
+
+                    if (allCanDeriveEmpty)
+                    {
+                        for (const auto &followSymbol : followSets_[left])
+                        {
+                            if (followSets_[symbol].insert(followSymbol).second)
+                            {
+                                changed = true;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
 }
 
 bool Grammar::canDeriveEmpty(const GrammarSymbol &symbol) const
@@ -152,4 +205,33 @@ bool Grammar::canDeriveEmpty(const std::vector<GrammarSymbol> &symbols) const
     }
 
     return true;
+}
+
+std::set<GrammarSymbol> Grammar::getFirstSet(const std::vector<GrammarSymbol> &symbols, bool &allCanDeriveEmpty) const
+{
+    std::set<GrammarSymbol> firstSet = {};
+    allCanDeriveEmpty = true;
+
+    if (symbols.empty())
+    {
+        return firstSet;
+    }
+
+    for (const auto &symbol : symbols)
+    {
+        const auto &first = firstSets_.at(symbol);
+
+        for (const auto &symbol : first)
+        {
+            firstSet.insert(symbol);
+        }
+
+        if (first.count(GrammarSymbol::getEpsilonSymbol()) == 0)
+        {
+            allCanDeriveEmpty = false;
+            break;
+        }
+    }
+
+    return firstSet;
 }

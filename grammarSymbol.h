@@ -8,6 +8,7 @@ enum class SymbolType
     NonTerminal,
     Terminal,
     Epsilon,
+    End,
 };
 
 class GrammarSymbol
@@ -17,6 +18,7 @@ public:
     ~GrammarSymbol() = default;
 
     static GrammarSymbol getEpsilonSymbol();
+    static GrammarSymbol getEndSymbol();
 
     bool operator==(const GrammarSymbol& other) const;
     bool operator!=(const GrammarSymbol& other) const;

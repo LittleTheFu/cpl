@@ -12,6 +12,12 @@ GrammarSymbol GrammarSymbol::getEpsilonSymbol()
     return epsilon;
 }
 
+GrammarSymbol GrammarSymbol::getEndSymbol()
+{
+    static GrammarSymbol end("$", SymbolType::End);
+    return end;
+}
+
 bool GrammarSymbol::operator==(const GrammarSymbol &other) const
 {
     return name_ == other.name_ && type_ == other.type_;

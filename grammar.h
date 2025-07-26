@@ -32,6 +32,8 @@ public:
     bool canDeriveEmpty(const GrammarSymbol& symbol) const;
     bool canDeriveEmpty(const std::vector<GrammarSymbol>& symbols) const;
 
+    std::set<GrammarSymbol> getFirstSet(const std::vector<GrammarSymbol> &symbols, bool &allCanDeriveEmpty) const;
+
 private:
     std::vector<ProductionRule> rules_;
     GrammarSymbol startSymbol_;
