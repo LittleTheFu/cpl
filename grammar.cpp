@@ -128,7 +128,7 @@ void Grammar::calculateFirstSets()
 
 bool Grammar::updateFollowSetFromRule(const ProductionRule& rule)
 {
-    bool ruleChanged = false; // 记录当前规则是否引起了变化
+    bool ruleChanged = false;
 
     const auto &left = rule.getLeft();
     const auto &right = rule.getRight();
