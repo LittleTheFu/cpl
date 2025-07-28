@@ -25,6 +25,8 @@ Grammar::Grammar(std::vector<ProductionRule>&& rules, const GrammarSymbol &start
             }
         }
     }
+
+    nonTerminalSymbols_.insert(argumentedStartSymbol_);
 }
 
 const ProductionRule &Grammar::getArgumentedRule() const
