@@ -20,7 +20,7 @@ enum class ActionType
 struct Action
 {
     ActionType type;
-    int stateId;
+    int shiftStateId;
     size_t productionRuleId;
 };
 
