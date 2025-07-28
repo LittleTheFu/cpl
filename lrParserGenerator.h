@@ -5,6 +5,7 @@
 #include "lrItem.h"
 #include "grammarSymbol.h"
 #include <set>
+#include "lrState.h"
 
 class LRParserGenerator
 {
@@ -13,7 +14,7 @@ public:
     ~LRParserGenerator() = default;
 
     std::set<LRItem> caculateClosure(const std::set<LRItem>& item);
-    std::set<LRItem> calculateGoto(const std::set<LRItem>& state, const GrammarSymbol& inputSymbol);
+    std::set<LRItem> calculateGoto(const LRState &state, const GrammarSymbol &inputSymbol);
 
 private:
     const Grammar& grammar_;

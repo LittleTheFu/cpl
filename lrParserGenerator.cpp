@@ -52,11 +52,11 @@ std::set<LRItem> LRParserGenerator::caculateClosure(const std::set<LRItem> &item
     return closure;
 }
 
-std::set<LRItem> LRParserGenerator::calculateGoto(const std::set<LRItem> &state, const GrammarSymbol &inputSymbol)
+std::set<LRItem> LRParserGenerator::calculateGoto(const LRState &state, const GrammarSymbol &inputSymbol)
 {
     std::set<LRItem> gotoCoreItems;
 
-    for (const auto &lrItem : state)
+    for (const auto &lrItem : state.getItems())
     {
         std::optional<GrammarSymbol> symbolAfterDot = lrItem.getSymbolAfterDot();
         if (symbolAfterDot.has_value())
