@@ -13,7 +13,8 @@ public:
     ~LRItem() = default;
 
     std::string toString() const;
-
+    bool isDotAtEnd() const;
+    
     ProductionRule getRule() const;
     size_t getDotPosition() const;
     GrammarSymbol getLookAheadSymbol() const;

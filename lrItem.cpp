@@ -10,6 +10,11 @@ std::string LRItem::toString() const
     return rule_.toString() + " . " + std::to_string(dotPosition_);
 }
 
+bool LRItem::isDotAtEnd() const
+{
+    return dotPosition_ >= rule_.getRight().size();
+}
+
 ProductionRule LRItem::getRule() const
 {
     return rule_;
