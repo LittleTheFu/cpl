@@ -16,6 +16,9 @@ public:
     const ProductionRule &getArgumentedRule() const;
     const std::vector<ProductionRule>& getRules() const;
 
+    size_t getRuleId(const ProductionRule& rule) const;
+    const ProductionRule& getRuleById(size_t id) const;
+
     const GrammarSymbol& getArgumentedStartSymbol() const;
     const GrammarSymbol& getEndSymbol() const;
 

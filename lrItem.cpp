@@ -15,6 +15,16 @@ bool LRItem::isDotAtEnd() const
     return dotPosition_ >= rule_.getRight().size();
 }
 
+bool LRItem::isReduceItem(const GrammarSymbol &nextSymbol) const
+{
+    if(!isDotAtEnd())
+    {
+        return false;
+    }
+
+    return lookAheadSymbol_ == nextSymbol;
+}
+
 ProductionRule LRItem::getRule() const
 {
     return rule_;

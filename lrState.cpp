@@ -10,6 +10,34 @@ bool LRState::isEmpty() const
     return items_.empty();
 }
 
+std::set<LRItem> LRState::getReduceItems(const GrammarSymbol &nextSymbol) const
+{
+    std::set<LRItem> result;
+    for (const auto &item : items_)
+    {
+        if (item.isReduceItem(nextSymbol))
+        {
+            result.insert(item);
+        }
+    }
+
+    return result;
+}
+
+
+bool LRState::canShift() const
+{
+    for (const auto &item : items_)
+    {
+        if (item.isDotAtEnd())
+        {
+            return false;
+        }
+    }
+
+    return true;
+}
+
 bool LRState::operator==(const LRState &other) const
 {
     return items_ == other.items_;

@@ -11,6 +11,8 @@ public:
     ~LRState() = default;
 
     bool isEmpty() const;
+    std::set<LRItem> getReduceItems(const GrammarSymbol& nextSymbol) const;
+    bool canShift() const;
 
     bool operator==(const LRState& other) const;
     bool operator!=(const LRState& other) const;

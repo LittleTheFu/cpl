@@ -9,6 +9,21 @@
 #include <map>
 #include <optional>
 
+enum class ActionType
+{
+    Shift,
+    Reduce,
+    Accept,
+    Error,
+};
+
+struct Action
+{
+    ActionType type;
+    int stateId;
+    size_t productionRuleId;
+};
+
 class LRParserGenerator
 {
 public:
@@ -29,6 +44,7 @@ private:
     std::map<LRState, int> dfa_;
 
     std::map<int, std::map<GrammarSymbol, int>> gotoTable_;
+    std::map<int, std::map<GrammarSymbol, Action>> actionTable_;
 };
 
 

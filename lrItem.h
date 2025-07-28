@@ -14,6 +14,7 @@ public:
 
     std::string toString() const;
     bool isDotAtEnd() const;
+    bool isReduceItem(const GrammarSymbol& nextSymbol) const;
     
     ProductionRule getRule() const;
     size_t getDotPosition() const;

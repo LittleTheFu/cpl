@@ -53,6 +53,27 @@ const std::vector<ProductionRule> &Grammar::getRules() const
     return rules_;
 }
 
+size_t Grammar::getRuleId(const ProductionRule &rule) const
+{
+    auto it = std::find(rules_.begin(), rules_.end(), rule);
+    if (it == rules_.end())
+    {
+        throw std::runtime_error("Rule not found");
+    }
+    
+    return it - rules_.begin();
+}
+
+const ProductionRule& Grammar::getRuleById(size_t id) const
+{
+    if (id >= rules_.size())
+    {
+        throw std::runtime_error("Rule id out of range");
+    }
+
+    return rules_[id];
+}
+
 const GrammarSymbol &Grammar::getArgumentedStartSymbol() const
 {
     return argumentedStartSymbol_;

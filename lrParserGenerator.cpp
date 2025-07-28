@@ -94,20 +94,40 @@ void LRParserGenerator::buildDFA()
             {
                 continue;
             }
-            LRState gotoState = calculateNextState(state, symbol);
-            if (gotoState.isEmpty())
+            LRState nextState = calculateNextState(state, symbol);
+            if (nextState.isEmpty())
             {
                 continue;
             }
-            if (dfa_.find(gotoState) == dfa_.end())
+            if (dfa_.find(nextState) == dfa_.end())
             {
-                dfa_[gotoState] = getNextId();
-                q.push(gotoState);
+                dfa_[nextState] = getNextId();
+                q.push(nextState);
             }
 
             if (symbol.getType() == SymbolType::NonTerminal)
             {
-                gotoTable_[stateId][symbol] = dfa_[gotoState];
+                gotoTable_[stateId][symbol] = dfa_[nextState];
+            }
+            else if(symbol.getType() == SymbolType::Terminal)
+            {
+                if (nextState.canShift())
+                {
+                    actionTable_[stateId][symbol] = Action{ActionType::Shift, dfa_[nextState], 0};
+                }
+                else if (auto reduceItems = nextState.getReduceItems(symbol); reduceItems.size() == 1)
+                {
+                    ProductionRule rule = reduceItems.begin()->getRule();
+                    actionTable_[stateId][symbol] = Action{ActionType::Reduce, 0, grammar_.getRuleId(rule)};
+                }
+                else
+                {
+                    throw std::runtime_error("Conflict in action table");
+                }
+            }
+            else if(symbol.getType() == SymbolType::End)
+            {
+                actionTable_[stateId][symbol] = Action{ActionType::Accept, 0, 0};
             }
         }
     }
