@@ -16,6 +16,7 @@ public:
 
     ProductionRule getRule() const;
     size_t getDotPosition() const;
+    GrammarSymbol getLookAheadSymbol() const;
     std::optional<GrammarSymbol> getSymbolAfterDot() const;
     std::vector<GrammarSymbol> getBetaLookaheadSequence() const;
 

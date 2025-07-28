@@ -20,6 +20,11 @@ size_t LRItem::getDotPosition() const
     return dotPosition_;
 }
 
+GrammarSymbol LRItem::getLookAheadSymbol() const
+{
+    return lookAheadSymbol_;
+}
+
 bool LRItem::operator==(const LRItem &other) const
 {
     return rule_ == other.rule_ && dotPosition_ == other.dotPosition_;

@@ -51,3 +51,24 @@ std::set<LRItem> LRParserGenerator::caculateClosure(const std::set<LRItem> &item
 
     return closure;
 }
+
+std::set<LRItem> LRParserGenerator::calculateGoto(const std::set<LRItem> &state, const GrammarSymbol &inputSymbol)
+{
+    std::set<LRItem> gotoCoreItems;
+
+    for (const auto &lrItem : state)
+    {
+        std::optional<GrammarSymbol> symbolAfterDot = lrItem.getSymbolAfterDot();
+        if (symbolAfterDot.has_value())
+        {
+            GrammarSymbol symbol = symbolAfterDot.value();
+            if (symbol == inputSymbol)
+            {
+                LRItem newItem = LRItem(lrItem.getRule(), lrItem.getDotPosition() + 1, lrItem.getLookAheadSymbol());
+                gotoCoreItems.insert(newItem);
+            }
+        }
+    }
+
+    return caculateClosure(gotoCoreItems);
+}
