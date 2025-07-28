@@ -14,6 +14,7 @@ set(PROJECT_SOURCES
     grammar.cpp
     lrItem.cpp
     lrParserGenerator.cpp
+    lrState.cpp
 
     regluarExpression/regEx.cpp
     regluarExpression/regExParser.cpp
