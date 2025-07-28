@@ -19,6 +19,8 @@ public:
 
     const std::set<GrammarSymbol>& getNonTerminalSymbols() const;
     const std::set<GrammarSymbol>& getTerminalSymbols() const;
+    const std::set<GrammarSymbol>& getAllSymbols() const;
+
     const std::set<ProductionRule> getProductionRules(const GrammarSymbol& symbol) const;
 
     void setNonTerminalSymbols(const std::set<GrammarSymbol>& nonTerminalSymbols);
@@ -54,6 +56,7 @@ private:
 
     std::set<GrammarSymbol> nonTerminalSymbols_;
     std::set<GrammarSymbol> terminalSymbols_;
+    std::set<GrammarSymbol> allSymbols_;
 
     //-------------------------------------------------------
     std::map<GrammarSymbol, FirstSet> firstSets_;

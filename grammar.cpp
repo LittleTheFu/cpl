@@ -36,6 +36,9 @@ Grammar::Grammar(std::vector<ProductionRule>&& rules, const GrammarSymbol &start
         }
     }
 
+    allSymbols_ = nonTerminalSymbols_;
+    allSymbols_.insert(terminalSymbols_.begin(), terminalSymbols_.end());
+
     // nonTerminalSymbols_.insert(argumentedStartSymbol_);
     // terminalSymbols_.insert(endSymbol_);
 }
@@ -63,6 +66,11 @@ const std::set<GrammarSymbol> &Grammar::getNonTerminalSymbols() const
 const std::set<GrammarSymbol> &Grammar::getTerminalSymbols() const
 {
     return terminalSymbols_;
+}
+
+const std::set<GrammarSymbol> &Grammar::getAllSymbols() const
+{
+    return allSymbols_;
 }
 
 const std::set<ProductionRule> Grammar::getProductionRules(const GrammarSymbol &symbol) const
