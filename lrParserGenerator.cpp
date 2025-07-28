@@ -85,13 +85,14 @@ void LRParserGenerator::buildDFA()
     while (!q.empty())
     {
         LRState state = q.front();
+        int stateId = dfa_[state];
         q.pop();
 
         for (const auto &symbol : grammar_.getAllSymbols())
         {
-            if(symbol == grammar_.getArgumentedStartSymbol())
+            if (symbol == grammar_.getArgumentedStartSymbol())
             {
-                continue ;
+                continue;
             }
             LRState gotoState = calculateNextState(state, symbol);
             if (gotoState.isEmpty())
@@ -103,6 +104,11 @@ void LRParserGenerator::buildDFA()
                 dfa_[gotoState] = getNextId();
                 q.push(gotoState);
             }
+
+            if (symbol.getType() == SymbolType::NonTerminal)
+            {
+                gotoTable_[stateId][symbol] = dfa_[gotoState];
+            }
         }
     }
 }
@@ -113,15 +119,15 @@ int LRParserGenerator::getNextId()
     return id++;
 }
 
-std::optional<LRState> LRParserGenerator::getState(int id) const
-{
-    for (const auto &pair : dfa_)
-    {
-        if (pair.second == id)
-        {
-            return pair.first;
-        }
-    }
-    
-    return std::nullopt;
-}
+// std::optional<LRState> LRParserGenerator::getState(int id) const
+// {
+//     for (const auto &pair : dfa_)
+//     {
+//         if (pair.second == id)
+//         {
+//             return pair.first;
+//         }
+//     }
+
+//     return std::nullopt;
+// }

@@ -22,7 +22,7 @@ private:
     void buildDFA();
     static int getNextId();
 
-    std::optional<LRState> getState(int id) const;
+    // std::optional<LRState> getState(int id) const;
 
 private:
     const Grammar& grammar_;
