@@ -10,9 +10,10 @@
 class Grammar
 {
 public:
-    explicit Grammar(const std::vector<ProductionRule>& rules, const GrammarSymbol& startSymbol);
+    explicit Grammar(std::vector<ProductionRule>&& rules, const GrammarSymbol& startSymbol);
     ~Grammar() = default;
 
+    const ProductionRule &getArgumentedRule() const;
     const std::vector<ProductionRule>& getRules() const;
 
     const std::set<GrammarSymbol>& getNonTerminalSymbols() const;
@@ -45,6 +46,9 @@ public:
 private:
     std::vector<ProductionRule> rules_;
     GrammarSymbol startSymbol_;
+
+    GrammarSymbol argumentedStartSymbol_;
+    ProductionRule argumentedRule_;
 
     std::set<GrammarSymbol> nonTerminalSymbols_;
     std::set<GrammarSymbol> terminalSymbols_;

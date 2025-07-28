@@ -1,9 +1,13 @@
 #include "grammar.h"
 #include <algorithm>
 
-Grammar::Grammar(const std::vector<ProductionRule> &rules, const GrammarSymbol &startSymbol)
+Grammar::Grammar(std::vector<ProductionRule>&& rules, const GrammarSymbol &startSymbol)
+    : rules_(std::move(rules)),
+      startSymbol_(startSymbol),
+      argumentedStartSymbol_("S'", SymbolType::NonTerminal),
+      argumentedRule_(argumentedStartSymbol_, {startSymbol_})
 {
-    rules_ = rules;
+    rules_.push_back(argumentedRule_);
     startSymbol_ = startSymbol;
 
     for (const auto &rule : rules_)
@@ -21,6 +25,11 @@ Grammar::Grammar(const std::vector<ProductionRule> &rules, const GrammarSymbol &
             }
         }
     }
+}
+
+const ProductionRule &Grammar::getArgumentedRule() const
+{
+    return argumentedRule_;
 }
 
 const std::vector<ProductionRule> &Grammar::getRules() const

@@ -30,7 +30,7 @@ TEST_F(FollowSetTest, SimpleGrammar) {
     ProductionRule rule3(B_nt, {b_t});
 
     std::vector<ProductionRule> rules = {rule1, rule2, rule3};
-    Grammar grammar(rules, S_nt); // S 是起始符号
+    Grammar grammar(std::move(rules), S_nt); // S 是起始符号
 
     // 必须先计算 First 集合，Follow 集合依赖它
     grammar.calculateFirstSets(); 
@@ -69,7 +69,7 @@ TEST_F(FollowSetTest, GrammarWithEpsilonPropagation) {
     ProductionRule rule5(B_nt, {}); // B ::= ε
 
     std::vector<ProductionRule> rules = {rule1, rule2, rule3, rule4, rule5};
-    Grammar grammar(rules, S_nt);
+    Grammar grammar(std::move(rules), S_nt);
 
     grammar.calculateFirstSets();
     grammar.calculateFollowSets();
@@ -121,7 +121,7 @@ TEST_F(FollowSetTest, GrammarWithLeftRecursionAndChaining) {
     ProductionRule rule6(F_nt, {id_t});               // F ::= id
 
     std::vector<ProductionRule> rules = {rule1, rule2, rule3, rule4, rule5, rule6};
-    Grammar grammar(rules, E_nt); // E 是起始符号
+    Grammar grammar(std::move(rules), E_nt); // E 是起始符号
 
     grammar.calculateFirstSets(); // 必须先计算 First 集合
     grammar.calculateFollowSets();
@@ -185,7 +185,7 @@ TEST_F(FollowSetTest, IndirectRecursionWithEpsilonComplex) {
     ProductionRule rule7(C_nt, {}); // C ::= ε
 
     std::vector<ProductionRule> rules = {rule1, rule2, rule3, rule4, rule5, rule6, rule7};
-    Grammar grammar(rules, S_nt);
+    Grammar grammar(std::move(rules), S_nt);
 
     // 必须先计算 First 集合
     grammar.calculateFirstSets(); 
