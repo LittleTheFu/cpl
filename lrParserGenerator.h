@@ -7,6 +7,7 @@
 #include "lrState.h"
 #include <set>
 #include <map>
+#include <optional>
 
 class LRParserGenerator
 {
@@ -21,9 +22,13 @@ private:
     void buildDFA();
     static int getNextId();
 
+    std::optional<LRState> getState(int id) const;
+
 private:
     const Grammar& grammar_;
     std::map<LRState, int> dfa_;
+
+    std::map<int, std::map<GrammarSymbol, int>> gotoTable_;
 };
 
 

@@ -1,5 +1,6 @@
 #include "lrParserGenerator.h"
 #include <queue>
+#include <stdexcept>
 
 LRParserGenerator::LRParserGenerator(const Grammar &grammar)
     : grammar_(grammar)
@@ -110,4 +111,17 @@ int LRParserGenerator::getNextId()
 {
     static int id = 0;
     return id++;
+}
+
+std::optional<LRState> LRParserGenerator::getState(int id) const
+{
+    for (const auto &pair : dfa_)
+    {
+        if (pair.second == id)
+        {
+            return pair.first;
+        }
+    }
+    
+    return std::nullopt;
 }
