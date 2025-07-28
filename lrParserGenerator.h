@@ -16,7 +16,7 @@ public:
 
 private:
     std::set<LRItem> caculateClosure(const std::set<LRItem>& item);
-    LRState calculateGoto(const LRState &state, const GrammarSymbol &inputSymbol);
+    LRState calculateNextState(const LRState &state, const GrammarSymbol &inputSymbol);
 
     void buildDFA();
     static int getNextId();

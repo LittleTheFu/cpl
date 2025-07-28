@@ -52,7 +52,7 @@ std::set<LRItem> LRParserGenerator::caculateClosure(const std::set<LRItem> &item
     return closure;
 }
 
-LRState LRParserGenerator::calculateGoto(const LRState &state, const GrammarSymbol &inputSymbol)
+LRState LRParserGenerator::calculateNextState(const LRState &state, const GrammarSymbol &inputSymbol)
 {
     std::set<LRItem> gotoCoreItems;
 
@@ -92,7 +92,7 @@ void LRParserGenerator::buildDFA()
             {
                 continue ;
             }
-            LRState gotoState = calculateGoto(state, symbol);
+            LRState gotoState = calculateNextState(state, symbol);
             if (gotoState.isEmpty())
             {
                 continue;
