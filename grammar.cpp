@@ -1,9 +1,11 @@
 #include "grammar.h"
 #include <algorithm>
+#include <stdexcept>
 
 Grammar::Grammar(std::vector<ProductionRule>&& rules, const GrammarSymbol &startSymbol)
     : rules_(std::move(rules)),
       startSymbol_(startSymbol),
+      endSymbol_("$", SymbolType::End),
       argumentedStartSymbol_("S'", SymbolType::NonTerminal),
       argumentedRule_(argumentedStartSymbol_, {startSymbol_})
 {
@@ -23,10 +25,19 @@ Grammar::Grammar(std::vector<ProductionRule>&& rules, const GrammarSymbol &start
             {
                 nonTerminalSymbols_.insert(symbol);
             }
+            else if(symbol.getType() == SymbolType::End)
+            {
+                terminalSymbols_.insert(symbol);
+            }
+            else
+            {
+                throw std::runtime_error("Unknown symbol type");
+            }
         }
     }
 
-    nonTerminalSymbols_.insert(argumentedStartSymbol_);
+    // nonTerminalSymbols_.insert(argumentedStartSymbol_);
+    // terminalSymbols_.insert(endSymbol_);
 }
 
 const ProductionRule &Grammar::getArgumentedRule() const
@@ -37,6 +48,11 @@ const ProductionRule &Grammar::getArgumentedRule() const
 const std::vector<ProductionRule> &Grammar::getRules() const
 {
     return rules_;
+}
+
+const GrammarSymbol &Grammar::getEndSymbol() const
+{
+    return endSymbol_;
 }
 
 const std::set<GrammarSymbol> &Grammar::getNonTerminalSymbols() const

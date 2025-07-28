@@ -15,6 +15,7 @@ public:
 
     const ProductionRule &getArgumentedRule() const;
     const std::vector<ProductionRule>& getRules() const;
+    const GrammarSymbol& getEndSymbol() const;
 
     const std::set<GrammarSymbol>& getNonTerminalSymbols() const;
     const std::set<GrammarSymbol>& getTerminalSymbols() const;
@@ -46,6 +47,7 @@ public:
 private:
     std::vector<ProductionRule> rules_;
     GrammarSymbol startSymbol_;
+    GrammarSymbol endSymbol_;
 
     GrammarSymbol argumentedStartSymbol_;
     ProductionRule argumentedRule_;
