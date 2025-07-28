@@ -53,6 +53,11 @@ const std::vector<ProductionRule> &Grammar::getRules() const
     return rules_;
 }
 
+const GrammarSymbol &Grammar::getArgumentedStartSymbol() const
+{
+    return argumentedStartSymbol_;
+}
+
 const GrammarSymbol &Grammar::getEndSymbol() const
 {
     return endSymbol_;

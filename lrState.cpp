@@ -5,6 +5,11 @@ LRState::LRState(const std::set<LRItem> &items)
     items_ = items;
 }
 
+bool LRState::isEmpty() const
+{
+    return items_.empty();
+}
+
 bool LRState::operator==(const LRState &other) const
 {
     return items_ == other.items_;

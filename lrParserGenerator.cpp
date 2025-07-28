@@ -52,7 +52,7 @@ std::set<LRItem> LRParserGenerator::caculateClosure(const std::set<LRItem> &item
     return closure;
 }
 
-std::set<LRItem> LRParserGenerator::calculateGoto(const LRState &state, const GrammarSymbol &inputSymbol)
+LRState LRParserGenerator::calculateGoto(const LRState &state, const GrammarSymbol &inputSymbol)
 {
     std::set<LRItem> gotoCoreItems;
 
@@ -70,5 +70,44 @@ std::set<LRItem> LRParserGenerator::calculateGoto(const LRState &state, const Gr
         }
     }
 
-    return caculateClosure(gotoCoreItems);
+    return LRState(caculateClosure(gotoCoreItems));
+}
+
+void LRParserGenerator::buildDFA()
+{
+    LRState startState = LRState(caculateClosure({LRItem(grammar_.getArgumentedRule(), 0, grammar_.getEndSymbol())}));
+    int startStateId = getNextId();
+    dfa_[startState] = startStateId;
+
+    std::queue<LRState> q;
+    q.push(startState);
+    while (!q.empty())
+    {
+        LRState state = q.front();
+        q.pop();
+
+        for (const auto &symbol : grammar_.getAllSymbols())
+        {
+            if(symbol == grammar_.getArgumentedStartSymbol())
+            {
+                continue ;
+            }
+            LRState gotoState = calculateGoto(state, symbol);
+            if (gotoState.isEmpty())
+            {
+                continue;
+            }
+            if (dfa_.find(gotoState) == dfa_.end())
+            {
+                dfa_[gotoState] = getNextId();
+                q.push(gotoState);
+            }
+        }
+    }
+}
+
+int LRParserGenerator::getNextId()
+{
+    static int id = 0;
+    return id++;
 }

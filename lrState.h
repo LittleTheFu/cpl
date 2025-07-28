@@ -10,6 +10,8 @@ public:
     LRState(const std::set<LRItem>& items);
     ~LRState() = default;
 
+    bool isEmpty() const;
+
     bool operator==(const LRState& other) const;
     bool operator!=(const LRState& other) const;
     bool operator<(const LRState& other) const;
