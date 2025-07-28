@@ -15,6 +15,10 @@ public:
     GrammarSymbol getLeft() const;
     const std::vector<GrammarSymbol>& getRight() const;
 
+    bool operator==(const ProductionRule& other) const;
+    bool operator!=(const ProductionRule& other) const;
+    bool operator<(const ProductionRule& other) const;
+
 private:
     GrammarSymbol left_;
     std::vector<GrammarSymbol> right_;

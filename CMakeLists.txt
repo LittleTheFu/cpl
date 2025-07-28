@@ -12,6 +12,8 @@ set(PROJECT_SOURCES
     productionRule.cpp
     grammarSymbol.cpp
     grammar.cpp
+    lrItem.cpp
+    lrParserGenerator.cpp
 
     regluarExpression/regEx.cpp
     regluarExpression/regExParser.cpp

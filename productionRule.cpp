@@ -33,3 +33,22 @@ const std::vector<GrammarSymbol>& ProductionRule::getRight() const
 {
     return right_;
 }
+
+bool ProductionRule::operator==(const ProductionRule &other) const
+{
+    return left_ == other.left_ && right_ == other.right_;
+}
+
+bool ProductionRule::operator!=(const ProductionRule &other) const
+{
+    return !(*this == other);
+}
+
+bool ProductionRule::operator<(const ProductionRule &other) const
+{
+    if (left_ != other.left_)
+    {
+        return left_ < other.left_;
+    }
+    return right_ < other.right_;
+}

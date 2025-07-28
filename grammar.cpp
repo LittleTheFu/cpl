@@ -38,6 +38,20 @@ const std::set<GrammarSymbol> &Grammar::getTerminalSymbols() const
     return terminalSymbols_;
 }
 
+const std::set<ProductionRule> Grammar::getProductionRules(const GrammarSymbol &symbol) const
+{
+    std::set<ProductionRule> result;
+    for (const auto &rule : rules_)
+    {
+        if (rule.getLeft() == symbol)
+        {
+            result.insert(rule);
+        }
+    }
+    
+    return result;
+}
+
 void Grammar::setNonTerminalSymbols(const std::set<GrammarSymbol> &nonTerminalSymbols)
 {
     nonTerminalSymbols_ = nonTerminalSymbols;

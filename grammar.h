@@ -17,6 +17,7 @@ public:
 
     const std::set<GrammarSymbol>& getNonTerminalSymbols() const;
     const std::set<GrammarSymbol>& getTerminalSymbols() const;
+    const std::set<ProductionRule> getProductionRules(const GrammarSymbol& symbol) const;
 
     void setNonTerminalSymbols(const std::set<GrammarSymbol>& nonTerminalSymbols);
     void setTerminalSymbols(const std::set<GrammarSymbol>& terminalSymbols);
@@ -39,7 +40,6 @@ public:
     bool canDeriveEmpty(const GrammarSymbol& symbol) const;
     bool canDeriveEmpty(const std::vector<GrammarSymbol>& symbols) const;
 
-private:
     std::set<GrammarSymbol> getFirstSet(const std::vector<GrammarSymbol> &symbols, bool &allCanDeriveEmpty) const;
 
 private:
