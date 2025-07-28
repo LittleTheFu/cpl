@@ -139,7 +139,8 @@
     "queue": "cpp",
     "ranges": "cpp",
     "span": "cpp",
-    "string_view": "cpp"
+    "string_view": "cpp",
+    "cassert": "cpp"
   },
   "C_Cpp.default.compilerPath": "cl.exe"
 }
