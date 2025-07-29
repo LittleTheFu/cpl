@@ -15,6 +15,8 @@ set(PROJECT_SOURCES
     lrItem.cpp
     lrParserGenerator.cpp
     lrState.cpp
+    predefineSymbol.cpp
+    parser.cpp
 
     regluarExpression/regEx.cpp
     regluarExpression/regExParser.cpp
