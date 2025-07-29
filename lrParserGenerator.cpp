@@ -81,6 +81,7 @@ void LRParserGenerator::buildDFA()
     LRState startState = LRState(calculateClosure({LRItem(grammar_.getArgumentedRule(), 0, grammar_.getEndSymbol())}));
     int startStateId = getNextId();
     dfa_[startState] = startStateId;
+    gotoTable_[startStateId] = {};
 
     std::queue<LRState> q;
     q.push(startState);
@@ -104,6 +105,7 @@ void LRParserGenerator::buildDFA()
             if (dfa_.find(nextState) == dfa_.end())
             {
                 dfa_[nextState] = getNextId();
+                gotoTable_[dfa_[nextState]] = {};
                 q.push(nextState);
             }
 
