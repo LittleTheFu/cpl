@@ -10,6 +10,7 @@ enum class SymbolType
     Epsilon,
     End,
 };
+std::string symbolTypeToString(SymbolType type);
 
 class GrammarSymbol
 {
@@ -27,6 +28,8 @@ public:
 
     std::string getName() const;
     SymbolType getType() const;
+
+    std::string toString() const;
 
 private:
     std::string name_;

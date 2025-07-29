@@ -53,3 +53,25 @@ SymbolType GrammarSymbol::getType() const
 {
     return type_;
 }
+
+std::string GrammarSymbol::toString() const
+{
+    return name_ + "(" + symbolTypeToString(type_) + ")";
+}
+
+std::string symbolTypeToString(SymbolType type)
+{
+    switch (type)
+    {
+    case SymbolType::NonTerminal:
+        return "NonTerminal";
+    case SymbolType::Terminal:
+        return "Terminal";
+    case SymbolType::Epsilon:
+        return "Epsilon";
+    case SymbolType::End:
+        return "End";
+    default:
+        return "Unknown";
+    }
+}

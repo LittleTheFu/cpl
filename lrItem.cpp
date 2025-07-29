@@ -7,7 +7,7 @@ LRItem::LRItem(const ProductionRule &rule, size_t dotPosition, const GrammarSymb
 
 std::string LRItem::toString() const
 {
-    return rule_.toString() + " . " + std::to_string(dotPosition_);
+    return rule_.toString() + " . " + std::to_string(dotPosition_) + " " + lookAheadSymbol_.toString();
 }
 
 bool LRItem::isDotAtEnd() const

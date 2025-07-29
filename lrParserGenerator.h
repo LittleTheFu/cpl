@@ -19,6 +19,18 @@ enum class ActionType
 
 struct Action
 {
+    Action()
+    {
+        type = ActionType::Error;
+    }
+
+    Action(ActionType type, int shiftStateId, size_t productionRuleId)
+    {
+        this->type = type;
+        this->shiftStateId = shiftStateId;
+        this->productionRuleId = productionRuleId;
+    }
+
     ActionType type;
     int shiftStateId;
     size_t productionRuleId;
@@ -31,7 +43,7 @@ public:
     ~LRParserGenerator() = default;
 
 private:
-    std::set<LRItem> caculateClosure(const std::set<LRItem>& item);
+    std::set<LRItem> calculateClosure(const std::set<LRItem>& item);
     LRState calculateNextState(const LRState &state, const GrammarSymbol &inputSymbol);
 
     void buildDFA();
