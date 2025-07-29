@@ -104,6 +104,18 @@ GrammarSymbol Parser::map(const Token &token) const
     {
         return PredefineSymbol::SYMBOL_PLUS;
     }
+    else if (token.type == TokenType::MINUS)
+    {
+        return PredefineSymbol::SYMBOL_MINUS;
+    }
+    else if (token.type == TokenType::MULTIPLY)
+    {
+        return PredefineSymbol::SYMBOL_MULTIPLY;
+    }
+    else if (token.type == TokenType::DIVIDE)
+    {
+        return PredefineSymbol::SYMBOL_DIVIDE;
+    }
     else if (token.type == TokenType::ASSIGN)
     {
         return PredefineSymbol::SYMBOL_ASSIGN;
@@ -111,6 +123,14 @@ GrammarSymbol Parser::map(const Token &token) const
     else if (token.type == TokenType::EOF_TOKEN)
     {
         return PredefineSymbol::SYMBOL_END;
+    }
+    else if (token.type == TokenType::L_PAREN)
+    {
+        return PredefineSymbol::LEFT_PAREN;
+    }
+    else if (token.type == TokenType::R_PAREN)
+    {
+        return PredefineSymbol::RIGHT_PAREN;
     }
     else
     {
