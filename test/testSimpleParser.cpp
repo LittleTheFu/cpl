@@ -45,32 +45,32 @@ TEST_F(SimpleParserTest, ValidSequence) {
 }
 
 // // Test Case 2: An invalid sequence with too many tokens ("id id")
-// TEST_F(SimpleParserTest, InvalidSequence_TooLong) {
-//     std::vector<Token> tokens = {
-//         {TokenType::IDENTIFIER, "a"},
-//         {TokenType::IDENTIFIER, "b"}, // The second identifier is unexpected.
-//         {TokenType::EOF_TOKEN, ""}
-//     };
-//     // The parser should find an error and throw an exception.
-//     EXPECT_THROW(parser->parse(tokens), std::runtime_error);
-// }
+TEST_F(SimpleParserTest, InvalidSequence_TooLong) {
+    std::vector<Token> tokens = {
+        {TokenType::IDENTIFIER, "a"},
+        {TokenType::IDENTIFIER, "b"}, // The second identifier is unexpected.
+        {TokenType::EOF_TOKEN, ""}
+    };
+    // The parser should find an error and throw an exception.
+    EXPECT_THROW(parser->parse(tokens), std::runtime_error);
+}
 
 // // Test Case 3: An empty input sequence
 // // The grammar cannot produce an empty string, so this must fail.
-// TEST_F(SimpleParserTest, InvalidSequence_Empty) {
-//     std::vector<Token> tokens = {
-//         {TokenType::EOF_TOKEN, ""}
-//     };
-//     // The parser should throw an exception.
-//     EXPECT_THROW(parser->parse(tokens), std::runtime_error);
-// }
+TEST_F(SimpleParserTest, InvalidSequence_Empty) {
+    std::vector<Token> tokens = {
+        {TokenType::EOF_TOKEN, ""}
+    };
+    // The parser should throw an exception.
+    EXPECT_THROW(parser->parse(tokens), std::runtime_error);
+}
 
-// // Test Case 4: An invalid token type
-// TEST_F(SimpleParserTest, InvalidSequence_WrongToken) {
-//     std::vector<Token> tokens = {
-//         {TokenType::PLUS, "+"}, // The grammar does not expect a '+' symbol.
-//         {TokenType::EOF_TOKEN, ""}
-//     };
-//     // The parser should throw an exception.
-//     EXPECT_THROW(parser->parse(tokens), std::runtime_error);
-// }
+// Test Case 4: An invalid token type
+TEST_F(SimpleParserTest, InvalidSequence_WrongToken) {
+    std::vector<Token> tokens = {
+        {TokenType::PLUS, "+"}, // The grammar does not expect a '+' symbol.
+        {TokenType::EOF_TOKEN, ""}
+    };
+    // The parser should throw an exception.
+    EXPECT_THROW(parser->parse(tokens), std::runtime_error);
+}
