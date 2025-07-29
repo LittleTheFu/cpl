@@ -51,7 +51,11 @@ private:
     LRState calculateNextState(const LRState &state, const GrammarSymbol &inputSymbol);
 
     void buildDFA();
-    static int getNextId();
+
+
+    int getNextId();
+    int idCnt_;
+
 
     // std::optional<LRState> getState(int id) const;
 private:

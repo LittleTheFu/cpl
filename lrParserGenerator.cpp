@@ -5,6 +5,7 @@
 LRParserGenerator::LRParserGenerator(const Grammar &grammar)
     : grammar_(grammar)
 {
+    idCnt_ = 0;
     buildDFA();
 }
 
@@ -178,7 +179,8 @@ void LRParserGenerator::buildDFA()
                     }
                     else
                     {
-                        throw std::runtime_error("end symbol is not valid");
+                        actionMap[symbol] = Action{ActionType::Reduce, 0, grammar_.getRuleId(item.getRule())};
+                        // throw std::runtime_error("end symbol is not valid");
                     }
                 }
                 else
@@ -204,8 +206,7 @@ void LRParserGenerator::buildDFA()
 
 int LRParserGenerator::getNextId()
 {
-    static int id = 0;
-    return id++;
+    return idCnt_++;
 }
 
 const std::map<int, std::map<GrammarSymbol, int>> &LRParserGenerator::getGotoTable() const
