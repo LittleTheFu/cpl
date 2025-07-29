@@ -17,32 +17,40 @@ bool Parser::parse(const std::vector<Token> &tokens)
         symbols_.push_back(map(token));
     }
 
-    std::map<LRState, int> dfa = parserGenerator_.getDFA();
-    std::map<int, std::map<GrammarSymbol, int>> gotoTable_ = parserGenerator_.getGotoTable();
-    std::map<int, std::map<GrammarSymbol, Action>> actionTable_ = parserGenerator_.getActionTable();
+    const std::map<LRState, int>& dfa = parserGenerator_.getDFA();
+    const std::map<int, std::map<GrammarSymbol, int>>& gotoTable_ = parserGenerator_.getGotoTable();
+    const std::map<int, std::map<GrammarSymbol, Action>>& actionTable_ = parserGenerator_.getActionTable();
     LRState startState = parserGenerator_.getStartState();
     GrammarSymbol startSymbol = grammar_.getArgumentedStartSymbol();
 
     std::stack<std::pair<int, GrammarSymbol>> stack;
-    stack.push({dfa[startState], PredefineSymbol::SYMBOL_STACK_BOTTOM});
+    if(dfa.find(startState) == dfa.end())
+    {
+        throw std::runtime_error("no state in table");
+    }
+    stack.push({dfa.at(startState), PredefineSymbol::SYMBOL_STACK_BOTTOM});
 
     size_t inputIndex = 0;
     while (true)
     {
-        if(inputIndex >= symbols_.size())
-        {
-            throw std::runtime_error("input index out of range");
-        }
+        // if(inputIndex >= symbols_.size())
+        // {
+        //     throw std::runtime_error("input index out of range");
+        // }
 
         const GrammarSymbol &symbol = symbols_.at(inputIndex);
         int stateId = stack.top().first;
-        if (actionTable_[stateId].find(symbol) == actionTable_[stateId].end())
+        if(actionTable_.find(stateId) == actionTable_.end())
+        {
+            throw std::runtime_error("no state in table");
+        }
+        if (actionTable_.at(stateId).find(symbol) == actionTable_.at(stateId).end())
         {
             throw std::runtime_error("no action in table");
         }
         else
         {
-            Action action = actionTable_[stateId][symbol];
+            Action action = actionTable_.at(stateId).at(symbol);
             if (action.type == ActionType::Shift)
             {
                 stack.push({action.shiftStateId, symbol});
@@ -56,7 +64,15 @@ bool Parser::parse(const std::vector<Token> &tokens)
                     stack.pop();
                 }
                 int oldState = stack.top().first;
-                int nextState = gotoTable_[oldState][rule.getLeft()];
+                if(gotoTable_.find(oldState) == gotoTable_.end())
+                {
+                    throw std::runtime_error("no goto in table");
+                }
+                if(gotoTable_.at(oldState).find(rule.getLeft()) == gotoTable_.at(oldState).end())
+                {
+                    throw std::runtime_error("no goto in table");
+                }
+                int nextState = gotoTable_.at(oldState).at(rule.getLeft());
                 stack.push({nextState, rule.getLeft()});
             }
             else if (action.type == ActionType::Accept)
