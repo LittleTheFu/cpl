@@ -76,6 +76,7 @@ LRState LRParserGenerator::calculateNextState(const LRState &state, const Gramma
     return LRState(calculateClosure(gotoCoreItems));
 }
 
+//remind : later I will change this function into 3 subfunctions
 void LRParserGenerator::buildDFA()
 {
     LRState startState = LRState(calculateClosure({LRItem(grammar_.getArgumentedRule(), 0, grammar_.getEndSymbol())}));
@@ -83,6 +84,7 @@ void LRParserGenerator::buildDFA()
     dfa_[startState] = startStateId;
     gotoTable_[startStateId] = {};
 
+    //1. build dfa
     std::queue<LRState> q;
     q.push(startState);
     while (!q.empty())
@@ -116,6 +118,7 @@ void LRParserGenerator::buildDFA()
         }
     }
 
+    //build shift actions
     for (const auto &pair : dfa_)
     {
         LRState state = pair.first;
@@ -135,6 +138,7 @@ void LRParserGenerator::buildDFA()
     std::set<GrammarSymbol> allLookaheadSymbols = grammar_.getTerminalSymbols();
     allLookaheadSymbols.insert(grammar_.getEndSymbol());
 
+    //2. build reduce actions
     for (const auto &pair : dfa_)
     {
         const LRState &state = pair.first;
