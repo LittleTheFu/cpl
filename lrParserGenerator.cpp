@@ -78,14 +78,14 @@ void LRParserGenerator::buildDFA()
 {
     LRState startState = LRState(caculateClosure({LRItem(grammar_.getArgumentedRule(), 0, grammar_.getEndSymbol())}));
     int startStateId = getNextId();
-    dfa_[startState] = startStateId;
+    dfa_.at(startState) = startStateId;
 
     std::queue<LRState> q;
     q.push(startState);
     while (!q.empty())
     {
         LRState state = q.front();
-        int stateId = dfa_[state];
+        int stateId = dfa_.at(state);
         q.pop();
 
         for (const auto &symbol : grammar_.getAllSymbols())
@@ -101,36 +101,88 @@ void LRParserGenerator::buildDFA()
             }
             if (dfa_.find(nextState) == dfa_.end())
             {
-                dfa_[nextState] = getNextId();
+                dfa_.at(nextState) = getNextId();
                 q.push(nextState);
             }
 
             if (symbol.getType() == SymbolType::NonTerminal)
             {
-                gotoTable_[stateId][symbol] = dfa_[nextState];
-            }
-            else if(symbol.getType() == SymbolType::Terminal)
-            {
-                if (nextState.canShift())
-                {
-                    actionTable_[stateId][symbol] = Action{ActionType::Shift, dfa_[nextState], 0};
-                }
-                else if (auto reduceItems = nextState.getReduceItems(symbol); reduceItems.size() == 1)
-                {
-                    ProductionRule rule = reduceItems.begin()->getRule();
-                    actionTable_[stateId][symbol] = Action{ActionType::Reduce, 0, grammar_.getRuleId(rule)};
-                }
-                else
-                {
-                    throw std::runtime_error("Conflict in action table");
-                }
-            }
-            else if(symbol.getType() == SymbolType::End)
-            {
-                actionTable_[stateId][symbol] = Action{ActionType::Accept, 0, 0};
+                gotoTable_[stateId][symbol] = dfa_.at(nextState);
             }
         }
     }
+
+    for (const auto &pair : dfa_)
+    {
+        LRState state = pair.first;
+        int stateId = pair.second;
+        for (const auto &symbol : grammar_.getTerminalSymbols())
+        {      
+            LRState nextState = calculateNextState(state, symbol);
+            if (nextState.isEmpty())
+            {
+                continue;
+            }
+
+            if(dfa_.count(nextState) != 1)
+            {
+                throw std::runtime_error("dfa_ is not valid");
+            }
+
+            actionTable_[stateId][symbol] = Action{ActionType::Shift, dfa_.at(nextState), 0};
+        }
+    }
+
+    std::set<GrammarSymbol> allLookaheadSymbols;
+    allLookaheadSymbols = grammar_.getTerminalSymbols();
+    allLookaheadSymbols.insert(grammar_.getEndSymbol());
+
+     for (const auto &pair : dfa_)
+     {
+        LRState state = pair.first;
+        int stateId = pair.second;
+        for (const auto &symbol : allLookaheadSymbols)
+        {
+            for(const auto &item : state.getItems())
+            {
+                if(item.isReduceItem(symbol))
+                {
+                    if(actionTable_.count(stateId) != 1)
+                    {
+                        throw std::runtime_error("actionTable_ is not valid");
+                    }
+
+                    std::map<GrammarSymbol, Action>& actionMap = actionTable_[stateId];
+                    if(actionMap.count(symbol) == 0)
+                    {
+                        if(symbol.getType() == SymbolType::Terminal)
+                        {
+                            actionMap[symbol] = Action{ActionType::Reduce, 0, grammar_.getRuleId(item.getRule())};
+                        }
+                        else if(symbol.getType() == SymbolType::End)
+                        {
+                            actionMap[symbol] = Action{ActionType::Accept, 0, 0};
+                        }
+                        else
+                        {
+                            throw std::runtime_error("symbol type is not valid");
+                        }
+                    }
+                    else
+                    {
+                        if(actionMap[symbol].type == ActionType::Shift)
+                        {
+                            throw std::runtime_error("shift conflict");
+                        }
+                        else if(actionMap[symbol].type == ActionType::Reduce)
+                        {
+                            throw std::runtime_error("reduce conflict");
+                        }
+                    }
+                }
+            }
+        }
+     }
 }
 
 int LRParserGenerator::getNextId()
