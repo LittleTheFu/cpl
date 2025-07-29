@@ -102,7 +102,7 @@ void LRParserGenerator::buildDFA()
             }
             if (dfa_.find(nextState) == dfa_.end())
             {
-                dfa_.at(nextState) = getNextId();
+                dfa_[nextState] = getNextId();
                 q.push(nextState);
             }
 
