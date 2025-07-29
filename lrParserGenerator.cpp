@@ -207,6 +207,21 @@ int LRParserGenerator::getNextId()
     return id++;
 }
 
+const std::map<int, std::map<GrammarSymbol, int>> &LRParserGenerator::getGotoTable() const
+{
+    return gotoTable_;
+}
+
+const std::map<int, std::map<GrammarSymbol, Action>> &LRParserGenerator::getActionTable() const
+{
+    return actionTable_;
+}
+
+const std::map<LRState, int>& LRParserGenerator::getDFA() const
+{
+    return dfa_;
+}
+
 // std::optional<LRState> LRParserGenerator::getState(int id) const
 // {
 //     for (const auto &pair : dfa_)
