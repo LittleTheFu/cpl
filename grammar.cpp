@@ -7,7 +7,7 @@ Grammar::Grammar(std::vector<ProductionRule>&& rules, const GrammarSymbol &start
       startSymbol_(startSymbol),
       endSymbol_("$", SymbolType::End),
       argumentedStartSymbol_("S'", SymbolType::NonTerminal),
-      argumentedRule_(argumentedStartSymbol_, {startSymbol_})
+      argumentedRule_(argumentedStartSymbol_, {startSymbol_, endSymbol_})
 {
     rules_.push_back(argumentedRule_);
     startSymbol_ = startSymbol;
