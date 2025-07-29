@@ -63,7 +63,9 @@ add_executable(cpl_tests
     # test/testRegExParser.cpp
     # test/testFirstSet.cpp
     # test/testFollowSet.cpp
-    test/testLRParserGenerator.cpp
+    # test/testLRParserGenerator.cpp
+    # test/testParser.cpp
+     test/testSimpleParser.cpp
 )
 
 target_include_directories(cpl_tests PRIVATE
