@@ -31,30 +31,35 @@ bool Parser::parse(const std::vector<Token> &tokens)
     stack.push({dfa.at(startState), PredefineSymbol::SYMBOL_STACK_BOTTOM});
 
     size_t inputIndex = 0;
+
+    const GrammarSymbol *current_lookahead_symbol = nullptr;
+    if (symbols_.empty())
+    {
+        throw std::runtime_error("input index out of range");
+    }
+    current_lookahead_symbol = &symbols_.at(inputIndex);
     while (true)
     {
-        // if(inputIndex >= symbols_.size())
-        // {
-        //     throw std::runtime_error("input index out of range");
-        // }
-
-        const GrammarSymbol &symbol = symbols_.at(inputIndex);
         int stateId = stack.top().first;
         if(actionTable_.find(stateId) == actionTable_.end())
         {
             throw std::runtime_error("no state in table");
         }
-        if (actionTable_.at(stateId).find(symbol) == actionTable_.at(stateId).end())
+        if (actionTable_.at(stateId).find(*current_lookahead_symbol) == actionTable_.at(stateId).end())
         {
             throw std::runtime_error("no action in table");
         }
         else
         {
-            Action action = actionTable_.at(stateId).at(symbol);
+            Action action = actionTable_.at(stateId).at(*current_lookahead_symbol);
             if (action.type == ActionType::Shift)
             {
-                stack.push({action.shiftStateId, symbol});
+                stack.push({action.shiftStateId, *current_lookahead_symbol});
                 inputIndex++;
+
+                if (inputIndex < symbols_.size()) {
+                    current_lookahead_symbol = &symbols_.at(inputIndex);
+                }
             }
             else if (action.type == ActionType::Reduce)
             {
