@@ -5,6 +5,7 @@
 LRParserGenerator::LRParserGenerator(const Grammar &grammar)
     : grammar_(grammar)
 {
+    buildDFA();
 }
 
 std::set<LRItem> LRParserGenerator::calculateClosure(const std::set<LRItem> &items)
