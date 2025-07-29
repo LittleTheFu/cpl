@@ -1,5 +1,10 @@
 #include "lrState.h"
 
+LRState::LRState()
+{
+    
+}
+
 LRState::LRState(const std::set<LRItem> &items)
 {
     items_ = items;

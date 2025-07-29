@@ -9,6 +9,7 @@ enum class SymbolType
     Terminal,
     Epsilon,
     End,
+    StackBottom,
 };
 std::string symbolTypeToString(SymbolType type);
 

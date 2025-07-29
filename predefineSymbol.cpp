@@ -7,4 +7,5 @@ namespace PredefineSymbol
     const GrammarSymbol SYMBOL_IDENTIFIER = GrammarSymbol("identifier", SymbolType::Terminal);
     const GrammarSymbol SYMBOL_NUMBER = GrammarSymbol("number", SymbolType::Terminal);
     const GrammarSymbol SYMBOL_ASSIGN = GrammarSymbol("=", SymbolType::Terminal);
+    const GrammarSymbol SYMBOL_STACK_BOTTOM = GrammarSymbol("stack bottom", SymbolType::StackBottom);
 }

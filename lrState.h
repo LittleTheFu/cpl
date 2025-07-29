@@ -7,6 +7,7 @@
 class LRState
 {
 public:
+    LRState();
     LRState(const std::set<LRItem>& items);
     ~LRState() = default;
 

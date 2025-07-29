@@ -79,14 +79,14 @@ LRState LRParserGenerator::calculateNextState(const LRState &state, const Gramma
 //remind : later I will change this function into 3 subfunctions
 void LRParserGenerator::buildDFA()
 {
-    LRState startState = LRState(calculateClosure({LRItem(grammar_.getArgumentedRule(), 0, grammar_.getEndSymbol())}));
-    int startStateId = getNextId();
-    dfa_[startState] = startStateId;
+    startState_ = LRState(calculateClosure({LRItem(grammar_.getArgumentedRule(), 0, grammar_.getEndSymbol())}));
+    int startStateId = getNextId(true);
+    dfa_[startState_] = startStateId;
     gotoTable_[startStateId] = {};
 
     //1. build dfa
     std::queue<LRState> q;
-    q.push(startState);
+    q.push(startState_);
     while (!q.empty())
     {
         LRState state = q.front();
@@ -210,8 +210,13 @@ void LRParserGenerator::buildDFA()
     }
 }
 
-int LRParserGenerator::getNextId()
+int LRParserGenerator::getNextId(bool reset)
 {
+    if (reset)
+    {
+        idCnt_ = 0;
+    }
+
     return idCnt_++;
 }
 
@@ -228,6 +233,11 @@ const std::map<int, std::map<GrammarSymbol, Action>> &LRParserGenerator::getActi
 const std::map<LRState, int>& LRParserGenerator::getDFA() const
 {
     return dfa_;
+}
+
+const LRState& LRParserGenerator::getStartState() const
+{
+    return startState_;
 }
 
 // std::optional<LRState> LRParserGenerator::getState(int id) const

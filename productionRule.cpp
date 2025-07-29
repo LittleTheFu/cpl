@@ -34,6 +34,11 @@ const std::vector<GrammarSymbol>& ProductionRule::getRight() const
     return right_;
 }
 
+size_t ProductionRule::getRightSize() const
+{
+    return right_.size();
+}
+
 bool ProductionRule::operator==(const ProductionRule &other) const
 {
     return left_ == other.left_ && right_ == other.right_;

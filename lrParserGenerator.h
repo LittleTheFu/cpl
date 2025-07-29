@@ -45,6 +45,7 @@ public:
     const std::map<int, std::map<GrammarSymbol, int>>& getGotoTable() const;
     const std::map<int, std::map<GrammarSymbol, Action>>& getActionTable() const;
     const std::map<LRState, int>& getDFA() const;
+    const LRState& getStartState() const;
 
 private:
     std::set<LRItem> calculateClosure(const std::set<LRItem>& item);
@@ -52,15 +53,14 @@ private:
 
     void buildDFA();
 
-
-    int getNextId();
+    int getNextId(bool reset = false);
     int idCnt_;
-
 
     // std::optional<LRState> getState(int id) const;
 private:
     const Grammar& grammar_;
     std::map<LRState, int> dfa_;
+    LRState startState_;
 
     std::map<int, std::map<GrammarSymbol, int>> gotoTable_;
     std::map<int, std::map<GrammarSymbol, Action>> actionTable_;
