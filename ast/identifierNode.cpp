@@ -1,4 +1,5 @@
 #include "identifierNode.h"
+#include <iostream>
 
 IdentifierNode::IdentifierNode(const std::string &name)
 {
@@ -7,4 +8,5 @@ IdentifierNode::IdentifierNode(const std::string &name)
 
 void IdentifierNode::evaluate()
 {
+    std::cout << name_ << " ";
 }

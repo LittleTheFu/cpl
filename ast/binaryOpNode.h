@@ -4,6 +4,7 @@
 #include "expressionNode.h"
 #include "astNode.h"
 #include <memory>
+#include <string>
 
 enum class BinaryOpType {
     ADD,
@@ -11,6 +12,7 @@ enum class BinaryOpType {
     MULTIPLY,
     DIVIDE,
 };
+std::string binaryOpTypeToString(BinaryOpType op_type);
 
 class BinaryOpNode : public ExpressionNode {
 public:

@@ -18,7 +18,7 @@ int main()
     // vm.loadProgram();
     // vm.execute();
 
-    Lexer lexer("3+2*8");
+    Lexer lexer("(3+2)*8*9+alice * bob");
     std::vector<Token> tokens;
 
     while(auto token = lexer.getNextToken())

@@ -3,6 +3,7 @@
 #include <stdexcept>
 #include <stack>
 #include <stackItem.h>
+#include <iostream>
 
 Parser::Parser(const Grammar &grammar)
     : grammar_(grammar),
@@ -89,6 +90,13 @@ bool Parser::parse(const std::vector<Token> &tokens)
             }
             else if (action.type == ActionType::Accept)
             {
+                if(stack.size() != 2)
+                {
+                    throw std::runtime_error("stack size not 2");
+                }
+                std::get<std::unique_ptr<AstNode>>(stack.top().value)->evaluate();
+                std::cout << std::endl;
+
                 return true;
             }
         }

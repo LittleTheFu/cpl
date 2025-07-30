@@ -1,4 +1,5 @@
 #include "intergerLiteralNode.h"
+#include <iostream>
 
 IntegerLiteralNode::IntegerLiteralNode(int value)
 {
@@ -7,4 +8,5 @@ IntegerLiteralNode::IntegerLiteralNode(int value)
 
 void IntegerLiteralNode::evaluate()
 {
+    std::cout << value_ << " ";
 }
