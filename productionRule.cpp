@@ -1,7 +1,9 @@
 #include "productionRule.h"
 
-ProductionRule::ProductionRule(const GrammarSymbol &left, const std::vector<GrammarSymbol> &right)
-    : left_(left), right_(right)
+ProductionRule::ProductionRule(const GrammarSymbol &left, 
+    const std::vector<GrammarSymbol> &right, 
+    SemanticActionFn semanticAction)
+    : left_(left), right_(right), semanticAction_(std::move(semanticAction))
 {
 }
 
@@ -56,4 +58,14 @@ bool ProductionRule::operator<(const ProductionRule &other) const
         return left_ < other.left_;
     }
     return right_ < other.right_;
+}
+
+std::unique_ptr<AstNode> ProductionRule::applySemanticAction(std::vector<StackItem> &&stackItems)
+{
+    if(semanticAction_)
+    {
+        return semanticAction_(std::move(stackItems));
+    }
+    
+    return nullptr;
 }

@@ -3,6 +3,8 @@
 
 class AstNode {
 public:
+    AstNode() = default;
+    AstNode(AstNode &&other) = default;
     virtual ~AstNode() = default;
     virtual void evaluate() = 0;
 };

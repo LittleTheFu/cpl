@@ -2,6 +2,7 @@
 #include "predefineSymbol.h"
 #include <stdexcept>
 #include <stack>
+#include <stackItem.h>
 
 Parser::Parser(const Grammar &grammar)
     : grammar_(grammar),

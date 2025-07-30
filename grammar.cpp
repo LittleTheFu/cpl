@@ -1,13 +1,32 @@
 #include "grammar.h"
 #include <algorithm>
 #include <stdexcept>
+#include "stackItem.h"
+#include "predefineSymbol.h"
 
-Grammar::Grammar(std::vector<ProductionRule>&& rules, const GrammarSymbol &startSymbol)
+Grammar::Grammar(std::vector<ProductionRule> &&rules, const GrammarSymbol &startSymbol)
     : rules_(std::move(rules)),
       startSymbol_(startSymbol),
-      endSymbol_("$", SymbolType::End),
+      endSymbol_(PredefineSymbol::SYMBOL_END),
       argumentedStartSymbol_("S'", SymbolType::NonTerminal),
-      argumentedRule_(argumentedStartSymbol_, {startSymbol_, endSymbol_})
+      argumentedRule_(argumentedStartSymbol_,
+                      {startSymbol_, endSymbol_},
+                      [](std::vector<StackItem> &&stackItems) -> std::unique_ptr<AstNode>
+                      {
+                          if (stackItems.empty())
+                          {
+                              throw std::runtime_error("Augmented rule: no start symbol AST found.");
+                          }
+
+                          try
+                          {
+                              return std::move(std::get<std::unique_ptr<AstNode>>(stackItems[0].value));
+                          }
+                          catch (const std::bad_variant_access &e)
+                          {
+                              throw std::runtime_error("Augmented rule: Expected ASTNode pointer for start symbol, but got wrong type.");
+                          }
+                      })
 {
     rules_.push_back(argumentedRule_);
     startSymbol_ = startSymbol;
@@ -25,7 +44,7 @@ Grammar::Grammar(std::vector<ProductionRule>&& rules, const GrammarSymbol &start
             {
                 nonTerminalSymbols_.insert(symbol);
             }
-            else if(symbol.getType() == SymbolType::End)
+            else if (symbol.getType() == SymbolType::End)
             {
                 terminalSymbols_.insert(symbol);
             }
@@ -60,11 +79,11 @@ size_t Grammar::getRuleId(const ProductionRule &rule) const
     {
         throw std::runtime_error("Rule not found");
     }
-    
+
     return it - rules_.begin();
 }
 
-const ProductionRule& Grammar::getRuleById(size_t id) const
+const ProductionRule &Grammar::getRuleById(size_t id) const
 {
     if (id >= rules_.size())
     {
@@ -109,7 +128,7 @@ const std::set<ProductionRule> Grammar::getProductionRules(const GrammarSymbol &
             result.insert(rule);
         }
     }
-    
+
     return result;
 }
 
@@ -170,7 +189,7 @@ void Grammar::calculateFirstSets()
     while (changed)
     {
         std::map<GrammarSymbol, FirstSet> prevFirstSets = firstSets_;
-        
+
         changed = false;
         for (const auto &rule : rules_)
         {
@@ -213,14 +232,15 @@ void Grammar::calculateFirstSets()
     }
 }
 
-bool Grammar::updateFollowSetFromRule(const ProductionRule& rule)
+bool Grammar::updateFollowSetFromRule(const ProductionRule &rule)
 {
     bool ruleChanged = false;
 
     const auto &left = rule.getLeft();
     const auto &right = rule.getRight();
 
-    if (right.empty()) {
+    if (right.empty())
+    {
         return false;
     }
 

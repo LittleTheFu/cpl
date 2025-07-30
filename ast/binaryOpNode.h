@@ -14,12 +14,12 @@ enum class BinaryOpType {
 
 class BinaryOpNode : public ExpressionNode {
 public:
-    BinaryOpNode(std::unique_ptr<ExpressionNode>&& left, std::unique_ptr<ExpressionNode>&& right, BinaryOpType op_type);
+    BinaryOpNode(std::unique_ptr<AstNode>&& left, std::unique_ptr<AstNode>&& right, BinaryOpType op_type);
     virtual ~BinaryOpNode() override = default;
     void evaluate() override;
 private:
-    std::unique_ptr<ExpressionNode> left_;
-    std::unique_ptr<ExpressionNode> right_;
+    std::unique_ptr<AstNode> left_;
+    std::unique_ptr<AstNode> right_;
     BinaryOpType op_type_;
 };
 
