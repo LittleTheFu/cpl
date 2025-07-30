@@ -23,12 +23,12 @@ bool Parser::parse(const std::vector<Token> &tokens)
     LRState startState = parserGenerator_.getStartState();
     GrammarSymbol startSymbol = grammar_.getArgumentedStartSymbol();
 
-    std::stack<std::pair<int, GrammarSymbol>> stack;
+    std::stack<StackItem> stack;
     if(dfa.find(startState) == dfa.end())
     {
         throw std::runtime_error("no state in table");
     }
-    stack.push({dfa.at(startState), PredefineSymbol::SYMBOL_STACK_BOTTOM});
+    stack.push({dfa.at(startState), PredefineSymbol::SYMBOL_STACK_BOTTOM, Token()});
 
     size_t inputIndex = 0;
 
@@ -40,7 +40,7 @@ bool Parser::parse(const std::vector<Token> &tokens)
     current_lookahead_symbol = &symbols_.at(inputIndex);
     while (true)
     {
-        int stateId = stack.top().first;
+        int stateId = stack.top().stateId;
         if(actionTable_.find(stateId) == actionTable_.end())
         {
             throw std::runtime_error("no state in table");
@@ -54,7 +54,7 @@ bool Parser::parse(const std::vector<Token> &tokens)
             Action action = actionTable_.at(stateId).at(*current_lookahead_symbol);
             if (action.type == ActionType::Shift)
             {
-                stack.push({action.shiftStateId, *current_lookahead_symbol});
+                stack.push({action.shiftStateId, *current_lookahead_symbol, tokens.at(inputIndex)});
                 inputIndex++;
 
                 if (inputIndex < symbols_.size()) {
@@ -68,7 +68,7 @@ bool Parser::parse(const std::vector<Token> &tokens)
                 {
                     stack.pop();
                 }
-                int oldState = stack.top().first;
+                int oldState = stack.top().stateId;
                 if(gotoTable_.find(oldState) == gotoTable_.end())
                 {
                     throw std::runtime_error("no goto in table");
@@ -78,7 +78,7 @@ bool Parser::parse(const std::vector<Token> &tokens)
                     throw std::runtime_error("no goto in table");
                 }
                 int nextState = gotoTable_.at(oldState).at(rule.getLeft());
-                stack.push({nextState, rule.getLeft()});
+                stack.push({nextState, rule.getLeft(), nullptr});
             }
             else if (action.type == ActionType::Accept)
             {
