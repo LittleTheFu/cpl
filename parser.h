@@ -6,21 +6,21 @@
 #include "lrParserGenerator.h"
 #include <variant>
 #include <memory>
-#include "expressionNode.h"
+#include "astNode.h"
 
 struct StackItem
 {
     int stateId;
     GrammarSymbol symbol;
 
-    std::variant<std::unique_ptr<ExpressionNode>, Token> value;
+    std::variant<std::unique_ptr<AstNode>, Token> value;
 
     StackItem(int stateId, GrammarSymbol symbol, Token token)
         : stateId(stateId), symbol(symbol), value(token)
     {
     }
 
-    StackItem(int stateId, GrammarSymbol symbol, std::unique_ptr<ExpressionNode>&& node)
+    StackItem(int stateId, GrammarSymbol symbol, std::unique_ptr<AstNode>&& node)
         : stateId(stateId), symbol(symbol), value(std::move(node))
     {
     }
