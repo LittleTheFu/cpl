@@ -23,6 +23,11 @@ struct StackItem
         : stateId(stateId), symbol(symbol), value(std::move(node))
     {
     }
+
+    StackItem(int stateId, GrammarSymbol symbol)
+        : stateId(stateId), symbol(symbol), value()
+    {
+    }
 };
 
 #endif 

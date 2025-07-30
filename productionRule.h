@@ -29,7 +29,7 @@ public:
     bool operator!=(const ProductionRule& other) const;
     bool operator<(const ProductionRule& other) const;
 
-    std::unique_ptr<AstNode> applySemanticAction(std::vector<StackItem>&& stackItems);
+    std::unique_ptr<AstNode> applySemanticAction(std::vector<StackItem>&& stackItems) const;
 
 private:
     GrammarSymbol left_;

@@ -60,12 +60,12 @@ bool ProductionRule::operator<(const ProductionRule &other) const
     return right_ < other.right_;
 }
 
-std::unique_ptr<AstNode> ProductionRule::applySemanticAction(std::vector<StackItem> &&stackItems)
+std::unique_ptr<AstNode> ProductionRule::applySemanticAction(std::vector<StackItem> &&stackItems) const
 {
     if(semanticAction_)
     {
         return semanticAction_(std::move(stackItems));
     }
-    
+
     return nullptr;
 }

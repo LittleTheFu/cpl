@@ -29,7 +29,7 @@ bool Parser::parse(const std::vector<Token> &tokens)
     {
         throw std::runtime_error("no state in table");
     }
-    stack.push({dfa.at(startState), PredefineSymbol::SYMBOL_STACK_BOTTOM, Token()});
+    stack.push({dfa.at(startState), PredefineSymbol::SYMBOL_STACK_BOTTOM});
 
     size_t inputIndex = 0;
 
@@ -65,10 +65,15 @@ bool Parser::parse(const std::vector<Token> &tokens)
             else if (action.type == ActionType::Reduce)
             {
                 const ProductionRule& rule = grammar_.getRuleById(action.productionRuleId);
+
+                std::vector<StackItem> stackItems;
                 for(size_t i = 0; i < rule.getRightSize(); i++)
                 {
+                    stackItems.push_back(std::move(stack.top()));
                     stack.pop();
                 }
+                std::reverse(stackItems.begin(), stackItems.end());
+
                 int oldState = stack.top().stateId;
                 if(gotoTable_.find(oldState) == gotoTable_.end())
                 {
@@ -78,8 +83,9 @@ bool Parser::parse(const std::vector<Token> &tokens)
                 {
                     throw std::runtime_error("no goto in table");
                 }
+                std::unique_ptr<AstNode> node = rule.applySemanticAction(std::move(stackItems));
                 int nextState = gotoTable_.at(oldState).at(rule.getLeft());
-                stack.push({nextState, rule.getLeft(), nullptr});
+                stack.push({nextState, rule.getLeft(), std::move(node)});
             }
             else if (action.type == ActionType::Accept)
             {

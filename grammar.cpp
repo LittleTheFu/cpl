@@ -10,7 +10,7 @@ Grammar::Grammar(std::vector<ProductionRule> &&rules, const GrammarSymbol &start
       endSymbol_(PredefineSymbol::SYMBOL_END),
       argumentedStartSymbol_("S'", SymbolType::NonTerminal),
       argumentedRule_(argumentedStartSymbol_,
-                      {startSymbol_, endSymbol_},
+                      {startSymbol_},
                       [](std::vector<StackItem> &&stackItems) -> std::unique_ptr<AstNode>
                       {
                           if (stackItems.empty())
@@ -46,7 +46,7 @@ Grammar::Grammar(std::vector<ProductionRule> &&rules, const GrammarSymbol &start
             }
             else if (symbol.getType() == SymbolType::End)
             {
-                terminalSymbols_.insert(symbol);
+                // terminalSymbols_.insert(symbol);
             }
             else
             {
@@ -168,6 +168,8 @@ void Grammar::calculateFirstSets()
     {
         firstSets_[symbol] = {symbol};
     }
+
+    firstSets_[endSymbol_] = {endSymbol_};
 
     for (const auto &symbol : nonTerminalSymbols_)
     {
