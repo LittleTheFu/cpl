@@ -42,7 +42,7 @@ GrammarSymbol LRItem::getLookAheadSymbol() const
 
 bool LRItem::operator==(const LRItem &other) const
 {
-    return rule_ == other.rule_ && dotPosition_ == other.dotPosition_;
+    return rule_ == other.rule_ && dotPosition_ == other.dotPosition_ && lookAheadSymbol_ == other.lookAheadSymbol_;
 }
 
 bool LRItem::operator!=(const LRItem &other) const
@@ -56,7 +56,11 @@ bool LRItem::operator<(const LRItem &other) const
     {
         return rule_ < other.rule_;
     }
-    return dotPosition_ < other.dotPosition_;
+    if (dotPosition_ != other.dotPosition_)
+    {
+        return dotPosition_ < other.dotPosition_;
+    }
+    return lookAheadSymbol_ < other.lookAheadSymbol_;
 }
 
 std::optional<GrammarSymbol> LRItem::getSymbolAfterDot() const
