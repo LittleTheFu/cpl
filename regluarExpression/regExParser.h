@@ -1,4 +1,4 @@
-#ifndef _REG_EX_PARSER_H_
+﻿#ifndef _REG_EX_PARSER_H_
 #define _REG_EX_PARSER_H_
 
 #include <string>
