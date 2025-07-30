@@ -64,7 +64,7 @@ target_link_libraries(cpl PRIVATE cpl_lib)
 add_subdirectory(${PROJECT_SOURCE_DIR}/third/googletest)
 
 add_executable(cpl_tests
-    # test/test.cpp
+    test/test.cpp
     # test/testVM.cpp
     # test/testRegEx.cpp
     # test/testRegExParser.cpp
@@ -72,7 +72,7 @@ add_executable(cpl_tests
     # test/testFollowSet.cpp
     # test/testLRParserGenerator.cpp
     # test/testParser.cpp
-     test/testSimpleParser.cpp
+    #  test/testSimpleParser.cpp
 )
 
 target_include_directories(cpl_tests PRIVATE
