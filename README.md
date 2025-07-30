@@ -187,3 +187,17 @@ EOF_TOKEN           ::=  // 对应 TokenType::EOF_TOKEN
 'return'            ::=  // 对应 TokenType::RETURN
 // 注意: `ε` 表示空串，不对应任何 Token
 ```
+
+-------------------------------------------------------------
+// 1. 表达式 (Expressions)
+Expr   ::= Expr '+' Term
+         | Expr '-' Term
+         | Term
+
+Term   ::= Term '*' Factor
+         | Term '/' Factor
+         | Factor
+
+Factor ::= '(' Expr ')'
+         | Identifier     // 变量，如 'x', 'y'
+         | IntegerConstant // 数字，如 '123'

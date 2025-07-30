@@ -30,6 +30,12 @@ set(PROJECT_SOURCES
     regluarExpression/regExPlusNode.cpp
     regluarExpression/regExOptionalNode.cpp
 
+    ast/astNode.cpp
+    ast/expressionNode.cpp
+    ast/binaryOpNode.cpp
+    ast/identifierNode.cpp
+    ast/intergerLiteralNode.cpp
+
     state/dfaState.cpp
     state/dfaStateMachine.cpp
     state/nfaState.cpp
@@ -46,6 +52,7 @@ add_library(cpl_lib STATIC ${PROJECT_SOURCES})
 target_include_directories(cpl_lib PUBLIC
     ${PROJECT_SOURCE_DIR}
     ${PROJECT_SOURCE_DIR}/regluarExpression
+    ${PROJECT_SOURCE_DIR}/ast
     ${PROJECT_SOURCE_DIR}/state
     ${PROJECT_SOURCE_DIR}/vm
 )
