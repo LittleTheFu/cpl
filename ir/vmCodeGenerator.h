@@ -14,8 +14,7 @@ public:
     
 private:
     std::vector<Instruction> translate(const IRInstruction& irInstruction);
-    std::vector<Instruction> translateAdd(const IRInstruction& irInstruction);
-    std::vector<Instruction> translateMul(const IRInstruction& irInstruction);
+    std::vector<Instruction> translateBinaryOperation(const IRInstruction& irInstruction);
 
     int getNextRegisterId();
     int registerId = 0;
