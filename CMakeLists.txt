@@ -55,6 +55,7 @@ target_include_directories(cpl_lib PUBLIC
     ${PROJECT_SOURCE_DIR}/ast
     ${PROJECT_SOURCE_DIR}/state
     ${PROJECT_SOURCE_DIR}/vm
+    ${PROJECT_SOURCE_DIR}/front
 )
 
 add_executable(cpl main.cpp)
