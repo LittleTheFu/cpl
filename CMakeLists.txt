@@ -6,17 +6,17 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED TRUE)
 
 set(PROJECT_SOURCES
-    alphaBet.cpp
-    lexer.cpp
-    token.cpp
-    productionRule.cpp
-    grammarSymbol.cpp
-    grammar.cpp
-    lrItem.cpp
-    lrParserGenerator.cpp
-    lrState.cpp
-    predefineSymbol.cpp
-    parser.cpp
+    front/alphaBet.cpp
+    front/lexer.cpp
+    front/token.cpp
+    front/productionRule.cpp
+    front/grammarSymbol.cpp
+    front/grammar.cpp
+    front/lrItem.cpp
+    front/lrParserGenerator.cpp
+    front/lrState.cpp
+    front/predefineSymbol.cpp
+    front/parser.cpp
 
     regluarExpression/regEx.cpp
     regluarExpression/regExParser.cpp
