@@ -14,6 +14,8 @@ public:
 
     bool parse(const std::vector<Token> &tokens);
 
+    const IRProgram& getIRProgram() const;
+
 private:
     GrammarSymbol map(const Token &token) const;
 

@@ -14,3 +14,11 @@ int IRProgram::getTempVarCount()
 {
     return temp_var_count_++;
 }
+
+void IRProgram::print() const
+{
+    for (const auto& instruction : instructions_)
+    {
+        instruction.print();
+    }
+}

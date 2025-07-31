@@ -162,5 +162,7 @@ int main()
     Parser parser(grammar);
     parser.parse(tokens);
 
+    parser.getIRProgram().print();
+
     return 0;
 }

@@ -18,6 +18,8 @@ enum class IROpCode
     UNKNOWN,
 };
 
+std::string opCodeToString(IROpCode opCode);
+
 enum class IROperandType
 {
     INTEGER_CONSTANT,
@@ -82,6 +84,8 @@ public:
 
     IROpCode getOpCode() const;
     IROperand getOperand(size_t index) const;
+
+    void print() const;
 
 private:
     IROpCode opCode_;

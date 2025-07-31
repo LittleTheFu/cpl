@@ -106,6 +106,11 @@ bool Parser::parse(const std::vector<Token> &tokens)
     throw std::runtime_error("parse error");
 }
 
+const IRProgram &Parser::getIRProgram() const
+{
+    return program_;
+}
+
 GrammarSymbol Parser::map(const Token &token) const
 {
     if (token.type == TokenType::IDENTIFIER)

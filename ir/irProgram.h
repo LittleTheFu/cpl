@@ -13,6 +13,8 @@ public:
     void addInstruction(IRInstruction &&instruction);
     int getTempVarCount();
 
+    void print() const;
+
 private:
     std::vector<IRInstruction> instructions_;
     int temp_var_count_ = 0;
