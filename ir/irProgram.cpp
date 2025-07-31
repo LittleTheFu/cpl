@@ -15,6 +15,11 @@ int IRProgram::getTempVarCount()
     return temp_var_count_++;
 }
 
+const std::vector<IRInstruction> &IRProgram::getInstructions() const
+{
+    return instructions_;
+}
+
 void IRProgram::print() const
 {
     for (const auto& instruction : instructions_)

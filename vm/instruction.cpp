@@ -5,6 +5,24 @@ Instruction::Instruction()
 {
 }
 
+Instruction::Instruction(OpCode opCode)
+{
+    opCode_ = opCode;
+}
+
+Instruction::Instruction(OpCode opCode, Operand operandFirst)
+{
+    opCode_ = opCode;
+    operandFirst_ = operandFirst;
+}
+
+Instruction::Instruction(OpCode opCode, Operand operandFirst, Operand operandSecond)
+{
+    opCode_ = opCode;
+    operandFirst_ = operandFirst;
+    operandSecond_ = operandSecond;
+}
+
 void Instruction::readInstruction(const std::string &line, const std::map<std::string, size_t> &labelMap)
 {
     std::string lineTrim = trim(line);
@@ -360,6 +378,13 @@ std::ostream &operator<<(std::ostream &os, const Instruction &instruction)
     }
 
     return os;
+}
+
+std::string Instruction::toString() const
+{
+    std::stringstream ss;
+    ss << *this;
+    return ss.str();
 }
 
 bool Instruction::isLabelDefinition(const std::string &line, std::string &outLabelName)

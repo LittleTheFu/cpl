@@ -20,6 +20,7 @@ set(PROJECT_SOURCES
 
     ir/irInstruction.cpp
     ir/irProgram.cpp
+    ir/vmCodeGenerator.cpp
 
     regluarExpression/regEx.cpp
     regluarExpression/regExParser.cpp

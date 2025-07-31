@@ -10,6 +10,7 @@
 #include "parser.h"
 #include "intergerLiteralNode.h"
 #include "identifierNode.h"
+#include "vmCodeGenerator.h"
 
 int main()
 {
@@ -18,7 +19,7 @@ int main()
     // vm.loadProgram();
     // vm.execute();
 
-    Lexer lexer("(3+2)*8*9+alice * bob");
+    Lexer lexer("(3+2)*8*9+11 * bob");
     std::vector<Token> tokens;
 
     while(auto token = lexer.getNextToken())
@@ -163,6 +164,15 @@ int main()
     parser.parse(tokens);
 
     parser.getIRProgram().print();
+
+    std::cout << "--------------------------" << std::endl;
+
+    VmCodeGenerator codeGenerator;
+    std::vector<Instruction> instructions = codeGenerator.translate(parser.getIRProgram().getInstructions());
+    for (const auto& instruction : instructions)
+    {
+        std::cout << instruction.toString() << std::endl;
+    }
 
     return 0;
 }

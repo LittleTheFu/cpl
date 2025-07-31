@@ -12,6 +12,7 @@ public:
 
     void addInstruction(IRInstruction &&instruction);
     int getTempVarCount();
+    const std::vector<IRInstruction>& getInstructions() const;
 
     void print() const;
 

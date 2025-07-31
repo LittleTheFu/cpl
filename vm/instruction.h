@@ -52,6 +52,9 @@ struct Operand
 {
     OperandType type;
     int value;
+
+    Operand() {}
+    Operand(OperandType type, int value) : type(type), value(value) {}
 };
 std::ostream &operator<<(std::ostream &os, const Operand &operand);
 
@@ -59,6 +62,10 @@ class Instruction
 {
 public:
     Instruction();
+    Instruction(OpCode opCode);
+    Instruction(OpCode opCode, Operand operandFirst);
+    Instruction(OpCode opCode, Operand operandFirst, Operand operandSecond);
+
     ~Instruction() = default;
 
     void readInstruction(const std::string &line, const std::map<std::string, size_t>& labelMap);
@@ -66,6 +73,7 @@ public:
     bool isPureLabelLine(const std::string& trimmedLine);
 
     friend std::ostream &operator<<(std::ostream &os, const Instruction &instruction);
+    std::string toString() const;
 
     void setOpCode(OpCode opCode) { opCode_ = opCode; }
 
