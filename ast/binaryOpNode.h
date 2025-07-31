@@ -6,7 +6,8 @@
 #include <memory>
 #include <string>
 
-enum class BinaryOpType {
+enum class BinaryOpType
+{
     ADD,
     SUBTRACT,
     MULTIPLY,
@@ -14,11 +15,17 @@ enum class BinaryOpType {
 };
 std::string binaryOpTypeToString(BinaryOpType op_type);
 
-class BinaryOpNode : public ExpressionNode {
+class BinaryOpNode : public ExpressionNode
+{
 public:
-    BinaryOpNode(std::unique_ptr<AstNode>&& left, std::unique_ptr<AstNode>&& right, BinaryOpType op_type);
+    BinaryOpNode(std::unique_ptr<AstNode> &&left, std::unique_ptr<AstNode> &&right, BinaryOpType op_type);
     virtual ~BinaryOpNode() override = default;
     void evaluate() override;
+    IROperand genIRCode(IRProgram &program) override;
+
+private:
+    IROpCode BinaryOpNode::getIRType(BinaryOpType op_type) const;
+
 private:
     std::unique_ptr<AstNode> left_;
     std::unique_ptr<AstNode> right_;

@@ -10,3 +10,8 @@ void IdentifierNode::evaluate()
 {
     std::cout << name_ << " ";
 }
+
+IROperand IdentifierNode::genIRCode(IRProgram &program)
+{
+    return IROperand::createIdentifier(name_);
+}

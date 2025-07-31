@@ -95,6 +95,7 @@ bool Parser::parse(const std::vector<Token> &tokens)
                     throw std::runtime_error("stack size not 2");
                 }
                 std::get<std::unique_ptr<AstNode>>(stack.top().value)->evaluate();
+                std::get<std::unique_ptr<AstNode>>(stack.top().value)->genIRCode(program_);
                 std::cout << std::endl;
 
                 return true;

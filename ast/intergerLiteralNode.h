@@ -7,7 +7,9 @@ class IntegerLiteralNode : public ExpressionNode {
 public:
     IntegerLiteralNode(int value);
     virtual ~IntegerLiteralNode() override = default;
+
     void evaluate() override;
+    IROperand genIRCode(IRProgram& program) override;
 private:
     int value_;
 };

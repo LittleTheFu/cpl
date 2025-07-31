@@ -8,7 +8,9 @@ class IdentifierNode : public ExpressionNode {
 public:
     IdentifierNode(const std::string& name);
     virtual ~IdentifierNode() override = default;
+    
     void evaluate() override;
+    IROperand genIRCode(IRProgram& program) override;
 private:
     std::string name_;
 };

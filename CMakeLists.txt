@@ -18,9 +18,11 @@ set(PROJECT_SOURCES
     front/predefineSymbol.cpp
     front/parser.cpp
 
+    ir/irInstruction.cpp
+    ir/irProgram.cpp
+
     regluarExpression/regEx.cpp
     regluarExpression/regExParser.cpp
-    
     regluarExpression/regExNode.cpp
     regluarExpression/regExCharNode.cpp
     regluarExpression/regExCharSetNode.cpp
@@ -56,6 +58,7 @@ target_include_directories(cpl_lib PUBLIC
     ${PROJECT_SOURCE_DIR}/state
     ${PROJECT_SOURCE_DIR}/vm
     ${PROJECT_SOURCE_DIR}/front
+    ${PROJECT_SOURCE_DIR}/ir
 )
 
 add_executable(cpl main.cpp)

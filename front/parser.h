@@ -4,6 +4,7 @@
 #include "grammar.h"
 #include "token.h"
 #include "lrParserGenerator.h"
+#include "irProgram.h"
 
 class Parser
 {
@@ -20,6 +21,8 @@ private:
     const Grammar &grammar_;
     LRParserGenerator parserGenerator_;
     std::vector<GrammarSymbol> symbols_;
+
+    IRProgram program_;
 };
 
 #endif // _PARSER_H_
