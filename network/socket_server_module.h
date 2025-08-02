@@ -5,11 +5,10 @@
 #include <functional> // For std::function
 #include <asio/ts/buffer.hpp> // For asio::buffer
 #include <asio/ts/internet.hpp> // For asio::ip::tcp
-#include <thread> // 修复: 添加对 std::thread 的包含
-#include <asio/streambuf.hpp> // **** 修复: 添加对 asio::streambuf 的包含 ****
+#include <thread> // 包含 std::thread
+#include <asio/streambuf.hpp> // 包含 asio::streambuf
 
 // 前向声明您的编译器组件类，避免循环引用
-// 这样在头文件中就不需要包含这些类的完整定义，只需要知道它们是类即可。
 class Parser;
 class VmCodeGenerator;
 class VirtualMachine;
@@ -62,7 +61,9 @@ private:
     static void do_read(std::shared_ptr<asio::ip::tcp::socket> socket,
                         std::shared_ptr<asio::streambuf> read_buffer);
 
-    // 辅助函数：封装了向客户端写入消息的逻辑 (如果需要单独的 do_write)
-    // static void do_write(std::shared_ptr<asio::ip::tcp::socket> socket,
-    //                      std::string message);
+    // 辅助函数：封装了向客户端写入消息的逻辑
+    // 确保 response_str_to_send 在异步操作期间保持有效
+    static void do_write(std::shared_ptr<asio::ip::tcp::socket> socket,
+                         std::shared_ptr<asio::streambuf> read_buffer, // 再次传入read_buffer以便后续读取
+                         std::string response_str_to_send); // 值传递以确保字符串生命周期
 };
