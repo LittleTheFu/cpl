@@ -5,10 +5,10 @@ project(my_compiler CXX)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED TRUE)
 
-set(ASIO_ROOT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/third_party/asio)
+set(ASIO_ROOT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/third/asio)
 include_directories(${ASIO_ROOT_DIR}/include)
 
-set(JSON_ROOT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/third_party/json)
+set(JSON_ROOT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/third/json)
 include_directories(${JSON_ROOT_DIR}/include)
 
 set(PROJECT_SOURCES
@@ -52,6 +52,8 @@ set(PROJECT_SOURCES
 
     vm/virtualMachine.cpp
     vm/instruction.cpp
+
+    network/socket_server_module.cpp
 
     main.cpp
 )
