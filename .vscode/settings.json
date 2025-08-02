@@ -141,7 +141,20 @@
     "span": "cpp",
     "string_view": "cpp",
     "cassert": "cpp",
-    "stack": "cpp"
+    "stack": "cpp",
+    "cinttypes": "cpp",
+    "codecvt": "cpp",
+    "coroutine": "cpp",
+    "csignal": "cpp",
+    "cstdarg": "cpp",
+    "filesystem": "cpp",
+    "future": "cpp",
+    "numeric": "cpp",
+    "random": "cpp",
+    "source_location": "cpp",
+    "strstream": "cpp",
+    "valarray": "cpp",
+    "resumable": "cpp"
   },
   "C_Cpp.default.compilerPath": "cl.exe"
 }

@@ -4,7 +4,8 @@
             "name": "windows-gcc-x64",
             "includePath": [
                 "${workspaceFolder}/**",
-                "${workspaceFolder}/third/googletest/googletest/include"
+                "${workspaceFolder}/third/googletest/googletest/include",
+                "${workspaceFolder}/third/asio/include"
             ],
             "compilerPath": "cl.exe",
             "cStandard": "${default}",

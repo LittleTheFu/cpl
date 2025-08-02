@@ -8,7 +8,8 @@ set(CMAKE_CXX_STANDARD_REQUIRED TRUE)
 set(ASIO_ROOT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/third_party/asio)
 include_directories(${ASIO_ROOT_DIR}/include)
 
-
+set(JSON_ROOT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/third_party/json)
+include_directories(${JSON_ROOT_DIR}/include)
 
 set(PROJECT_SOURCES
     front/alphaBet.cpp
