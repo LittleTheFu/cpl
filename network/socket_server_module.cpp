@@ -7,9 +7,8 @@
 #include <asio/ts/internet.hpp> // For asio::ip::tcp
 #include <asio/streambuf.hpp> // 修复：添加对 asio::streambuf 的包含
 
-// #include <nlohmann/json.hpp> // 假设你引入了C++ JSON库，如jsoncpp或nlohmann/json
-
 // 包含你的编译器组件头文件
+// 确保这些路径相对于 socket_server_module.cpp 的编译位置是正确的
 #include "parser.h"
 #include "virtualMachine.h"
 #include "vmCodeGenerator.h"
@@ -79,11 +78,6 @@ void SocketServer::do_read(std::shared_ptr<asio::ip::tcp::socket> socket,
                            std::shared_ptr<asio::streambuf> read_buffer) {
     
     // 每次读取前清空缓冲区
-    // 注意：read_buffer->consume() 会移动内部指针，而不是清空数据
-    // 在这里我们希望它在每次新读之前是空的，但 async_read 默认会 append 到 streambuf 的 write-area
-    // 如果你期望每次只处理一个完整的消息，并清空，那么在每次读取前消费掉所有现有数据是合理的。
-    // 如果你期待消息可能分包到达，并且 streambuf 可能包含前一次读取的剩余数据，则不应完全 consume。
-    // 但鉴于你的协议是 newline delimited，并且你正在检查 newline_pos，当前处理方式是合理的。
     read_buffer->consume(read_buffer->size());
 
     std::cout << "Server: Reading from client "
@@ -91,8 +85,6 @@ void SocketServer::do_read(std::shared_ptr<asio::ip::tcp::socket> socket,
               << socket->remote_endpoint().port()
               << std::endl;
 
-    // **** 关键修改在这里：使用 async_read 和 transfer_at_least ****
-    // 这将确保只要有任何数据到达，回调就会被触发
     asio::async_read(*socket, *read_buffer, asio::transfer_at_least(1), // 只要有1个字节到达就触发回调
         [socket, read_buffer](const asio::error_code& error, std::size_t bytes_transferred) {
             std::cout << "--- DEBUG: Entered async_read callback! Error: " << error.message() 
@@ -103,7 +95,7 @@ void SocketServer::do_read(std::shared_ptr<asio::ip::tcp::socket> socket,
                 std::cout << "DEBUG: Inside async_read success callback! Bytes: " << bytes_transferred << std::endl; 
                 std::cout << "Server: Read " << bytes_transferred << " bytes from client." << std::endl;
 
-                // **** 这是关键的修改：打印 streambuf 中的原始字节 ****
+                // 打印 streambuf 中的原始字节
                 std::cout << "DEBUG: Raw buffer bytes (size: " << read_buffer->size() << "): [";
                 bool first_byte = true;
                 for (auto g = asio::buffers_begin(read_buffer->data());
@@ -115,11 +107,8 @@ void SocketServer::do_read(std::shared_ptr<asio::ip::tcp::socket> socket,
                     first_byte = false;
                 }
                 std::cout << "]" << std::endl;
-                // **** 关键修改结束 ****
 
                 // 将 streambuf 的内容复制到 string
-                // 注意：这个 std::string 构造函数在遇到空字符 '\0' 时可能会截断字符串
-                // 但对于UTF-8 JSON，通常不会有空字符，所以这里是安全的
                 std::string current_buffer_content(
                     asio::buffers_begin(read_buffer->data()),
                     asio::buffers_begin(read_buffer->data()) + read_buffer->size() 
@@ -139,36 +128,52 @@ void SocketServer::do_read(std::shared_ptr<asio::ip::tcp::socket> socket,
                     std::cout << "DEBUG: Full message (before newline): [" << request_str << "]" << std::endl;
                     
                     // 简化后的响应逻辑
-                    // 关键修改：转义 request_str 中的双引号和反斜杠，使其作为 JSON 字符串的值是合法的
                     std::string escaped_request_str = escape_json_string(request_str); 
-                    std::string response_str_to_send = "{\"status\": \"success\", \"message\": \"Received: " + escaped_request_str + "\"}"; // 重命名以区分
+                    std::string response_str_to_send = "{\"status\": \"success\", \"message\": \"Received: " + escaped_request_str + "\"}";
                     response_str_to_send += "\n"; // 添加换行符作为响应的结束标志
 
                     std::cout << "DEBUG: Attempting to write response: [" << response_str_to_send << "]" << std::endl;
+                    std::cout << "DEBUG: Response string length to send: " << response_str_to_send.length() << std::endl; 
                     
-                    // ✅ 关键修改：将 response_str_to_send 移动或复制到 async_write 的 lambda 捕获列表中
-                    // 使用 move 语义可以避免不必要的拷贝，如果 response_str_to_send 不再被当前 lambda 的后续代码使用。
-                    // 对于 std::string，直接捕获 by value ([response_str_to_send]) 也会创建副本，确保生命周期。
-                    asio::async_write(*socket, asio::buffer(response_str_to_send),
-                        [socket, read_buffer, response_str_to_send = std::move(response_str_to_send)](const asio::error_code& error, std::size_t bytes_transferred_write) { // <-- 在这里捕获 response_str_to_send
-                            std::cout << "DEBUG: Inside async_write callback!" << std::endl;
-                            // response_str_to_send 现在作为 lambda 的一个副本，其生命周期将持续到此回调执行完毕
-                            if (error) {
-                                std::cerr << "Server: Write error: " << error.message() << std::endl;
-                            } else {
-                                std::cout << "Server: Wrote " << bytes_transferred_write << " bytes to client." << std::endl;
-                            }
+                    // --- 关键修改：从 async_write 切换到 write (同步) ---
+                    asio::error_code write_error;
+                    std::size_t bytes_transferred_write = 0;
+                    try {
+                        bytes_transferred_write = asio::write(*socket, asio::buffer(response_str_to_send), write_error);
+                    } catch (const asio::system_error& e) {
+                        // 捕获可能由同步操作抛出的异常
+                        std::cerr << "Server: Synchronous write threw exception: " << e.what() << std::endl;
+                        write_error = e.code(); // 将异常的错误码赋值给 write_error
+                    }
+                    
+                    std::cout << "DEBUG: After synchronous write attempt!" << std::endl; // 修改此日志
+                    if (write_error) {
+                        std::cerr << "Server: Synchronous write error: " << write_error.message() 
+                                  << " (Code: " << write_error.value() 
+                                  << ", Category: " << write_error.category().name() << ")" << std::endl;
+                    } else {
+                        std::cout << "Server: Wrote " << bytes_transferred_write << " bytes to client (synchronously)." << std::endl; // 修改此日志
+                    }
+                    // --- 关键修改结束 ---
 
-                            if (socket->is_open()) {
-                                SocketServer::do_read(socket, read_buffer); 
-                            }
-                        });
+                    // 新的诊断：检查 Socket 是否仍然打开
+                    std::cout << "DEBUG: After write, socket->is_open(): " << (socket->is_open() ? "true" : "false") << std::endl; 
+
+                    if (socket->is_open()) {
+                        SocketServer::do_read(socket, read_buffer); 
+                    } else {
+                        // 新的诊断
+                        std::cout << "DEBUG: Socket closed after write, not initiating further read." << std::endl; 
+                    }
+
                 } else {
                     // 没有找到换行符，说明消息不完整，需要继续读取
-                    // 如果缓冲区过大（例如，超过某个限制），可能需要考虑关闭连接，以防止恶意攻击或内存耗尽
                     std::cout << "DEBUG: Newline not found yet. Continuing to read." << std::endl;
                     if (socket->is_open()) {
                         SocketServer::do_read(socket, read_buffer); // 继续读取
+                    } else {
+                        // 新的诊断
+                        std::cout << "DEBUG: Socket closed while waiting for full message." << std::endl; 
                     }
                 }
 
@@ -179,12 +184,16 @@ void SocketServer::do_read(std::shared_ptr<asio::ip::tcp::socket> socket,
                     asio::error_code ec;
                     socket->close(ec); 
                 }
+                // 新的诊断
+                std::cout << "DEBUG: Socket closed by error condition." << std::endl; 
             } else {
                 std::cerr << "Server: Read error: " << error.message() << std::endl;
                 if (socket->is_open()) {
                     asio::error_code ec;
                     socket->close(ec); 
                 }
+                // 新的诊断
+                std::cout << "DEBUG: Socket closed by unexpected read error." << std::endl; 
             }
         });
 }
