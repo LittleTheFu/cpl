@@ -5,6 +5,11 @@ project(my_compiler CXX)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED TRUE)
 
+set(ASIO_ROOT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/third_party/asio)
+include_directories(${ASIO_ROOT_DIR}/include)
+
+
+
 set(PROJECT_SOURCES
     front/alphaBet.cpp
     front/lexer.cpp
@@ -90,6 +95,8 @@ target_include_directories(cpl_tests PRIVATE
 target_link_libraries(cpl_tests
     GTest::gtest_main
     cpl_lib          
+    ws2_32
+    Iphlpapi
 )
 
 include(CTest)
