@@ -1,60 +1,60 @@
 #include "token.h"
 
-std::string tokenTypeToString(TokenType type)
+std::string tokenTypeToString(_TokenType_ type)
 {
     switch (type)
     {
-    case TokenType::IF:
+    case _TokenType_::IF:
         return "IF";
-    case TokenType::ELSE:
+    case _TokenType_::ELSE:
         return "ELSE";
-    case TokenType::WHILE:
+    case _TokenType_::WHILE:
         return "WHILE";
-    case TokenType::INT:
+    case _TokenType_::INT:
         return "INT";
-    case TokenType::RETURN:
+    case _TokenType_::RETURN:
         return "RETURN";
-    case TokenType::PLUS:
+    case _TokenType_::PLUS:
         return "PLUS";
-    case TokenType::MINUS:
+    case _TokenType_::MINUS:
         return "MINUS";
-    case TokenType::MULTIPLY:
+    case _TokenType_::MULTIPLY:
         return "MULTIPLY";
-    case TokenType::DIVIDE:
+    case _TokenType_::DIVIDE:
         return "DIVIDE";
-    case TokenType::ASSIGN:
+    case _TokenType_::ASSIGN:
         return "ASSIGN";
-    case TokenType::EQUAL:
+    case _TokenType_::EQUAL:
         return "EQUAL";
-    case TokenType::NOT_EQUAL:
+    case _TokenType_::NOT_EQUAL:
         return "NOT_EQUAL";
-    case TokenType::LESS:
+    case _TokenType_::LESS:
         return "LESS";
-    case TokenType::LESS_EQUAL:
+    case _TokenType_::LESS_EQUAL:
         return "LESS_EQUAL";
-    case TokenType::GREATER:
+    case _TokenType_::GREATER:
         return "GREATER";
-    case TokenType::GREATER_EQUAL:
+    case _TokenType_::GREATER_EQUAL:
         return "GREATER_EQUAL";
-    case TokenType::IDENTIFIER:
+    case _TokenType_::IDENTIFIER:
         return "IDENTIFIER";
-    case TokenType::INTEGER:
+    case _TokenType_::INTEGER:
         return "INTEGER";
-    case TokenType::EOF_TOKEN:
+    case _TokenType_::EOF_TOKEN:
         return "EOF_TOKEN";
-    case TokenType::L_PAREN:
+    case _TokenType_::L_PAREN:
         return "L_PAREN";
-    case TokenType::R_PAREN:
+    case _TokenType_::R_PAREN:
         return "R_PAREN";
-    case TokenType::L_BRACE:
+    case _TokenType_::L_BRACE:
         return "L_BRACE";
-    case TokenType::R_BRACE:
+    case _TokenType_::R_BRACE:
         return "R_BRACE";
-    case TokenType::SEMICOLON:
+    case _TokenType_::SEMICOLON:
         return "SEMICOLON";
-    case TokenType::COMMA:
+    case _TokenType_::COMMA:
         return "COMMA";
-    case TokenType::UNKNOWN:
+    case _TokenType_::UNKNOWN:
         return "UNKNOWN";
     default:
         return "UNKNOWN";

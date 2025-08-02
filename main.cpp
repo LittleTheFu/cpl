@@ -1,3 +1,4 @@
+#include "token.h"
 #include "virtualMachine.h"
 #include "lexer.h"
 #include "grammarSymbol.h"
@@ -166,12 +167,12 @@ int main()
         std::cout << tokenTypeToString(token->type) << " : " << token->lexeme << std::endl;
         tokens.push_back(*token);
 
-        if(token->type == TokenType::EOF_TOKEN)
+        if(token->type == _TokenType_::EOF_TOKEN)
         {
             break;
         }
     }
-    tokens.push_back(Token{TokenType::EOF_TOKEN, ""});
+    tokens.push_back(Token{_TokenType_::EOF_TOKEN, ""});
 
     // Expr   ::= Expr '+' Term
     //         | Term

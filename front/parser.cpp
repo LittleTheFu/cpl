@@ -113,43 +113,43 @@ const IRProgram &Parser::getIRProgram() const
 
 GrammarSymbol Parser::map(const Token &token) const
 {
-    if (token.type == TokenType::IDENTIFIER)
+    if (token.type == _TokenType_::IDENTIFIER)
     {
         return PredefineSymbol::SYMBOL_IDENTIFIER;
     }
-    else if (token.type == TokenType::INTEGER)
+    else if (token.type == _TokenType_::INTEGER)
     {
         return PredefineSymbol::SYMBOL_NUMBER;
     }
-    else if (token.type == TokenType::PLUS)
+    else if (token.type == _TokenType_::PLUS)
     {
         return PredefineSymbol::SYMBOL_PLUS;
     }
-    else if (token.type == TokenType::MINUS)
+    else if (token.type == _TokenType_::MINUS)
     {
         return PredefineSymbol::SYMBOL_MINUS;
     }
-    else if (token.type == TokenType::MULTIPLY)
+    else if (token.type == _TokenType_::MULTIPLY)
     {
         return PredefineSymbol::SYMBOL_MULTIPLY;
     }
-    else if (token.type == TokenType::DIVIDE)
+    else if (token.type == _TokenType_::DIVIDE)
     {
         return PredefineSymbol::SYMBOL_DIVIDE;
     }
-    else if (token.type == TokenType::ASSIGN)
+    else if (token.type == _TokenType_::ASSIGN)
     {
         return PredefineSymbol::SYMBOL_ASSIGN;
     }
-    else if (token.type == TokenType::EOF_TOKEN)
+    else if (token.type == _TokenType_::EOF_TOKEN)
     {
         return PredefineSymbol::SYMBOL_END;
     }
-    else if (token.type == TokenType::L_PAREN)
+    else if (token.type == _TokenType_::L_PAREN)
     {
         return PredefineSymbol::LEFT_PAREN;
     }
-    else if (token.type == TokenType::R_PAREN)
+    else if (token.type == _TokenType_::R_PAREN)
     {
         return PredefineSymbol::RIGHT_PAREN;
     }

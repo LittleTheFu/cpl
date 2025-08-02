@@ -1,9 +1,11 @@
-﻿#include "token.h"
-#include "socket_server_module.h"
+﻿#include "socket_server_module.h"
 #include <iostream>
 #include <thread>   // 明确包含 <thread>
 #include <string>
 #include <limits> // For std::numeric_limits
+#include <asio/ts/buffer.hpp> // For asio::buffer
+#include <asio/ts/internet.hpp> // For asio::ip::tcp
+
 // #include <nlohmann/json.hpp> // 假设你引入了C++ JSON库，如jsoncpp或nlohmann/json
 
 // 包含你的编译器组件头文件
@@ -61,6 +63,9 @@ void SocketServer::do_read(std::shared_ptr<asio::ip::tcp::socket> socket,
                            std::shared_ptr<asio::streambuf> read_buffer) {
     
     // 清空 streambuf 中可能残留的旧数据，为新的读取做准备
+    // 注意：如果每次读取都是新的请求，且请求之间有明确的界定符（如\n），
+    // 那么在每次读取前清空缓冲区是合理的。
+    // 如果是流式数据，可能需要更复杂的处理。
     read_buffer->consume(read_buffer->size());
 
     std::cout << "Server: Reading from client "
@@ -71,37 +76,39 @@ void SocketServer::do_read(std::shared_ptr<asio::ip::tcp::socket> socket,
     // 发起异步读取操作，直到遇到换行符 '\n'
     asio::async_read_until(*socket, *read_buffer, '\n',
         [socket, read_buffer](const asio::error_code& error, std::size_t bytes_transferred) {
-            // 注意：lambda 表达式内部访问静态成员时，仍然需要使用类名::成员名，或者捕获 this（如果是非静态成员函数）。
-            // 由于这里是静态成员函数，直接使用 SocketServer::request_handler_ 等即可。
+            // 注意：lambda 表达式内部访问静态成员时，仍然需要使用类名::成员名。
 
+            // **** 极早期调试日志 ****
+            std::cout << "--- DEBUG: Entered async_read_until callback! Error: " << error.message() << std::endl; 
+            
             if (!error) {
                 // 成功读取到数据
+                std::cout << "DEBUG: Inside async_read_until success callback! Bytes: " << bytes_transferred << std::endl; // 新增日志
                 std::cout << "Server: Read " << bytes_transferred << " bytes from client." << std::endl;
                 
                 std::istream is(read_buffer.get());
                 std::string request_str;
                 std::getline(is, request_str); // 从 streambuf 中提取一行数据（不包含换行符）
 
+                std::cout << "DEBUG: Request string extracted: [" << request_str << "]" << std::endl; // 新增日志
                 std::cout << "Server: Extracted request: [" << request_str << "]" << std::endl;
 
-                // 调用请求处理器，并传入编译器/VM实例的引用
-                std::string response_str = "{}"; // 默认空JSON响应
-                if (SocketServer::request_handler_ && SocketServer::s_parser_ && SocketServer::s_code_gen_ && SocketServer::s_vm_) {
-                    std::cout << "Received request: " << request_str << std::endl; // 这是你最初希望看到的日志
-                    response_str = SocketServer::request_handler_(request_str, *SocketServer::s_parser_, *SocketServer::s_code_gen_, *SocketServer::s_vm_);
-                } else {
-                    std::cerr << "Server: Error: Request handler or compiler/VM components not initialized." << std::endl;
-                    response_str = "{\"status\": \"error\", \"message\": \"Server not fully initialized or handler missing.\"}";
-                }
-
+                // 简化后的响应逻辑，以排除编译器/VM部分的问题
+                std::string response_str = "{\"status\": \"success\", \"message\": \"Received: " + request_str + "\"}"; // 简单响应
+                std::cout << "DEBUG: Simplified response: [" << response_str << "]" << std::endl; // 新增日志
+                
                 // 添加换行符作为响应的结束标志，确保客户端能正确读取
                 response_str += "\n"; 
 
                 // 发起异步写入操作，将响应发送回客户端
+                std::cout << "DEBUG: Attempting to write response: [" << response_str << "]" << std::endl; // 新增日志
                 asio::async_write(*socket, asio::buffer(response_str),
-                    [socket, read_buffer](const asio::error_code& error, std::size_t /*bytes_transferred*/) {
+                    [socket, read_buffer](const asio::error_code& error, std::size_t bytes_transferred_write) { // 捕获 bytes_transferred_write
+                        std::cout << "DEBUG: Inside async_write callback!" << std::endl; // 新增日志
                         if (error) {
                             std::cerr << "Server: Write error: " << error.message() << std::endl;
+                        } else {
+                            std::cout << "Server: Wrote " << bytes_transferred_write << " bytes to client." << std::endl; // 打印写入字节数
                         }
 
                         // **** 最关键的一步：在发送完响应后，再次调度读取操作，以便接收来自同一客户端的下一条消息 ****
@@ -149,18 +156,24 @@ void SocketServer::start(int port, RequestHandler handler, Parser& parser, VmCod
         acceptor_ = std::make_unique<asio::ip::tcp::acceptor>(*io_context_,
                                                                asio::ip::tcp::endpoint(asio::ip::tcp::v4(), port));
         std::cout << "Server listening on port " << port << std::endl;
+        std::cout << "Server running. Send {\"command\": \"shutdown\"} to stop, or press Ctrl+C." << std::endl; // 提示如何停止
 
         // 启动第一个接受连接的异步操作
         SocketServer::start_accept();
 
         // 在单独的线程中运行 io_context_
-        io_thread_ = std::make_unique<std::thread>([]() {
+        io_thread_ = std::make_unique<std::thread>([this]() { // 捕获 this 以便访问 io_context_
             try {
                 std::cout << "Server: IO context thread started." << std::endl;
+                // 运行 io_context_
                 io_context_->run();
                 std::cout << "Server: IO context run finished." << std::endl;
-            } catch (const std::exception& e) {
-                std::cerr << "Server: Asio io_context run error: " << e.what() << std::endl;
+            } catch (const asio::system_error& e) { // 捕获 Asio 系统错误
+                std::cerr << "Server: Asio system error in io_thread: " << e.what() << std::endl;
+            } catch (const std::exception& e) { // 捕获所有标准异常
+                std::cerr << "Server: General exception in io_thread: " << e.what() << std::endl;
+            } catch (...) { // 捕获所有其他未知异常
+                std::cerr << "Server: Unknown exception caught in io_thread!" << std::endl;
             }
         });
 

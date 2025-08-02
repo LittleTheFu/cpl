@@ -3,7 +3,7 @@
 
 #include <string>
 
-enum class TokenType
+enum class _TokenType_
 {
     IF,
     ELSE,
@@ -40,24 +40,24 @@ enum class TokenType
     UNKNOWN,
 };
 
-std::string tokenTypeToString(TokenType type);
+std::string tokenTypeToString(_TokenType_ type);
 
 struct Token
 {
-    TokenType type;
+    _TokenType_ type;
     std::string lexeme;
     int line;
     int column;
 
     Token()
     {
-        type = TokenType::UNKNOWN;
+        type = _TokenType_::UNKNOWN;
         lexeme = "";
         line = 0;
         column = 0;
     }
 
-    Token(TokenType type, std::string lexeme)
+    Token(_TokenType_ type, std::string lexeme)
     {
         this->type = type;
         this->lexeme = lexeme;

@@ -45,7 +45,7 @@ protected:
     }
 
     // Helper to create a simple token vector from types
-    std::vector<Token> createTokenStream(const std::vector<TokenType>& types) {
+    std::vector<Token> createTokenStream(const std::vector<_TokenType_>& types) {
         std::vector<Token> tokens;
         for (const auto& type : types) {
             tokens.push_back(Token(type, "")); // Lexeme is not important for this test
@@ -57,10 +57,10 @@ protected:
 // Test a simple valid expression: id + id
 TEST_F(ParserTest, SimpleValidExpression) {
     std::vector<Token> tokens = {
-        {TokenType::IDENTIFIER, "a"},
-        {TokenType::PLUS, "+"},
-        {TokenType::IDENTIFIER, "b"},
-        {TokenType::EOF_TOKEN, ""} // End of input
+        {_TokenType_::IDENTIFIER, "a"},
+        {_TokenType_::PLUS, "+"},
+        {_TokenType_::IDENTIFIER, "b"},
+        {_TokenType_::EOF_TOKEN, ""} // End of input
     };
     EXPECT_TRUE(parser->parse(tokens));
 }
@@ -68,14 +68,14 @@ TEST_F(ParserTest, SimpleValidExpression) {
 // Test a more complex valid expression: (id + id) * id
 TEST_F(ParserTest, ComplexValidExpression) {
     std::vector<Token> tokens = {
-        {TokenType::L_PAREN, "("},
-        {TokenType::IDENTIFIER, "a"},
-        {TokenType::PLUS, "+"},
-        {TokenType::IDENTIFIER, "b"},
-        {TokenType::R_PAREN, ")"},
-        {TokenType::MULTIPLY, "*"},
-        {TokenType::IDENTIFIER, "c"},
-        {TokenType::EOF_TOKEN, ""}
+        {_TokenType_::L_PAREN, "("},
+        {_TokenType_::IDENTIFIER, "a"},
+        {_TokenType_::PLUS, "+"},
+        {_TokenType_::IDENTIFIER, "b"},
+        {_TokenType_::R_PAREN, ")"},
+        {_TokenType_::MULTIPLY, "*"},
+        {_TokenType_::IDENTIFIER, "c"},
+        {_TokenType_::EOF_TOKEN, ""}
     };
     // Note: The current grammar doesn't have MULTIPLY, so this will fail.
     // We need to adjust the test grammar or the token stream.
@@ -86,12 +86,12 @@ TEST_F(ParserTest, ComplexValidExpression) {
     // The test will be written assuming the parser can map MULTIPLY to the correct symbol.
     // Let's create a token stream that matches the grammar symbols.
     std::vector<Token> tokens_for_grammar = {
-        {TokenType::L_PAREN, "("},
-        {TokenType::IDENTIFIER, "a"},
-        {TokenType::PLUS, "+"},
-        {TokenType::IDENTIFIER, "b"},
-        {TokenType::R_PAREN, ")"},
-        {TokenType::EOF_TOKEN, ""} // Simplified to a valid expression for the current grammar
+        {_TokenType_::L_PAREN, "("},
+        {_TokenType_::IDENTIFIER, "a"},
+        {_TokenType_::PLUS, "+"},
+        {_TokenType_::IDENTIFIER, "b"},
+        {_TokenType_::R_PAREN, ")"},
+        {_TokenType_::EOF_TOKEN, ""} // Simplified to a valid expression for the current grammar
     };
     EXPECT_TRUE(parser->parse(tokens_for_grammar));
 }
@@ -100,11 +100,11 @@ TEST_F(ParserTest, ComplexValidExpression) {
 // Test an invalid expression with a missing operand: id + * id
 TEST_F(ParserTest, MissingOperand) {
     std::vector<Token> tokens = {
-        {TokenType::IDENTIFIER, "a"},
-        {TokenType::PLUS, "+"},
-        {TokenType::MULTIPLY, "*"}, // Invalid sequence
-        {TokenType::IDENTIFIER, "b"},
-        {TokenType::EOF_TOKEN, ""}
+        {_TokenType_::IDENTIFIER, "a"},
+        {_TokenType_::PLUS, "+"},
+        {_TokenType_::MULTIPLY, "*"}, // Invalid sequence
+        {_TokenType_::IDENTIFIER, "b"},
+        {_TokenType_::EOF_TOKEN, ""}
     };
     EXPECT_THROW(parser->parse(tokens), std::runtime_error);
 }
@@ -112,9 +112,9 @@ TEST_F(ParserTest, MissingOperand) {
 // Test an invalid expression with missing operator: id id
 TEST_F(ParserTest, MissingOperator) {
     std::vector<Token> tokens = {
-        {TokenType::IDENTIFIER, "a"},
-        {TokenType::IDENTIFIER, "b"}, // Invalid sequence
-        {TokenType::EOF_TOKEN, ""}
+        {_TokenType_::IDENTIFIER, "a"},
+        {_TokenType_::IDENTIFIER, "b"}, // Invalid sequence
+        {_TokenType_::EOF_TOKEN, ""}
     };
     EXPECT_THROW(parser->parse(tokens), std::runtime_error);
 }
@@ -122,9 +122,9 @@ TEST_F(ParserTest, MissingOperator) {
 // Test an invalid expression with mismatched parentheses: ( id
 TEST_F(ParserTest, MismatchedParentheses) {
     std::vector<Token> tokens = {
-        {TokenType::L_PAREN, "("},
-        {TokenType::IDENTIFIER, "a"},
-        {TokenType::EOF_TOKEN, ""}
+        {_TokenType_::L_PAREN, "("},
+        {_TokenType_::IDENTIFIER, "a"},
+        {_TokenType_::EOF_TOKEN, ""}
     };
     EXPECT_THROW(parser->parse(tokens), std::runtime_error);
 }
@@ -132,7 +132,7 @@ TEST_F(ParserTest, MismatchedParentheses) {
 // Test an empty input sequence
 TEST_F(ParserTest, EmptyInput) {
     std::vector<Token> tokens = {
-        {TokenType::EOF_TOKEN, ""}
+        {_TokenType_::EOF_TOKEN, ""}
     };
     // An empty sequence is not a valid expression according to the grammar (it must derive at least F -> id)
     EXPECT_THROW(parser->parse(tokens), std::runtime_error);
@@ -141,8 +141,8 @@ TEST_F(ParserTest, EmptyInput) {
 // Test a single identifier, which is a valid expression
 TEST_F(ParserTest, SingleIdentifier) {
     std::vector<Token> tokens = {
-        {TokenType::IDENTIFIER, "id"},
-        {TokenType::EOF_TOKEN, ""}
+        {_TokenType_::IDENTIFIER, "id"},
+        {_TokenType_::EOF_TOKEN, ""}
     };
     EXPECT_TRUE(parser->parse(tokens));
 }

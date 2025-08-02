@@ -3,11 +3,11 @@
 
 Lexer::Lexer(const std::string &input)
 {
-    keywords_["if"] = TokenType::IF;
-    keywords_["else"] = TokenType::ELSE;
-    keywords_["while"] = TokenType::WHILE;
-    keywords_["int"] = TokenType::INT;
-    keywords_["return"] = TokenType::RETURN;
+    keywords_["if"] = _TokenType_::IF;
+    keywords_["else"] = _TokenType_::ELSE;
+    keywords_["while"] = _TokenType_::WHILE;
+    keywords_["int"] = _TokenType_::INT;
+    keywords_["return"] = _TokenType_::RETURN;
 
     input_ = input;
     currentPos_ = 0;
@@ -65,31 +65,31 @@ std::shared_ptr<Token> Lexer::getNextToken()
 
         if(currentPos_ >= input_.size())
         {
-            return std::make_shared<Token>(TokenType::EOF_TOKEN, "");
+            return std::make_shared<Token>(_TokenType_::EOF_TOKEN, "");
         }
 
         std::pair<std::optional<size_t>, std::shared_ptr<Token>> longestResult;
 
-        matchRE(regExNumber_, TokenType::INTEGER, longestResult);
-        matchRE(regExIdentifier_, TokenType::IDENTIFIER, longestResult);
-        matchRE(regExGreater_, TokenType::GREATER, longestResult);
-        matchRE(regExLess_, TokenType::LESS, longestResult);
-        matchRE(regExGreaterEqual_, TokenType::GREATER_EQUAL, longestResult);
-        matchRE(regExLessEqual_, TokenType::LESS_EQUAL, longestResult);
-        matchRE(regExEqual_, TokenType::EQUAL, longestResult);
-        matchRE(regExNotEqual_, TokenType::NOT_EQUAL, longestResult);
-        matchRE(regExPlus_, TokenType::PLUS, longestResult);
-        matchRE(regExMinus_, TokenType::MINUS, longestResult);
-        matchRE(regExMultiply_, TokenType::MULTIPLY, longestResult);
-        matchRE(regExDivide_, TokenType::DIVIDE, longestResult);
-        matchRE(regExEqual_, TokenType::EQUAL, longestResult);
-        matchRE(regExNotEqual_, TokenType::NOT_EQUAL, longestResult);
-        matchRE(regExLParen_, TokenType::L_PAREN, longestResult);
-        matchRE(regExRParen_, TokenType::R_PAREN, longestResult);
-        matchRE(regExLBrace_, TokenType::L_BRACE, longestResult);
-        matchRE(regExRBrace_, TokenType::R_BRACE, longestResult);
-        matchRE(regExSemicolon_, TokenType::SEMICOLON, longestResult);
-        matchRE(regExComma_, TokenType::COMMA, longestResult);
+        matchRE(regExNumber_, _TokenType_::INTEGER, longestResult);
+        matchRE(regExIdentifier_, _TokenType_::IDENTIFIER, longestResult);
+        matchRE(regExGreater_, _TokenType_::GREATER, longestResult);
+        matchRE(regExLess_, _TokenType_::LESS, longestResult);
+        matchRE(regExGreaterEqual_, _TokenType_::GREATER_EQUAL, longestResult);
+        matchRE(regExLessEqual_, _TokenType_::LESS_EQUAL, longestResult);
+        matchRE(regExEqual_, _TokenType_::EQUAL, longestResult);
+        matchRE(regExNotEqual_, _TokenType_::NOT_EQUAL, longestResult);
+        matchRE(regExPlus_, _TokenType_::PLUS, longestResult);
+        matchRE(regExMinus_, _TokenType_::MINUS, longestResult);
+        matchRE(regExMultiply_, _TokenType_::MULTIPLY, longestResult);
+        matchRE(regExDivide_, _TokenType_::DIVIDE, longestResult);
+        matchRE(regExEqual_, _TokenType_::EQUAL, longestResult);
+        matchRE(regExNotEqual_, _TokenType_::NOT_EQUAL, longestResult);
+        matchRE(regExLParen_, _TokenType_::L_PAREN, longestResult);
+        matchRE(regExRParen_, _TokenType_::R_PAREN, longestResult);
+        matchRE(regExLBrace_, _TokenType_::L_BRACE, longestResult);
+        matchRE(regExRBrace_, _TokenType_::R_BRACE, longestResult);
+        matchRE(regExSemicolon_, _TokenType_::SEMICOLON, longestResult);
+        matchRE(regExComma_, _TokenType_::COMMA, longestResult);
 
         if(longestResult.first.has_value())
         {
@@ -108,11 +108,11 @@ std::shared_ptr<Token> Lexer::getNextToken()
         }
     }
 
-    return std::make_shared<Token>(TokenType::EOF_TOKEN, "");
+    return std::make_shared<Token>(_TokenType_::EOF_TOKEN, "");
 }
 
 void Lexer::matchRE(const std::unique_ptr<RegEx> &regEx,
-                    TokenType tokenType,
+                    _TokenType_ tokenType,
                     std::pair<std::optional<size_t>, std::shared_ptr<Token>> &result)
 {
     std::optional<size_t> matchedNum = regEx->match(input_.substr(currentPos_));
