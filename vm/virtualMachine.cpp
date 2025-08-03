@@ -239,7 +239,11 @@ void VirtualMachine::resetProgram()
     isRunning_ = true;
 
     resetRegisters();
-    memory_.clear();
+
+    for(int i = 0; i < memorySize_; i++)
+    {
+        memory_.at(i) = 0;
+    }
 
     stackBaseAddress_ = memorySize_ - 1;
     stackLimitAddress_ = stackBaseAddress_ - 10;
