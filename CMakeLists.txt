@@ -5,12 +5,6 @@ project(my_compiler CXX)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED TRUE)
 
-# -- 设置第三方库路径 --
-set(ASIO_ROOT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/third/asio)
-include_directories(${ASIO_ROOT_DIR}/include)
-
-set(JSON_ROOT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/third/json)
-include_directories(${JSON_ROOT_DIR}/include)
 
 # -- 定义核心编译器/VM 的源文件 (不包含 ffi_api.cpp 和 main.cpp) --
 set(CORE_SOURCES
