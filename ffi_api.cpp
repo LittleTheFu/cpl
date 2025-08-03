@@ -6,6 +6,7 @@
 #include <cstring> // For strlen, strcpy
 #include <memory>
 #include <stdexcept>
+#include "workShop.h"
 
 // 辅助函数：安全地分配并复制 C 字符串
 char* allocate_and_copy_c_string(const std::string& s) {
@@ -29,9 +30,7 @@ StringArray* convert_vector_to_string_array(const std::vector<std::string>& vec)
 EXPORT_API StringArray* get_hardcoded_vm_instructions() {
     std::vector<std::string> instructions_str;
     try {
-        VirtualMachine vm; // 实例化 VM，构造函数会设置硬编码的 sourceCode_
-        vm.loadProgram();   // 加载并组装指令
-        instructions_str = vm.toString(); // 获取指令的字符串表示
+        instructions_str = WorkShop::getInstance().getVMSrc(); // 获取指令的字符串表示
         std::cout << "[C++ FFI] Successfully retrieved " << instructions_str.size() << " hardcoded VM instructions." << std::endl;
     } catch (const std::exception& e) {
         std::cerr << "[C++ FFI] Error getting hardcoded VM instructions: " << e.what() << std::endl;

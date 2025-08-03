@@ -27,7 +27,7 @@ public:
     bool getSignFlag() const;
 
     void setSourceCode(const std::string &sourceCode);
-    std::vector<std::string> toString() const;
+    std::vector<std::string> getSourceCode() const;
 
 private:
     void executeInstruction(const Instruction &instruction);

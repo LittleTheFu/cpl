@@ -182,6 +182,8 @@ VirtualMachine::VirtualMachine()
 
                   // --- Program End ---
                   "MOV R15 999\n"; // Just a final instruction to indicate end
+
+    loadProgram();
 }
 
 void VirtualMachine::loadProgram()
@@ -269,14 +271,14 @@ void VirtualMachine::setSourceCode(const std::string &sourceCode)
     sourceCode_ = sourceCode;
 }
 
-std::vector<std::string> VirtualMachine::toString() const
+std::vector<std::string> VirtualMachine::getSourceCode() const
 {
     std::vector<std::string> result;
     for (const auto &instruction : instructions_)
     {
         result.push_back(instruction.toString());
     }
-    
+
     return result;
 }
 

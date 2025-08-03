@@ -13,13 +13,12 @@
 #include "identifierNode.h"
 #include "vmCodeGenerator.h"
 #include <csignal>
+#include "workShop.h"
 
 
 int main()
 {
-    VirtualMachine vm;
-    vm.loadProgram();
-    std::vector<std::string> src = vm.toString();
+    std::vector<std::string> src = WorkShop::getInstance().getVMSrc();
 
     return 0;
 }

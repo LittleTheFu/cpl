@@ -48,6 +48,8 @@ set(CORE_SOURCES
 
     vm/virtualMachine.cpp
     vm/instruction.cpp
+
+    workShop.cpp
 )
 
 # -- 1. 创建核心静态库 --
