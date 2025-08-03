@@ -269,6 +269,17 @@ void VirtualMachine::setSourceCode(const std::string &sourceCode)
     sourceCode_ = sourceCode;
 }
 
+std::vector<std::string> VirtualMachine::toString() const
+{
+    std::vector<std::string> result;
+    for (const auto &instruction : instructions_)
+    {
+        result.push_back(instruction.toString());
+    }
+    
+    return result;
+}
+
 void VirtualMachine::executeInstruction(const Instruction &instruction)
 {
     switch (instruction.getOpCode())

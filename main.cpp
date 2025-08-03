@@ -12,7 +12,6 @@
 #include "intergerLiteralNode.h"
 #include "identifierNode.h"
 #include "vmCodeGenerator.h"
-#include <nlohmann/json.hpp>
 #include <csignal>
 
 
@@ -179,6 +178,8 @@ int main()
     }
 
     VirtualMachine vm;
+    vm.loadProgram();
+    std::vector<std::string> src = vm.toString();
 
     return 0;
 }
