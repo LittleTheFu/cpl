@@ -17,6 +17,13 @@ public:
     static WorkShop& getInstance();
 
     std::vector<std::string> getVMSrc();
+    size_t getPC() const;
+    void step();
+    void resetProgram();
+    const std::vector<int> &getVMRegisters() const;
+
+    bool getVMZeroFlag() const;
+    bool getVMSignFlag() const;
 
 private:
     VirtualMachine vm_;

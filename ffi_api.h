@@ -18,9 +18,22 @@ typedef struct {
     size_t count;
 } StringArray;
 
+typedef struct {
+    int* data;
+    size_t count;
+} IntArray;
+
 // 函数名称改为更能反映其作用的
 EXPORT_API StringArray* get_hardcoded_vm_instructions();
 EXPORT_API void free_string_array(StringArray* array);
+EXPORT_API void free_int_array_data(int* data);
+EXPORT_API size_t get_vm_pc();
+EXPORT_API void step_vm();
+EXPORT_API void reset_vm_program();
+EXPORT_API IntArray get_vm_all_registers();
+EXPORT_API bool get_vm_zero_flag();
+EXPORT_API bool get_vm_sign_flag();
+
 
 #ifdef __cplusplus
 }

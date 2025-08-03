@@ -35,7 +35,6 @@ VirtualMachine::VirtualMachine()
                   // --- Part 1: Basic Arithmetic and Flags Update ---
                   "ADD R0 R2\n" // R0 = R0 + R2 (0 + 2 = 2). ZF=F, SF=F
                   "SUB R1 R2\n" // R1 = R1 - R2 (10 - 2 = 8). ZF=F, SF=F
-                  "HLT\n"
                   "MUL R0 R2\n" // R0 = R0 * R2 (2 * 2 = 4). ZF=F, SF=F
                   "DIV R0 2\n"  // R0 = R0 / 2 (4 / 2 = 2). ZF=F, SF=F
 
@@ -192,6 +191,8 @@ void VirtualMachine::loadProgram()
 
     buildLabelMap();
     assembleInstructions();
+
+    isRunning_ = true;
 }
 
 void VirtualMachine::execute()
@@ -214,6 +215,30 @@ void VirtualMachine::execute()
     }
 
     isRunning_ = false;
+}
+
+void VirtualMachine::step()
+{
+    if(!isRunning_)
+        return;
+
+    if(programCounter_ >= instructions_.size())
+        return;
+
+    executeInstruction(instructions_.at(programCounter_));
+
+    if(!isRunning_)
+        return;
+
+    programCounter_++;
+}
+
+void VirtualMachine::resetProgram()
+{
+    programCounter_ = 0;
+    isRunning_ = true;
+
+    resetRegisters();
 }
 
 void VirtualMachine::clear()
@@ -246,6 +271,19 @@ int VirtualMachine::getRegister(size_t index) const
     return register_.at(index);
 }
 
+void VirtualMachine::resetRegisters()
+{
+    for (auto &r : register_)
+    {
+        r = 0;
+    }
+}
+
+const std::vector<int> &VirtualMachine::getRegisters() const
+{
+    return register_;
+}
+
 void VirtualMachine::setMemory(size_t index, int value)
 {
     memory_.at(index) = value;
@@ -274,12 +312,18 @@ void VirtualMachine::setSourceCode(const std::string &sourceCode)
 std::vector<std::string> VirtualMachine::getSourceCode() const
 {
     std::vector<std::string> result;
-    for (const auto &instruction : instructions_)
+    // for (const auto &instruction : instructions_)
+    for(size_t i = 0; i < instructions_.size(); i++)
     {
-        result.push_back(instruction.toString());
+        result.push_back(std::to_string(i) + ": " + instructions_.at(i).toString());
     }
 
     return result;
+}
+
+size_t VirtualMachine::getProgramCounter() const
+{
+    return programCounter_;
 }
 
 void VirtualMachine::executeInstruction(const Instruction &instruction)

@@ -14,11 +14,15 @@ public:
 
     void loadProgram();
     void execute();
+    void step();
+    void resetProgram();
 
     void clear();
 
     void setRegister(size_t index, int value);
     int getRegister(size_t index) const;
+    void resetRegisters();
+    const std::vector<int> &getRegisters() const;
 
     void setMemory(size_t index, int value);
     int getMemory(size_t index) const;
@@ -28,6 +32,8 @@ public:
 
     void setSourceCode(const std::string &sourceCode);
     std::vector<std::string> getSourceCode() const;
+
+    size_t getProgramCounter() const;
 
 private:
     void executeInstruction(const Instruction &instruction);

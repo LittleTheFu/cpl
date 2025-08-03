@@ -27,7 +27,7 @@ StringArray* convert_vector_to_string_array(const std::vector<std::string>& vec)
 }
 
 // 获取 VM 内部硬编码指令的 FFI 函数
-EXPORT_API StringArray* get_hardcoded_vm_instructions() {
+StringArray* get_hardcoded_vm_instructions() {
     std::vector<std::string> instructions_str;
     try {
         instructions_str = WorkShop::getInstance().getVMSrc(); // 获取指令的字符串表示
@@ -43,7 +43,7 @@ EXPORT_API StringArray* get_hardcoded_vm_instructions() {
 }
 
 // 释放内存的函数（不变）
-EXPORT_API void free_string_array(StringArray* array) {
+void free_string_array(StringArray* array) {
     if (array == nullptr) {
         return;
     }
@@ -56,4 +56,50 @@ EXPORT_API void free_string_array(StringArray* array) {
     delete[] array->strings;
     delete array;
     std::cout << "[C++] StringArray freed successfully." << std::endl;
+}
+
+void free_int_array_data(int* data)
+{
+    if (data == nullptr) {
+        return;
+    }
+    
+    delete[] data;
+    std::cout << "[C++] IntArray data freed successfully." << std::endl;
+}
+
+size_t get_vm_pc()
+{
+    return WorkShop::getInstance().getPC();
+}
+
+void step_vm()
+{
+    WorkShop::getInstance().step();
+}
+
+void reset_vm_program()
+{
+    WorkShop::getInstance().resetProgram();
+}
+
+IntArray get_vm_all_registers()
+{
+    const std::vector<int>& vec = WorkShop::getInstance().getVMRegisters();
+    IntArray array;
+    array.data = new int[vec.size()];
+    std::memcpy(array.data, vec.data(), vec.size() * sizeof(int));
+    array.count = vec.size();
+
+    return array;
+}
+
+bool get_vm_zero_flag()
+{
+    return WorkShop::getInstance().getVMZeroFlag();
+}
+
+bool get_vm_sign_flag()
+{
+    return WorkShop::getInstance().getVMSignFlag();
 }
