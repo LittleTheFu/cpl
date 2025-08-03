@@ -64,9 +64,6 @@ target_include_directories(cpl_core PUBLIC
     ${PROJECT_SOURCE_DIR}/vm
     ${PROJECT_SOURCE_DIR}/front
     ${PROJECT_SOURCE_DIR}/ir
-    # 确保包含了 third party libs 的 include
-    ${ASIO_ROOT_DIR}/include
-    ${JSON_ROOT_DIR}/include
 )
 
 # -- 2. 为 Flutter FFI 创建共享库 --
