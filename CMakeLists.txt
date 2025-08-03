@@ -53,8 +53,6 @@ set(PROJECT_SOURCES
     vm/virtualMachine.cpp
     vm/instruction.cpp
 
-    network/socket_server_module.cpp
-
     main.cpp
 )
 
