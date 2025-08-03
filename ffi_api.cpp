@@ -94,6 +94,17 @@ IntArray get_vm_all_registers()
     return array;
 }
 
+EXPORT_API IntArray get_vm_all_memory()
+{
+    const std::vector<int>& vec = WorkShop::getInstance().getVMMemory();
+    IntArray array;
+    array.data = new int[vec.size()];
+    std::memcpy(array.data, vec.data(), vec.size() * sizeof(int));
+    array.count = vec.size();
+
+    return array;
+}
+
 bool get_vm_zero_flag()
 {
     return WorkShop::getInstance().getVMZeroFlag();

@@ -21,6 +21,7 @@ public:
     void step();
     void resetProgram();
     const std::vector<int> &getVMRegisters() const;
+    const std::vector<int> &getVMMemory() const;
 
     bool getVMZeroFlag() const;
     bool getVMSignFlag() const;

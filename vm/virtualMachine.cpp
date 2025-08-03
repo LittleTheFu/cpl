@@ -4,7 +4,7 @@
 
 VirtualMachine::VirtualMachine()
 {
-    memorySize_ = 1024;
+    memorySize_ = 32;
     memory_.resize(memorySize_);
 
     registerSize_ = 16;
@@ -239,6 +239,11 @@ void VirtualMachine::resetProgram()
     isRunning_ = true;
 
     resetRegisters();
+    memory_.clear();
+
+    stackBaseAddress_ = memorySize_ - 1;
+    stackLimitAddress_ = stackBaseAddress_ - 10;
+    stackPointer_ = stackBaseAddress_;
 }
 
 void VirtualMachine::clear()
@@ -292,6 +297,11 @@ void VirtualMachine::setMemory(size_t index, int value)
 int VirtualMachine::getMemory(size_t index) const
 {
     return memory_.at(index);
+}
+
+const std::vector<int> &VirtualMachine::getMemory() const
+{
+    return memory_;
 }
 
 bool VirtualMachine::getZeroFlag() const

@@ -36,6 +36,11 @@ const std::vector<int> &WorkShop::getVMRegisters() const
     return vm_.getRegisters();
 }
 
+const std::vector<int> &WorkShop::getVMMemory() const
+{
+    return vm_.getMemory();
+}
+
 bool WorkShop::getVMZeroFlag() const
 {
     return vm_.getZeroFlag();

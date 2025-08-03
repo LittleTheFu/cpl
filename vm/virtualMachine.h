@@ -26,6 +26,7 @@ public:
 
     void setMemory(size_t index, int value);
     int getMemory(size_t index) const;
+    const std::vector<int> &getMemory() const;
 
     bool getZeroFlag() const;
     bool getSignFlag() const;
