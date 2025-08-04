@@ -68,6 +68,23 @@ void free_int_array_data(int* data)
     std::cout << "[C++] IntArray data freed successfully." << std::endl;
 }
 
+FfiResult create_ffi_result(int code, const std::string &message)
+{
+    FfiResult result;
+    result.code = code;
+    result.message = allocate_and_copy_c_string(message);
+    return result;
+}
+
+EXPORT_API void free_ffi_result_message(char *message)
+{
+    if (message != nullptr)
+    {
+        delete[] message;
+        // std::cout << "[C++] FfiResult message freed." << std::endl; // 可选的调试输出
+    }
+}
+
 size_t get_vm_pc()
 {
     return WorkShop::getInstance().getPC();
@@ -113,4 +130,33 @@ bool get_vm_zero_flag()
 bool get_vm_sign_flag()
 {
     return WorkShop::getInstance().getVMSignFlag();
+}
+
+
+FfiResult load_program(const char* source, StringArray** out_program_array) {
+    // 初始化输出指针为 nullptr，以防出错
+    *out_program_array = nullptr;
+
+    if (source == nullptr) {
+        return create_ffi_result(-1, "Error: Source string cannot be null.");
+    }
+
+    try {
+        // 调用 WorkShop 的 loadProgram，这里可能抛出异常
+        std::vector<std::string> vec = WorkShop::getInstance().loadProgram(source);
+        
+        // 如果成功，将结果转换为 StringArray 并通过输出参数返回
+        *out_program_array = convert_vector_to_string_array(vec);
+        
+        std::cout << "[C++ FFI] Program loaded successfully from source: " << source << std::endl;
+        return create_ffi_result(0, "Program loaded successfully."); // 0 表示成功
+    } catch (const std::exception& e) {
+        // 捕获标准 C++ 异常，并将其封装到 FfiResult 中
+        std::cerr << "[C++ FFI] Error loading program: " << e.what() << std::endl;
+        return create_ffi_result(-1, "Failed to load program: " + std::string(e.what()));
+    } catch (...) {
+        // 捕获所有其他未知异常
+        std::cerr << "[C++ FFI] Unknown error during program loading." << std::endl;
+        return create_ffi_result(-2, "Failed to load program: An unknown error occurred.");
+    }
 }
