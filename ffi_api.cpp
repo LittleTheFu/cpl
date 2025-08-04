@@ -1,4 +1,4 @@
-#include "ffi_api.h"
+﻿#include "ffi_api.h"
 #include "virtualMachine.h" // 包含 VirtualMachine 头文件
 #include <iostream>
 #include <vector>
