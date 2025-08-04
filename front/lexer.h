@@ -11,12 +11,15 @@
 class Lexer
 {
 public:
+    Lexer();
     Lexer(const std::string &input);
     ~Lexer() = default;
 
+    void setInput(const std::string &input);
     std::shared_ptr<Token> getNextToken();
 
 private:
+    void initRE();
     void matchRE(const std::unique_ptr<RegEx> &regEx,
                  _TokenType_ tokenType,
                  std::pair<std::optional<size_t>, std::shared_ptr<Token>> &result);
