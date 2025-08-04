@@ -20,7 +20,7 @@ private:
     int registerId = 0;
 
     std::map<std::string, size_t> varMap_;
-    size_t currentVarAddress = 200;
+    size_t currentVarAddress = 0;
 };
 
 #endif // _VM_CODE_GENERATOR_H_
