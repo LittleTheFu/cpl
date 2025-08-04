@@ -18,6 +18,9 @@
 
 int main()
 {
+
+
+    WorkShop::getInstance().loadProgram("1+3*5");
     std::vector<std::string> src = WorkShop::getInstance().getVMSrc();
 
     return 0;

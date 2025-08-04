@@ -336,7 +336,8 @@ std::ostream &operator<<(std::ostream &os, const Operand &operand)
         os << "[" << operand.value << "]";
         break;
     case OperandType::IMMEDIATE:
-        os << "#" << operand.value;
+        // os << "#" << operand.value;
+        os << operand.value;
         break;
     default:
         os << "<UNKNOWN_OPERAND>";

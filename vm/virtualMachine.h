@@ -12,7 +12,8 @@ public:
     VirtualMachine();
     ~VirtualMachine() = default;
 
-    void loadProgram();
+    void loadProgram(const std::string &source);
+    // void loadProgram(std::vector<Instruction> &&instructions);
     void execute();
     void step();
     void resetProgram();

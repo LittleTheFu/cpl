@@ -21,7 +21,7 @@ VirtualMachine::VirtualMachine()
 
     isRunning_ = false;
 
-    sourceCode_ = "MOV R0 0\n"  // R0 = 0 (用于循环累加)
+    std::string src = "MOV R0 0\n"  // R0 = 0 (用于循环累加)
                   "MOV R1 10\n" // R1 = 10 (循环次数，从10递减到0)
                   "MOV R2 2\n"  // R2 = 2 (循环每次递增值)
                   "MOV R3 0\n"  // R3 = 0 (一个辅助寄存器)
@@ -182,11 +182,13 @@ VirtualMachine::VirtualMachine()
                   // --- Program End ---
                   "MOV R15 999\n"; // Just a final instruction to indicate end
 
-    loadProgram();
+    loadProgram(src);
 }
 
-void VirtualMachine::loadProgram()
+void VirtualMachine::loadProgram(const std::string &source)
 {
+    sourceCode_ = source;
+
     clear();
 
     buildLabelMap();
@@ -194,6 +196,14 @@ void VirtualMachine::loadProgram()
 
     isRunning_ = true;
 }
+
+// void VirtualMachine::loadProgram(std::vector<Instruction> &&instructions)
+// {
+//     instructions_ = std::move(instructions);
+
+//      clear();
+//      isRunning_ = true;
+// }
 
 void VirtualMachine::execute()
 {
@@ -255,15 +265,15 @@ void VirtualMachine::clear()
     instructions_.clear();
     labelMap_.clear();
 
-    // for (auto &m : memory_)
-    // {
-    //     m = 0;
-    // }
+    for (auto &m : memory_)
+    {
+        m = 0;
+    }
 
-    // for (auto &r : register_)
-    // {
-    //     r = 0;
-    // }
+    for (auto &r : register_)
+    {
+        r = 0;
+    }
 
     stackPointer_ = stackBaseAddress_;
 

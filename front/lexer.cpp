@@ -99,8 +99,6 @@ void Lexer::initRE()
     keywords_["int"] = _TokenType_::INT;
     keywords_["return"] = _TokenType_::RETURN;
 
-    input_ = input;
-    currentPos_ = 0;
 
     // regExWhite_ = std::make_unique<RegEx>("( |\t|\n|\r)+");
     // regExNumber_ = std::make_unique<RegEx>("(0|1|2|3|4|5|6|7|8|9)+");

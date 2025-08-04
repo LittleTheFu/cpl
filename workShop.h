@@ -2,6 +2,8 @@
 #define _WORK_SHOP_H_
 
 #include "virtualMachine.h"
+#include "lexer.h"
+#include "parser.h"
 
 class WorkShop
 {
@@ -25,6 +27,10 @@ public:
 
     bool getVMZeroFlag() const;
     bool getVMSignFlag() const;
+
+    std::vector<std::string> loadProgram(const std::string &source);
+
+private:
 
 private:
     VirtualMachine vm_;
